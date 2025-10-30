@@ -39,12 +39,20 @@ export function CtaSection({
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <Button variant="primary" className="bg-white text-blue-700 hover:bg-blue-50">
-            <Link href={primaryAction.href}>{primaryAction.label}</Link>
+          {/* Primary: 가시성 확보를 위해 Button secondary 변형 사용 (흰 배경 + 파란 텍스트) */}
+          <Button variant="secondary" className="text-blue-700">
+            <Link href={primaryAction.href} className="text-current no-underline">
+              {primaryAction.label}
+            </Link>
           </Button>
           {secondaryAction && (
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+            <Button
+              variant="ghost"
+              className="text-white border border-white/60 hover:bg-white/10"
+            >
+              <Link href={secondaryAction.href} className="text-current no-underline">
+                {secondaryAction.label}
+              </Link>
             </Button>
           )}
         </div>
