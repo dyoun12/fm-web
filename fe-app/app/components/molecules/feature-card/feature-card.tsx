@@ -14,6 +14,7 @@ export type FeatureCardProps = {
   variant?: FeatureCardVariant;
   ctaLabel?: string;
   className?: string;
+  theme?: "light" | "dark";
 };
 
 const VARIANT_CLASSES: Record<FeatureCardVariant, string> = {
@@ -31,12 +32,18 @@ export function FeatureCard({
   ctaLabel = "자세히 보기",
   variant = "default",
   className,
+  theme = "light",
 }: FeatureCardProps) {
+  const isDark = theme === "dark";
   const content = (
     <div
       className={cn(
         "flex h-full flex-col gap-4 rounded-2xl p-6 transition-all",
-        VARIANT_CLASSES[variant],
+        variant === "default"
+          ? isDark
+            ? "bg-zinc-900 border border-zinc-700 hover:border-blue-400"
+            : VARIANT_CLASSES.default
+          : VARIANT_CLASSES.emphasis,
         className,
       )}
     >
@@ -56,7 +63,7 @@ export function FeatureCard({
         <h3
           className={cn(
             "text-lg font-semibold",
-            variant === "default" ? "text-zinc-900" : "text-white",
+            variant === "default" ? (isDark ? "text-zinc-100" : "text-zinc-900") : "text-white",
           )}
         >
           {title}
@@ -64,7 +71,7 @@ export function FeatureCard({
         <p
           className={cn(
             "text-sm leading-6",
-            variant === "default" ? "text-zinc-600" : "text-white/80",
+            variant === "default" ? (isDark ? "text-zinc-400" : "text-zinc-600") : "text-white/80",
           )}
         >
           {description}

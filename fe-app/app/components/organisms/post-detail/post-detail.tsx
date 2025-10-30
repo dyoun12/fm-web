@@ -11,6 +11,7 @@ export type PostDetailProps = {
   updatedAt?: string;
   content: string;
   thumbnailUrl?: string;
+  theme?: "light" | "dark";
 };
 
 export function PostDetail({
@@ -21,13 +22,17 @@ export function PostDetail({
   updatedAt,
   content,
   thumbnailUrl,
+  theme = "light",
 }: PostDetailProps) {
+  const isDark = theme === "dark";
   return (
     <article className="mx-auto flex w-full max-w-3xl flex-col gap-8">
       <header className="flex flex-col gap-4">
-        <Badge variant="info">{category}</Badge>
-        <h1 className="text-3xl font-semibold text-zinc-900">{title}</h1>
-        <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-500">
+        <Badge variant="info" theme={theme}>{category}</Badge>
+        <h1 className={cn("text-3xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>
+          {title}
+        </h1>
+        <div className={cn("flex flex-wrap items-center gap-3 text-sm", isDark ? "text-zinc-400" : "text-zinc-500") }>
           <span>{author}</span>
           <span aria-hidden="true">•</span>
           <time dateTime={publishedAt}>
@@ -56,8 +61,9 @@ export function PostDetail({
       )}
       <section
         className={cn(
-          "prose prose-zinc max-w-none leading-7",
-          "[&_h2]:mt-10 [&_h2]:text-2xl [&_p]:text-zinc-700",
+          "prose max-w-none leading-7",
+          isDark ? "prose-invert" : "prose-zinc",
+          "[&_h2]:mt-10 [&_h2]:text-2xl",
         )}
         dangerouslySetInnerHTML={{ __html: content }}
       />

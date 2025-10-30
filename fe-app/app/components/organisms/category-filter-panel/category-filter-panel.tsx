@@ -15,13 +15,16 @@ export type CategoryFilterPanelProps = {
   categories: CategoryFilter[];
   onFilterChange?: (selected: string[]) => void;
   onSearchChange?: (value: string) => void;
+  theme?: "light" | "dark";
 };
 
 export function CategoryFilterPanel({
   categories,
   onFilterChange,
   onSearchChange,
+  theme = "light",
 }: CategoryFilterPanelProps) {
+  const isDark = theme === "dark";
   const [selected, setSelected] = useState<string[]>([]);
   const [search, setSearch] = useState("");
 
@@ -39,14 +42,15 @@ export function CategoryFilterPanel({
   };
 
   return (
-    <aside className="flex w-full max-w-xs flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-zinc-900">카테고리 필터</h2>
+    <aside className={cn("flex w-full max-w-xs flex-col gap-4 rounded-2xl border p-6 shadow-sm", isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white") }>
+      <h2 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>카테고리 필터</h2>
       <Input
         label="검색"
         hideLabel
         placeholder="검색어를 입력하세요"
         value={search}
         onChange={(event) => handleSearch(event.target.value)}
+        theme={theme}
       />
       <div className="flex flex-col gap-3">
         {categories.map((category) => (
@@ -62,14 +66,15 @@ export function CategoryFilterPanel({
             onChange={() => toggleCategory(category.id)}
             className={cn(
               "border border-transparent rounded-lg px-2 py-1 hover:border-blue-200",
-              selected.includes(category.id) && "border-blue-200 bg-blue-50",
+              selected.includes(category.id) && (isDark ? "border-blue-400 bg-blue-950/20" : "border-blue-200 bg-blue-50"),
             )}
+            theme={theme}
           />
         ))}
       </div>
       <button
         type="button"
-        className="self-start rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-600 transition hover:border-blue-200 hover:text-blue-600"
+        className={cn("self-start rounded-full border px-4 py-2 text-sm font-medium transition hover:border-blue-200 hover:text-blue-600", isDark ? "border-zinc-700 text-zinc-300" : "border-zinc-200 text-zinc-600")}
         onClick={() => {
           setSelected([]);
           onFilterChange?.([]);

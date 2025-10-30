@@ -8,6 +8,7 @@ export type TeamMemberCardProps = {
   bio?: string;
   avatarUrl?: string;
   socialLinks?: { label: string; href: string }[];
+  theme?: "light" | "dark";
 };
 
 export function TeamMemberCard({
@@ -16,9 +17,16 @@ export function TeamMemberCard({
   bio,
   avatarUrl,
   socialLinks,
+  theme = "light",
 }: TeamMemberCardProps) {
+  const isDark = theme === "dark";
   return (
-    <article className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-6 text-zinc-700 shadow-sm hover:border-blue-200 hover:shadow-md">
+    <article className={
+      [
+        "flex flex-col gap-4 rounded-2xl p-6 shadow-sm hover:border-blue-200 hover:shadow-md",
+        isDark ? "border border-zinc-700 bg-zinc-900 text-zinc-300" : "border border-zinc-200 bg-white text-zinc-700",
+      ].join(" ")
+    }>
       <div className="flex items-center gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-full bg-blue-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -29,11 +37,11 @@ export function TeamMemberCard({
           />
         </div>
         <div className="flex flex-col">
-          <span className="text-lg font-semibold text-zinc-900">{name}</span>
+          <span className={isDark ? "text-lg font-semibold text-zinc-100" : "text-lg font-semibold text-zinc-900"}>{name}</span>
           <span className="text-sm text-blue-600">{role}</span>
         </div>
       </div>
-      {bio && <p className="text-sm leading-6">{bio}</p>}
+      {bio && <p className={isDark ? "text-sm leading-6 text-zinc-400" : "text-sm leading-6"}>{bio}</p>}
       {socialLinks && socialLinks.length > 0 && (
         <div className="flex flex-wrap gap-3">
           {socialLinks.map((link) => (

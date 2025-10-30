@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
+import { Badge } from "../../atoms/badge/badge";
+import { Button } from "../../atoms/button/button";
 
 export type NoticeItem = {
   id: string;
@@ -21,6 +23,7 @@ export type NoticeListProps = {
   emptyMessage?: string;
   errorMessage?: string;
   onRetry?: () => void;
+  theme?: "light" | "dark";
 };
 
 export function NoticeList({
@@ -32,7 +35,9 @@ export function NoticeList({
   emptyMessage = "등록된 공지가 없습니다.",
   errorMessage,
   onRetry,
+  theme = "light",
 }: NoticeListProps) {
+  const isDark = theme === "dark";
   if (errorMessage) {
     return (
       <div className="rounded-2xl border border-red-100 bg-red-50 p-6 text-red-600">
@@ -84,23 +89,24 @@ export function NoticeList({
         {items.map((item) => (
           <article
             key={item.id}
-            className="flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-6 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+            className={cn(
+              "flex flex-col gap-3 rounded-2xl p-6 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md border",
+              isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white",
+            )}
           >
-            <div className="flex items-center justify-between text-xs text-zinc-500">
-              <span className="rounded-full bg-blue-50 px-3 py-1 font-medium text-blue-600">
-                {item.category}
-              </span>
+            <div className={cn("flex items-center justify-between text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
+              <Badge variant="info" theme={theme}>{item.category}</Badge>
               <time dateTime={item.publishedAt}>
                 {new Date(item.publishedAt).toLocaleDateString("ko-KR")}
               </time>
             </div>
-            <h3 className="text-lg font-semibold text-zinc-900">
+            <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
               <Link href={item.href} className="transition hover:text-blue-600">
                 {item.title}
               </Link>
             </h3>
             {item.summary && (
-              <p className="text-sm text-zinc-600 line-clamp-3">{item.summary}</p>
+              <p className={cn("text-sm line-clamp-3", isDark ? "text-zinc-400" : "text-zinc-600")}>{item.summary}</p>
             )}
             <Link
               href={item.href}
@@ -126,14 +132,14 @@ export function NoticeList({
       </div>
       {onLoadMore && (
         <div className="flex justify-center">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-full border border-blue-200 px-6 py-2 text-sm font-semibold text-blue-600 transition hover:border-blue-300 hover:bg-blue-50"
+          <Button
+            variant="secondary"
             onClick={onLoadMore}
             disabled={isLoading}
+            theme={theme}
           >
             {isLoading ? "로딩 중..." : ctaLabel}
-          </button>
+          </Button>
         </div>
       )}
     </section>

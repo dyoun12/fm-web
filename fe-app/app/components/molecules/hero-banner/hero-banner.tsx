@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import Link from "next/link";
+import { Button } from "../../atoms/button/button";
 import { ReactNode } from "react";
 
 type BackgroundType = "solid" | "gradient" | "image";
@@ -80,20 +81,14 @@ export function HeroBanner({
           {(primaryAction || secondaryAction) && (
             <div className="flex flex-wrap items-center gap-3">
               {primaryAction && (
-                <Link
-                  href={primaryAction.href}
-                  className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {primaryAction.label}
-                </Link>
+                <Button className="bg-white text-blue-700 hover:bg-blue-50">
+                  <Link href={primaryAction.href}>{primaryAction.label}</Link>
+                </Button>
               )}
               {secondaryAction && (
-                <Link
-                  href={secondaryAction.href}
-                  className="inline-flex items-center justify-center rounded-full border border-white/60 px-6 py-3 text-sm font-semibold text-white transition hover:border-white focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {secondaryAction.label}
-                </Link>
+                <Button variant="ghost" className="text-white border border-white/60 hover:bg-white/10">
+                  <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+                </Button>
               )}
             </div>
           )}

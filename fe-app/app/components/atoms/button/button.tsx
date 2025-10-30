@@ -29,6 +29,7 @@ export type ButtonProps = {
   trailingIcon?: ReactNode;
   loading?: boolean;
   fullWidth?: boolean;
+  theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"button">;
 
 export function Button({
@@ -42,9 +43,24 @@ export function Button({
   fullWidth = false,
   className,
   type = "button",
+  theme = "light",
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const isDark = theme === "dark";
+
+  const variantStyles = (() => {
+    if (variant === "primary") return VARIANT_STYLES.primary; // primary는 라이트/다크 동일 톤 유지
+    if (variant === "secondary")
+      return isDark
+        ? "bg-transparent text-blue-400 border border-zinc-700 hover:border-blue-400 hover:bg-white/5 focus-visible:outline-blue-500"
+        : VARIANT_STYLES.secondary;
+    if (variant === "ghost")
+      return isDark
+        ? "bg-transparent text-blue-400 hover:bg-white/10 focus-visible:outline-blue-500"
+        : VARIANT_STYLES.ghost;
+    return VARIANT_STYLES.primary;
+  })();
 
   return (
     <button
@@ -53,7 +69,7 @@ export function Button({
       className={cn(
         "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
         "disabled:cursor-not-allowed disabled:opacity-60",
-        VARIANT_STYLES[variant],
+        variantStyles,
         SIZE_STYLES[size],
         fullWidth && "w-full",
         className,

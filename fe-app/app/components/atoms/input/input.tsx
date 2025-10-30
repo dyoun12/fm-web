@@ -20,6 +20,7 @@ export type InputProps = {
   prefix?: ReactNode;
   suffix?: ReactNode;
   hideLabel?: boolean;
+  theme?: "light" | "dark";
 } & Omit<ComponentPropsWithoutRef<"input">, "type"> & {
   type?: Extract<
     InputType,
@@ -58,6 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       className,
       required,
       disabled,
+      theme = "light",
       ...rest
     },
     ref,
@@ -69,12 +71,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const errorId =
       state === "error" && errorMessage ? `${inputId}-error` : undefined;
 
+    const isDark = theme === "dark";
     return (
       <div className="flex flex-col gap-2">
-        <div className={cn("flex flex-col gap-1")}>
+        <div className={cn("flex flex-col gap-1") }>
           <label
             className={cn(
-              hideLabel ? "sr-only" : "text-sm font-medium text-zinc-700",
+              hideLabel
+                ? "sr-only"
+                : isDark
+                  ? "text-sm font-medium text-zinc-200"
+                  : "text-sm font-medium text-zinc-700",
               disabled && "text-zinc-400",
             )}
             htmlFor={inputId}
@@ -87,40 +94,37 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </label>
           {description && (
-            <p
-              id={descriptionId}
-              className="text-xs text-zinc-500"
-            >
-              {description}
-            </p>
+            <p id={descriptionId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>{description}</p>
           )}
         </div>
         <div
           className={cn(
-            "flex items-center gap-2 rounded-lg border bg-white px-3 py-2",
+            "flex items-center gap-2 rounded-lg border px-3 py-2",
+            isDark ? "bg-zinc-900 border-zinc-700" : "bg-white",
             STATE_CLASSES[state],
-            disabled && "bg-zinc-100 text-zinc-400",
+            disabled && (isDark ? "bg-zinc-800 text-zinc-500" : "bg-zinc-100 text-zinc-400"),
             className,
           )}
         >
-          {prefix && <span className="text-zinc-500">{prefix}</span>}
+          {prefix && <span className={cn(isDark ? "text-zinc-400" : "text-zinc-500")}>{prefix}</span>}
           <input
             id={inputId}
             ref={ref}
             aria-describedby={cn(descriptionId, helperId, errorId)}
             aria-invalid={state === "error" ? true : undefined}
             className={cn(
-              "flex-1 border-none bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400",
+              "flex-1 border-none bg-transparent text-sm outline-none",
+              isDark ? "text-zinc-100 placeholder:text-zinc-500" : "text-zinc-900 placeholder:text-zinc-400",
               disabled && "cursor-not-allowed",
             )}
             disabled={disabled}
             required={required}
             {...rest}
           />
-          {suffix && <span className="text-zinc-500">{suffix}</span>}
+          {suffix && <span className={cn(isDark ? "text-zinc-400" : "text-zinc-500")}>{suffix}</span>}
         </div>
         {helperText && (
-          <p id={helperId} className="text-xs text-zinc-500">
+          <p id={helperId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
             {helperText}
           </p>
         )}

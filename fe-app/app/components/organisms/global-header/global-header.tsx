@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
+import { Button } from "../../atoms/button/button";
 
 export type HeaderNavigationItem = {
   label: string;
@@ -23,6 +24,7 @@ export type GlobalHeaderProps = {
     href: string;
   };
   isSticky?: boolean;
+  theme?: "light" | "dark";
 };
 
 export function GlobalHeader({
@@ -31,13 +33,16 @@ export function GlobalHeader({
   navigation,
   cta,
   isSticky = true,
+  theme = "light",
 }: GlobalHeaderProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const isDark = theme === "dark";
 
   return (
     <header
       className={cn(
-        "top-0 z-30 w-full border-b border-zinc-100 bg-white/80 backdrop-blur transition-all",
+        "top-0 z-30 w-full backdrop-blur transition-all",
+        isDark ? "border-b border-zinc-800 bg-zinc-900/80" : "border-b border-zinc-100 bg-white/80",
         isSticky ? "sticky" : "relative",
       )}
     >
@@ -56,12 +61,12 @@ export function GlobalHeader({
               FM
             </span>
           )}
-          <span className="text-lg font-semibold text-zinc-900">
+          <span className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
             {brandName}
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm font-medium text-zinc-600 lg:flex">
+        <nav className={cn("hidden items-center gap-6 text-sm font-medium lg:flex", isDark ? "text-zinc-300" : "text-zinc-600") }>
           {navigation.map((item) => (
             <Link
               key={item.href}
@@ -80,12 +85,9 @@ export function GlobalHeader({
 
         <div className="hidden items-center gap-3 lg:flex">
           {cta && (
-            <Link
-              href={cta.href}
-              className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-            >
-              {cta.label}
-            </Link>
+            <Button theme={theme}>
+              <Link href={cta.href}>{cta.label}</Link>
+            </Button>
           )}
         </div>
 
@@ -115,11 +117,12 @@ export function GlobalHeader({
 
       <div
         className={cn(
-          "border-t border-zinc-100 bg-white px-6 py-4 lg:hidden",
+          "px-6 py-4 lg:hidden",
+          isDark ? "border-t border-zinc-800 bg-zinc-900" : "border-t border-zinc-100 bg-white",
           isMenuOpen ? "block" : "hidden",
         )}
       >
-        <nav className="flex flex-col gap-4 text-sm font-medium text-zinc-700">
+        <nav className={cn("flex flex-col gap-4 text-sm font-medium", isDark ? "text-zinc-300" : "text-zinc-700") }>
           {navigation.map((item) => (
             <Link
               key={item.href}
@@ -136,12 +139,11 @@ export function GlobalHeader({
           ))}
         </nav>
         {cta && (
-          <Link
-            href={cta.href}
-            className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500"
-          >
-            {cta.label}
-          </Link>
+          <div className="mt-6">
+            <Button fullWidth theme={theme}>
+              <Link href={cta.href}>{cta.label}</Link>
+            </Button>
+          </div>
         )}
       </div>
     </header>

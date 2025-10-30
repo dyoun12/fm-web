@@ -23,28 +23,31 @@ export type AdminDashboardOverviewProps = {
   stats: DashboardStat[];
   recentActivities: RecentActivity[];
   alerts?: string[];
+  theme?: "light" | "dark";
 };
 
 export function AdminDashboardOverview({
   stats,
   recentActivities,
   alerts = [],
+  theme = "light",
 }: AdminDashboardOverviewProps) {
+  const isDark = theme === "dark";
   return (
     <section className="flex flex-col gap-8">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => (
           <article
             key={stat.label}
-            className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"
+            className={cn("rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white")}
           >
-            <p className="text-sm text-zinc-500">{stat.label}</p>
+            <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-500")}>{stat.label}</p>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-semibold text-zinc-900">
+              <span className={cn("text-3xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>
                 {stat.value}
               </span>
               {stat.unit && (
-                <span className="text-sm text-zinc-500">{stat.unit}</span>
+                <span className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-500")}>{stat.unit}</span>
               )}
             </div>
             {stat.trend && (
@@ -69,18 +72,18 @@ export function AdminDashboardOverview({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className={cn("rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
           <header className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-zinc-900">최근 활동</h3>
-            <span className="text-xs text-zinc-400">최근 24시간</span>
+            <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>최근 활동</h3>
+            <span className={cn("text-xs", isDark ? "text-zinc-500" : "text-zinc-400")}>최근 24시간</span>
           </header>
-          <ul className="mt-4 flex flex-col gap-3 text-sm text-zinc-600">
+          <ul className={cn("mt-4 flex flex-col gap-3 text-sm", isDark ? "text-zinc-400" : "text-zinc-600") }>
             {recentActivities.map((activity) => (
               <li key={activity.id} className="flex flex-col gap-1">
                 <span>
                   <strong>{activity.actor}</strong> {activity.action}
                 </span>
-                <time className="text-xs text-zinc-400" dateTime={activity.timestamp}>
+                <time className={cn("text-xs", isDark ? "text-zinc-500" : "text-zinc-400")} dateTime={activity.timestamp}>
                   {new Date(activity.timestamp).toLocaleString("ko-KR")}
                 </time>
               </li>
@@ -88,10 +91,10 @@ export function AdminDashboardOverview({
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-amber-800">
+        <section className={cn("rounded-2xl p-6", isDark ? "border border-amber-900 bg-amber-950 text-amber-300" : "border border-amber-200 bg-amber-50 text-amber-800") }>
           <h3 className="text-lg font-semibold">알림 및 경고</h3>
           {alerts.length === 0 ? (
-            <p className="mt-4 text-sm text-amber-700">
+            <p className={cn("mt-4 text-sm", isDark ? "text-amber-300/80" : "text-amber-700") }>
               현재 조치가 필요한 알림이 없습니다.
             </p>
           ) : (

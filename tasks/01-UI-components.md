@@ -32,12 +32,18 @@
 | Molecule | NewsTicker | `fe-app/app/components/molecules/news-ticker/news-ticker.tsx` | `fe-app/app/components/molecules/news-ticker/news-ticker.stories.tsx` | `fe-app/app/components/molecules/news-ticker/news-ticker.test.tsx` |
 | Molecule | TeamMemberCard | `fe-app/app/components/molecules/team-member-card/team-member-card.tsx` | `fe-app/app/components/molecules/team-member-card/team-member-card.stories.tsx` | `fe-app/app/components/molecules/team-member-card/team-member-card.test.tsx` |
 | Molecule | TimelineItem | `fe-app/app/components/molecules/timeline-item/timeline-item.tsx` | `fe-app/app/components/molecules/timeline-item/timeline-item.stories.tsx` | `fe-app/app/components/molecules/timeline-item/timeline-item.test.tsx` |
+| Molecule | StatCard | `fe-app/app/components/molecules/stat-card/stat-card.tsx` | `fe-app/app/components/molecules/stat-card/stat-card.stories.tsx` | `fe-app/app/components/molecules/stat-card/stat-card.test.tsx` |
+| Molecule | FooterLinks | `fe-app/app/components/molecules/footer-links/footer-links.tsx` | `fe-app/app/components/molecules/footer-links/footer-links.stories.tsx` | `fe-app/app/components/molecules/footer-links/footer-links.test.tsx` |
 | Organism | GlobalHeader | `fe-app/app/components/organisms/global-header/global-header.tsx` | `fe-app/app/components/organisms/global-header/global-header.stories.tsx` | `fe-app/app/components/organisms/global-header/global-header.test.tsx` |
 | Organism | GlobalFooter | `fe-app/app/components/organisms/global-footer/global-footer.tsx` | `fe-app/app/components/organisms/global-footer/global-footer.stories.tsx` | `fe-app/app/components/organisms/global-footer/global-footer.test.tsx` |
 | Organism | NoticeList | `fe-app/app/components/organisms/notice-list/notice-list.tsx` | `fe-app/app/components/organisms/notice-list/notice-list.stories.tsx` | `fe-app/app/components/organisms/notice-list/notice-list.test.tsx` |
 | Organism | CategoryFilterPanel | `fe-app/app/components/organisms/category-filter-panel/category-filter-panel.tsx` | `fe-app/app/components/organisms/category-filter-panel/category-filter-panel.stories.tsx` | `fe-app/app/components/organisms/category-filter-panel/category-filter-panel.test.tsx` |
 | Organism | PostDetail | `fe-app/app/components/organisms/post-detail/post-detail.tsx` | `fe-app/app/components/organisms/post-detail/post-detail.stories.tsx` | `fe-app/app/components/organisms/post-detail/post-detail.test.tsx` |
 | Organism | AdminDashboardOverview | `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx` | `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.stories.tsx` | `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.test.tsx` |
+| Organism | AboutOverview | `fe-app/app/components/organisms/about-overview/about-overview.tsx` | - | - |
+| Organism | VisionValues | `fe-app/app/components/organisms/vision-values/vision-values.tsx` | - | - |
+| Organism | ContactSection | `fe-app/app/components/organisms/contact-section/contact-section.tsx` | - | - |
+| Organism | AdminSidebar | `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx` | - | - |
 
 - 스토리 파일은 `*.stories.tsx`, 테스트 파일은 `*.test.tsx` 네이밍을 사용한다.
 - 공통 스타일/토큰은 `fe-app/app/globals.css` 또는 추후 `fe-app/lib/theme.ts`로 분리한다.
@@ -63,3 +69,10 @@
 - [x] Vitest 기반 테스트 스켈레톤을 `*.test.tsx` 형식으로 생성하고 기본 렌더링 검증을 작성한다.
 - [x] Dev Preview(`fe-app/app/dev/page.tsx`)와 Storybook 간 props, variant 목록이 일치하는지 확인한다.
 - [x] 생성된 컴포넌트/스토리/테스트 경로를 `tasks/01-UI-components.md`의 매핑 테이블에 반영한다.
+
+## 01-4. 미구현 컴포넌트 보강 및 Dev Preview 동기화
+- [x] Molecules: StatCard, FooterLinks 추가 구현 및 스토리/테스트 생성
+- [x] Organisms: AboutOverview, VisionValues, ContactSection, AdminSidebar 최소 구현 추가
+- [x] Dev Preview(`fe-app/app/dev/page.tsx`)에 위 컴포넌트 프리뷰 케이스(변형/상태) 추가
+- [x] 다크 테마/모바일 미리보기 토글과 동기화 확인
+- [x] `docs/design-guide.md` 변경 이력에 반영(2025-10-30)

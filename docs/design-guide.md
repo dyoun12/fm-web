@@ -179,3 +179,4 @@
 |------|--------|-----------|------|
 | 2025-10-27 | Codex Agent | 초기 디자인 토큰·컴포넌트 인벤토리 정의 | -
 | 2025-10-27 | Codex Agent | Button/FeatureCard 등 주요 컴포넌트 속성·상태 명세 추가, Dev Preview 가이드 보강 | 피드백 없음
+| 2025-10-30 | Codex Agent | StatCard, FooterLinks, AboutOverview, VisionValues, ContactSection, AdminSidebar 구현 반영 및 Dev Preview 동기화 | 다크 테마 대응 추가

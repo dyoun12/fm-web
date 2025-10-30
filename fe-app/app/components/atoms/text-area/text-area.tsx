@@ -16,6 +16,7 @@ export type TextAreaProps = {
   errorMessage?: string;
   state?: TextAreaState;
   hideLabel?: boolean;
+  theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"textarea">;
 
 const STATE_CLASSES: Record<TextAreaState, string> = {
@@ -40,6 +41,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       className,
       required,
       disabled,
+      theme = "light",
       ...rest
     },
     ref,
@@ -51,12 +53,17 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     const errorId =
       state === "error" && errorMessage ? `${textAreaId}-error` : undefined;
 
+    const isDark = theme === "dark";
     return (
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
           <label
             className={cn(
-              hideLabel ? "sr-only" : "text-sm font-medium text-zinc-700",
+              hideLabel
+                ? "sr-only"
+                : isDark
+                  ? "text-sm font-medium text-zinc-200"
+                  : "text-sm font-medium text-zinc-700",
               disabled && "text-zinc-400",
             )}
             htmlFor={textAreaId}
@@ -69,9 +76,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             )}
           </label>
           {description && (
-            <p id={descriptionId} className="text-xs text-zinc-500">
-              {description}
-            </p>
+            <p id={descriptionId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>{description}</p>
           )}
         </div>
         <textarea
@@ -80,7 +85,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           aria-describedby={cn(descriptionId, helperId, errorId)}
           aria-invalid={state === "error" ? true : undefined}
           className={cn(
-            "min-h-[6rem] w-full rounded-lg border bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100",
+            "min-h-[6rem] w-full rounded-lg border px-3 py-2 text-sm outline-none transition disabled:cursor-not-allowed",
+            isDark
+              ? "bg-zinc-900 text-zinc-100 placeholder:text-zinc-500 disabled:bg-zinc-800 border-zinc-700"
+              : "bg-white text-zinc-900 placeholder:text-zinc-400 disabled:bg-zinc-100",
             STATE_CLASSES[state],
             className,
           )}
@@ -89,9 +97,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           {...rest}
         />
         {helperText && (
-          <p id={helperId} className="text-xs text-zinc-500">
-            {helperText}
-          </p>
+          <p id={helperId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>{helperText}</p>
         )}
         {state === "error" && errorMessage && (
           <p id={errorId} className="text-xs text-red-500">

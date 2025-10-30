@@ -24,6 +24,7 @@ export type IconButtonProps = {
   variant?: IconButtonVariant;
   shape?: IconButtonShape;
   size?: IconButtonSize;
+  theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"button">;
 
 export function IconButton({
@@ -32,14 +33,23 @@ export function IconButton({
   size = "md",
   className,
   type = "button",
+  theme = "light",
   ...rest
 }: IconButtonProps) {
+  const isDark = theme === "dark";
+  const variantClass = (() => {
+    if (variant === "primary") return VARIANT_STYLES.primary;
+    // subtle
+    return isDark
+      ? "bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-blue-400 hover:text-blue-400 focus-visible:outline-blue-500"
+      : VARIANT_STYLES.subtle;
+  })();
   return (
     <button
       type={type}
       className={cn(
         "inline-flex items-center justify-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
-        VARIANT_STYLES[variant],
+        variantClass,
         SIZE_STYLES[size],
         shape === "circle" ? "rounded-full" : "rounded-lg",
         className,

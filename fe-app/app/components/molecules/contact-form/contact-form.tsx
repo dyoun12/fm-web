@@ -3,6 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { Input } from "../../atoms/input/input";
 import { Button } from "../../atoms/button/button";
+import { TextArea } from "../../atoms/text-area/text-area";
 import { cn } from "@/lib/classnames";
 
 export type ContactFormField = {
@@ -21,6 +22,7 @@ export type ContactFormProps = {
   successMessage?: string;
   errorMessage?: string;
   onSubmit?: (data: Record<string, string>) => Promise<void> | void;
+  theme?: "light" | "dark";
 };
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
@@ -31,6 +33,7 @@ export function ContactForm({
   successMessage = "문의가 성공적으로 접수되었습니다.",
   errorMessage = "제출 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
   onSubmit,
+  theme = "light",
 }: ContactFormProps) {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [values, setValues] = useState<Record<string, string>>(() =>
@@ -71,15 +74,19 @@ export function ContactForm({
     }));
   };
 
+  const isDark = theme === "dark";
   return (
     <form
-      className="flex w-full flex-col gap-6 rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm"
+      className={cn(
+        "flex w-full flex-col gap-6 rounded-3xl border p-8 shadow-sm",
+        isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white",
+      )}
       onSubmit={handleSubmit}
       noValidate
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-semibold text-zinc-900">문의하기</h2>
-        <p className="text-sm text-zinc-600">
+        <h2 className={cn("text-2xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>문의하기</h2>
+        <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>
           문의 내용을 작성해주시면 2영업일 내로 담당자가 회신드립니다.
         </p>
       </div>
@@ -100,20 +107,10 @@ export function ContactForm({
         {fields.map((field) => {
           if (field.type === "textarea") {
             return (
-              <label
-                key={field.id}
-                htmlFor={field.id}
-                className="md:col-span-2"
-              >
-                <span className="text-sm font-medium text-zinc-700">
-                  {field.label}
-                  {field.required && (
-                    <span className="ml-1 text-red-500">*</span>
-                  )}
-                </span>
-                <textarea
+              <div key={field.id} className="md:col-span-2">
+                <TextArea
                   id={field.id}
-                  name={field.id}
+                  label={field.label}
                   placeholder={field.placeholder}
                   required={field.required}
                   disabled={status === "submitting"}
@@ -121,14 +118,10 @@ export function ContactForm({
                   onChange={(event) =>
                     handleChange(field.id, event.currentTarget.value)
                   }
-                  className="mt-2 h-32 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-zinc-100"
+                  helperText={field.helperText}
+                  theme={theme}
                 />
-                {field.helperText && (
-                  <p className="mt-1 text-xs text-zinc-500">
-                    {field.helperText}
-                  </p>
-                )}
-              </label>
+              </div>
             );
           }
 
@@ -145,6 +138,7 @@ export function ContactForm({
               value={values[field.id]}
               onChange={(event) => handleChange(field.id, event.target.value)}
               disabled={status === "submitting"}
+              theme={theme}
             />
           );
         })}
@@ -164,6 +158,7 @@ export function ContactForm({
           type="submit"
           loading={status === "submitting"}
           disabled={status === "submitting"}
+          theme={theme}
         >
           {submitLabel}
         </Button>

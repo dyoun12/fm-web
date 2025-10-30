@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import Link from "next/link";
 import { Button } from "../components/atoms/button/button";
 import { Input } from "../components/atoms/input/input";
@@ -5,6 +7,8 @@ import { Checkbox } from "../components/atoms/checkbox/checkbox";
 import { Spinner } from "../components/atoms/spinner/spinner";
 import { IconButton } from "../components/atoms/icon-button/icon-button";
 import { Badge } from "../components/atoms/badge/badge";
+import { Tooltip } from "../components/atoms/tooltip/tooltip";
+import { cn } from "@/lib/classnames";
 import { Select } from "../components/atoms/select/select";
 import { TextArea } from "../components/atoms/text-area/text-area";
 import { Radio } from "../components/atoms/radio/radio";
@@ -12,20 +16,27 @@ import { Divider } from "../components/atoms/divider/divider";
 import { Skeleton } from "../components/atoms/skeleton/skeleton";
 import { Tag } from "../components/atoms/tag/tag";
 import { Toggle } from "../components/atoms/toggle/toggle";
-import { Tooltip } from "../components/atoms/tooltip/tooltip";
+// 아래 원자 컴포넌트 중 현재 프리뷰에 사용되는 항목만 유지
 import { FeatureCard } from "../components/molecules/feature-card/feature-card";
 import { HeroBanner } from "../components/molecules/hero-banner/hero-banner";
 import { ContactForm } from "../components/molecules/contact-form/contact-form";
+import type { ContactFormField } from "../components/molecules/contact-form/contact-form";
 import { NewsTicker } from "../components/molecules/news-ticker/news-ticker";
 import { CtaSection } from "../components/molecules/cta-section/cta-section";
 import { TimelineItem } from "../components/molecules/timeline-item/timeline-item";
 import { TeamMemberCard } from "../components/molecules/team-member-card/team-member-card";
+import { StatCard } from "../components/molecules/stat-card/stat-card";
+import { FooterLinks } from "../components/molecules/footer-links/footer-links";
 import { GlobalHeader } from "../components/organisms/global-header/global-header";
 import { GlobalFooter } from "../components/organisms/global-footer/global-footer";
 import { NoticeList } from "../components/organisms/notice-list/notice-list";
 import { PostDetail } from "../components/organisms/post-detail/post-detail";
 import { CategoryFilterPanel } from "../components/organisms/category-filter-panel/category-filter-panel";
 import { AdminDashboardOverview } from "../components/organisms/admin-dashboard-overview/admin-dashboard-overview";
+import { AboutOverview } from "../components/organisms/about-overview/about-overview";
+import { VisionValues } from "../components/organisms/vision-values/vision-values";
+import { ContactSection } from "../components/organisms/contact-section/contact-section";
+import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 
 type ComponentItem = {
   name: string;
@@ -127,6 +138,80 @@ const atoms: ComponentItem[] = [
       "연속 스피너 사용 시 4초 후 Skeleton 대체 고려",
     ],
   },
+  {
+    name: "Select",
+    priority: "B",
+    description: "선택 드롭다운",
+    interactions: [
+      "키보드 위/아래로 옵션 탐색",
+      "Disabled일 때 상호작용 차단",
+    ],
+    guidelines: [
+      "플레이스홀더는 의미 있는 안내 문구 사용",
+      "옵션 수가 많으면 검색형 컴포넌트를 고려",
+    ],
+  },
+  {
+    name: "TextArea",
+    priority: "B",
+    description: "멀티라인 텍스트 입력",
+    interactions: [
+      "포커스 시 보더/그림자 강조",
+      "에러 상태에서 보조 문구 표시",
+    ],
+    guidelines: [
+      "최소 높이 확보 및 리사이즈 제어",
+      "레이블/도움말 텍스트 연결",
+    ],
+  },
+  {
+    name: "Radio",
+    priority: "B",
+    description: "단일 선택 라디오 버튼",
+    interactions: [
+      "키보드 방향키로 옵션 이동",
+      "Disabled 상태 처리",
+    ],
+    guidelines: [
+      "그룹은 name을 동일하게 설정",
+      "fieldset/legend로 그룹 레이블 제공",
+    ],
+  },
+  {
+    name: "Divider",
+    priority: "B",
+    description: "구분선",
+    interactions: ["상호작용 없음"],
+    guidelines: ["레이블과 함께 섹션 구분에 사용"],
+  },
+  {
+    name: "Skeleton",
+    priority: "B",
+    description: "로딩 상태 스켈레톤",
+    interactions: ["애니메이션 펄스"],
+    guidelines: ["텍스트/카드 비율에 맞춰 사용"],
+  },
+  {
+    name: "Tag",
+    priority: "C",
+    description: "선택 가능한 태그",
+    interactions: ["선택/제거"],
+    guidelines: ["필터/카테고리 선택에 사용"],
+  },
+  {
+    name: "Toggle",
+    priority: "C",
+    description: "On/Off 토글 스위치",
+    interactions: ["클릭/키보드로 전환"],
+    guidelines: ["설정 스위치에 사용"],
+  },
+  {
+    name: "Tooltip",
+    priority: "C",
+    description: "헬프 텍스트 툴팁",
+    interactions: ["호버/포커스 시 표시"],
+    guidelines: ["간결한 텍스트 유지"],
+  },
 ];
 
 const molecules: ComponentItem[] = [
@@ -207,6 +292,27 @@ const molecules: ComponentItem[] = [
       "프로필 정보는 3줄 내로 제한",
       "소셜 링크는 `aria-label`과 함께 제공",
     ],
+  },
+  {
+    name: "FooterLinks",
+    priority: "A",
+    description: "푸터 링크 그룹",
+    interactions: ["링크 hover 시 색상 전환"],
+    guidelines: ["섹션별 그룹화"],
+  },
+  {
+    name: "NewsTicker",
+    priority: "B",
+    description: "최신 소식 티커",
+    interactions: ["자동/수동 슬라이드"],
+    guidelines: ["가독성을 위해 속도 제한"],
+  },
+  {
+    name: "CtaSection",
+    priority: "B",
+    description: "콜투액션 섹션",
+    interactions: ["버튼 클릭, 포커스 처리"],
+    guidelines: ["CTA는 2개 이하"],
   },
 ];
 
@@ -289,15 +395,49 @@ const organisms: ComponentItem[] = [
       "리스트 항목 간격은 20px 유지",
     ],
   },
+  {
+    name: "AdminSidebar",
+    priority: "A",
+    description: "관리자 네비게이션 사이드바",
+    interactions: [
+      "현재 경로 활성화 하이라이트",
+      "키보드 포커스 이동 및 스크롤 고정",
+    ],
+    guidelines: [
+      "너비 256px 기준, 모바일에서는 Drawer 전환",
+      "아이콘과 라벨 간 8px 간격 유지",
+    ],
+  },
+  {
+    name: "CategoryFilterPanel",
+    priority: "B",
+    description: "카테고리 필터 패널",
+    interactions: ["체크/검색 동기화"],
+    guidelines: ["선택 상태 시 배경 강조"],
+  },
+  {
+    name: "PostDetail",
+    priority: "B",
+    description: "게시물 상세",
+    interactions: ["링크/배지 포커스"],
+    guidelines: ["prose 스타일로 본문 표시"],
+  },
+  {
+    name: "AdminDashboardOverview",
+    priority: "B",
+    description: "관리자 개요 대시보드",
+    interactions: ["카드 hover, 리스트 제공"],
+    guidelines: ["카드 단위로 통계 그룹화"],
+  },
 ];
 
-const contactFormFields = [
+const contactFormFields: ContactFormField[] = [
   { id: "name", label: "이름", type: "text", required: true },
   { id: "email", label: "이메일", type: "email", required: true },
   {
     id: "message",
     label: "문의 내용",
-    type: "textarea" as const,
+    type: "textarea",
     required: true,
   },
 ];
@@ -438,83 +578,492 @@ const dashboardAlerts = [
   "승인 대기 문서 5건",
 ];
 
+// 카테고리 타입
+type CatalogCategory = "Atoms" | "Molecules" | "Organisms";
+
+// 프리뷰 매퍼: 항목 이름 → JSX 프리뷰
+function renderAtomPreview(name: string, theme: "light" | "dark") {
+  switch (name) {
+    case "Button":
+      return (
+        <div className="grid gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button theme={theme}>Primary</Button>
+            <Button variant="secondary" theme={theme}>Secondary</Button>
+            <Button variant="ghost" theme={theme}>Ghost</Button>
+            <Button loading theme={theme}>Loading</Button>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button size="sm" theme={theme}>Small</Button>
+            <Button size="md" theme={theme}>Medium</Button>
+            <Button size="lg" theme={theme}>Large</Button>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <Button leadingIcon={<span>⬅️</span>} theme={theme}>Leading</Button>
+            <Button trailingIcon={<span>➡️</span>} variant="secondary" theme={theme}>Trailing</Button>
+            <Button fullWidth theme={theme} className="max-w-xs">Full width</Button>
+          </div>
+        </div>
+      );
+    case "IconButton":
+      return (
+        <div className="flex flex-wrap items-center gap-3">
+          <IconButton aria-label="즐겨찾기" theme={theme}>★</IconButton>
+          <IconButton aria-label="도움말" theme={theme}>?</IconButton>
+          <IconButton aria-label="확정" variant="primary" theme={theme}>✓</IconButton>
+          <IconButton aria-label="작게" size="sm" theme={theme}>i</IconButton>
+          <IconButton aria-label="크게" size="lg" theme={theme}>i</IconButton>
+        </div>
+      );
+    case "Badge":
+      return (
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="info" theme={theme}>정보</Badge>
+          <Badge variant="success" theme={theme}>성공</Badge>
+          <Badge variant="warning" theme={theme}>경고</Badge>
+          <Badge variant="neutral" theme={theme}>중립</Badge>
+        </div>
+      );
+    case "Input":
+      return (
+        <div className="grid gap-3">
+          <Input label="기본" placeholder="값을 입력" theme={theme} />
+          <Input label="성공" placeholder="성공 상태" theme={theme} state="success" />
+          <Input label="오류" state="error" helperText="필수 입력입니다" theme={theme} />
+          <Input label="Prefix/Suffix" prefix="₩" suffix="원" placeholder="금액" theme={theme} />
+          <Input label="비활성" placeholder="입력 불가" disabled theme={theme} />
+        </div>
+      );
+    case "Checkbox":
+      return (
+        <div className="flex flex-col gap-2">
+          <Checkbox label="동의" defaultChecked theme={theme} />
+          <Checkbox label="부분 선택" indeterminate theme={theme} />
+          <Checkbox label="비활성" disabled theme={theme} />
+        </div>
+      );
+    case "Spinner":
+      return (
+        <div className="flex items-center gap-4">
+          <Spinner size="xs" />
+          <Spinner size="sm" />
+          <Spinner size="md" />
+          <Spinner size="lg" />
+        </div>
+      );
+    case "Select":
+      return (
+        <Select
+          label="카테고리"
+          placeholder="선택하세요"
+          options={[
+            { label: "공지", value: "notice" },
+            { label: "IR", value: "ir" },
+          ]}
+        />
+      );
+    case "TextArea":
+      return (
+        <div className="grid gap-3">
+          <TextArea label="설명" placeholder="내용을 입력" theme={theme} />
+          <TextArea label="오류" state="error" errorMessage="필수 입력" theme={theme} />
+        </div>
+      );
+    case "Radio":
+      return (
+        <div className="flex items-center gap-4">
+          <Radio label="공지" name="r1" defaultChecked />
+          <Radio label="IR" name="r1" />
+        </div>
+      );
+    case "Divider":
+      return (
+        <div className="w-full">
+          <p className="text-sm">상단 콘텐츠</p>
+          <Divider label="구분" />
+          <p className="text-sm">하단 콘텐츠</p>
+        </div>
+      );
+    case "Skeleton":
+      return (
+        <div className="flex items-center gap-3">
+          <Skeleton variant="text" className="w-24" />
+          <Skeleton variant="rect" className="h-10 w-24" />
+          <Skeleton variant="circle" className="h-10 w-10" />
+        </div>
+      );
+    case "Tag":
+      return (
+        <div className="flex flex-wrap items-center gap-2">
+          <Tag>Default</Tag>
+          <Tag variant="selected">Selected</Tag>
+          <Tag variant="outline">Outline</Tag>
+        </div>
+      );
+    case "Toggle":
+      return (
+        <div className="flex items-center gap-4">
+          <Toggle checked label="On" />
+          <Toggle checked={false} label="Off" />
+        </div>
+      );
+    case "Tooltip":
+      return (
+        <Tooltip content="툴팁 내용">
+          <IconButton aria-label="툴팁">?</IconButton>
+        </Tooltip>
+      );
+    default:
+      return <p className="text-sm text-zinc-500">프리뷰 준비 중</p>;
+  }
+}
+
+function renderMoleculePreview(name: string, theme: "light" | "dark") {
+  switch (name) {
+    case "HeroBanner":
+      return (
+        <div className="grid gap-4">
+          <HeroBanner
+            title="Gradient 배경"
+            subtitle="기업 비전과 핵심 사업을 빠르게 확인하고 문의까지 연결하세요."
+            primaryAction={{ label: "서비스 살펴보기", href: "#" }}
+            secondaryAction={{ label: "문의하기", href: "#" }}
+            backgroundType="gradient"
+          />
+          <HeroBanner
+            title="Solid 배경"
+            subtitle="단색 배경으로 간결하게 강조합니다."
+            primaryAction={{ label: "문의하기", href: "#" }}
+            backgroundType="solid"
+            alignment="center"
+          />
+          <HeroBanner
+            title="이미지 배경"
+            subtitle="이미지 위에 오버레이를 적용합니다."
+            primaryAction={{ label: "자세히 보기", href: "#" }}
+            backgroundType="image"
+            backgroundImageUrl="https://picsum.photos/1200/600"
+          />
+        </div>
+      );
+    case "FeatureCard":
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FeatureCard
+            title="Default 변형"
+            description="가벼운 카드 스타일"
+            href="#"
+            theme={theme}
+          />
+          <FeatureCard
+            title="Emphasis 변형"
+            description="강조 카드 스타일"
+            variant="emphasis"
+            href="#"
+            theme={theme}
+          />
+        </div>
+      );
+    case "StatCard":
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <StatCard label="전체 게시물" value="128" trend={{ direction: "up", value: "+8.4%" }} theme={theme} />
+          <StatCard label="활성 사용자" value="32" unit="명" variant="compact" theme={theme} />
+        </div>
+      );
+    case "FooterLinks":
+      return (
+        <FooterLinks
+          title="회사"
+          links={[{ label: "소개", href: "#" }, { label: "연혁", href: "#" }]}
+        />
+      );
+    case "ContactForm":
+      return <ContactForm fields={contactFormFields} theme={theme} />;
+    case "NewsTicker":
+      return (
+        <div className="grid gap-4">
+          <NewsTicker items={newsTickerItems} autoplay={false} />
+          <NewsTicker items={newsTickerItems} autoplay />
+        </div>
+      );
+    case "CtaSection":
+      return (
+        <CtaSection
+          title="프로젝트 상담을 신청하세요"
+          description="전문 컨설턴트가 2영업일 내에 연락드립니다."
+          primaryAction={{ label: "상담 예약", href: "#" }}
+          secondaryAction={{ label: "자료 요청", href: "#" }}
+        />
+      );
+    case "TimelineItem":
+      return (
+        <div className="grid gap-3">
+          <TimelineItem year="2023" title="창립" description="설립 및 전략 수립" theme={theme} />
+          <TimelineItem year="2024" title="해외 진출" description="3개국 프로젝트 런칭" align="right" theme={theme} />
+        </div>
+      );
+    case "TeamMemberCard":
+      return (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <TeamMemberCard name="김현우" role="투자 전략 리드" bio="스마트 인프라와 ESG 투자 전략 담당" theme={theme} />
+          <TeamMemberCard name="이지은" role="프로젝트 매니저" bio="지자체 프로젝트 실행 및 품질 총괄" theme={theme} />
+        </div>
+      );
+    default:
+      return <p className="text-sm text-zinc-500">프리뷰 준비 중</p>;
+  }
+}
+
+function renderOrganismPreview(name: string, theme: "light" | "dark") {
+  switch (name) {
+    case "GlobalHeader":
+      return (
+        <GlobalHeader
+          brandName="FM Corporation"
+          navigation={sampleNavigation}
+          cta={{ label: "문의하기", href: "/contact" }}
+          theme={theme}
+        />
+      );
+    case "GlobalFooter":
+      return (
+        <GlobalFooter
+          {...sampleFooter}
+          newsletter={{ description: "FM의 최신 소식과 인사이트를 받아보세요." }}
+          theme={theme}
+        />
+      );
+    case "NoticeList":
+      return (
+        <div className="grid gap-6">
+          <NoticeList items={sampleNotices} variant="grid" theme={theme} />
+          <NoticeList items={sampleNotices} variant="list" theme={theme} />
+        </div>
+      );
+    case "PostDetail":
+      return (
+        <div className="grid gap-6">
+          <PostDetail
+            title="썸네일 있는 게시물"
+            category="IR"
+            author="FM Corporation"
+            publishedAt="2025-10-01T00:00:00.000Z"
+            content="<p>4분기 주요 실적과 향후 계획을 공유드립니다.</p>"
+            thumbnailUrl="https://picsum.photos/1200/600"
+            theme={theme}
+          />
+          <PostDetail
+            title="텍스트 중심 게시물"
+            category="공지"
+            author="FM Corporation"
+            publishedAt="2025-09-20T00:00:00.000Z"
+            content="<p>텍스트만 포함된 공지입니다.</p>"
+            theme={theme}
+          />
+        </div>
+      );
+    case "AboutOverview":
+      return (
+        <AboutOverview
+          cards={[
+            { title: "미션", description: "지속 가능한 도시를 위한 플랫폼" },
+            { title: "비전", description: "데이터로 연결되는 공공 서비스" },
+            { title: "핵심 역량", description: "도시 데이터, ESG, 인프라" },
+          ]}
+          theme={theme}
+        />
+      );
+    case "VisionValues":
+      return (
+        <VisionValues
+          items={[
+            { key: "vision", title: "Vision", description: "사람과 도시를 연결" },
+            { key: "mission", title: "Mission", description: "데이터 기반 의사결정" },
+            { key: "values", title: "Values", description: "신뢰, 투명, 혁신" },
+          ]}
+          theme={theme}
+        />
+      );
+    case "ContactSection":
+      return (
+        <ContactSection
+          address="서울특별시 강남구 테헤란로 123"
+          email="contact@fm-corp.com"
+          phone="02-123-4567"
+          formFields={contactFormFields}
+          theme={theme}
+        />
+      );
+    case "AdminSidebar":
+      return (
+        <AdminSidebar
+          items={[
+            { label: "대시보드", href: "#", icon: "🏠", active: true },
+            { label: "게시물", href: "#", icon: "📝" },
+            { label: "사용자", href: "#", icon: "👥" },
+          ]}
+          theme={theme}
+        />
+      );
+    case "CategoryFilterPanel":
+      return (
+        <CategoryFilterPanel
+          categories={[
+            { id: "notice", label: "공지", count: 12 },
+            { id: "ir", label: "IR", count: 8 },
+          ]}
+          theme={theme}
+        />
+      );
+    case "AdminDashboardOverview":
+      return (
+        <AdminDashboardOverview
+          stats={dashboardStats}
+          recentActivities={dashboardActivities}
+          alerts={dashboardAlerts}
+          theme={theme}
+        />
+      );
+    default:
+      return <p className="text-sm text-zinc-500">프리뷰 준비 중</p>;
+  }
+}
+
 function ComponentSection({
   title,
   description,
   items,
+  layout = "row",
+  columns = 2,
+  theme = "light",
 }: {
-  title: string;
+  title: CatalogCategory;
   description: string;
   items: ComponentItem[];
+  layout?: "row" | "column"; // row: 좌/우, column: 상/하
+  columns?: 1 | 2; // 카드 그리드 열 수
+  theme?: "light" | "dark";
 }) {
+  const getPriorityBadgeClasses = (priority: ComponentItem["priority"]) => {
+    switch (priority) {
+      case "A":
+        return "border-red-200 bg-red-50 text-red-700";
+      case "B":
+        return "border-amber-200 bg-amber-50 text-amber-700";
+      case "C":
+        return "border-zinc-200 bg-zinc-100 text-zinc-700";
+      default:
+        return "border-zinc-200 bg-white text-zinc-600";
+    }
+  };
+  const renderPreview = (name: string) => {
+    if (title === "Atoms") return renderAtomPreview(name, theme);
+    if (title === "Molecules") return renderMoleculePreview(name, theme);
+    return renderOrganismPreview(name, theme);
+  };
+
+  const isDark = theme === "dark";
+  const sectionTitleClass = isDark ? "text-zinc-100" : "text-zinc-900";
+  const sectionDescClass = isDark ? "text-zinc-400" : "text-zinc-500";
+  const cardClass = isDark
+    ? "rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-200"
+    : "rounded-xl border border-zinc-100 bg-zinc-50 text-zinc-700";
+  const subTitleClass = isDark ? "text-zinc-200" : "text-zinc-800";
+  const listTextClass = isDark ? "text-zinc-400" : "text-zinc-600";
+  const dividerClass = isDark ? "border-zinc-700" : "border-zinc-200";
+
   return (
-    <section className="flex flex-col gap-6 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <section className="flex flex-col gap-4">
       <header className="flex flex-col gap-2">
-        <h2 className="text-2xl font-semibold text-zinc-900">{title}</h2>
-        <p className="text-sm text-zinc-500">{description}</p>
+        <h2 className={cn("text-2xl font-semibold", sectionTitleClass)}>{title}</h2>
+        <p className={cn("text-sm", sectionDescClass)}>{description}</p>
       </header>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className={columns === 1 ? "grid gap-4" : "grid gap-4 md:grid-cols-2"}>
         {items.map((item) => (
           <article
             key={item.name}
-            className="flex flex-col gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-5 text-zinc-700"
+            className={cn("flex flex-col gap-4 p-5", cardClass)}
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-zinc-900">{item.name}</h3>
-              <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold uppercase text-zinc-600">
+              <h3 className={cn("text-lg font-bold", isDark ? "text-zinc-100" : "text-zinc-900")}>{item.name}</h3>
+              <span
+                className={
+                  "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase " +
+                  getPriorityBadgeClasses(item.priority)
+                }
+              >
                 Priority {item.priority}
               </span>
             </div>
             <p className="text-sm leading-6">{item.description}</p>
-            <div className="flex flex-wrap gap-2 text-xs">
-              <span className="rounded-full bg-zinc-200 px-2 py-1 text-zinc-600">
-                Story 준비 필요
-              </span>
-              <span className="rounded-full bg-zinc-200 px-2 py-1 text-zinc-600">
-                테스트 TBD
-              </span>
-            </div>
-            <div className="grid gap-3 text-sm leading-6">
-              <div>
-                <p className="font-medium text-zinc-800">상호작용 가이드</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-zinc-600">
-                  {item.interactions.map((interaction) => (
-                    <li key={interaction}>{interaction}</li>
-                  ))}
-                </ul>
+            <div
+              className={
+                layout === "row"
+                  ? "grid gap-6 lg:grid-cols-2"
+                  : "flex flex-col gap-4"
+              }
+            >
+              <div
+                className={
+                  title === "Atoms"
+                    ? "grid gap-4 text-sm leading-6"
+                    : "grid gap-4 text-sm leading-6 md:grid-cols-2"
+                }
+              >
+                <div>
+                  <p className={cn("font-semibold", subTitleClass)}>상호작용 가이드</p>
+                  <ul className={cn("mt-1 list-disc space-y-1 pl-5", listTextClass)}>
+                    {item.interactions.map((interaction) => (
+                      <li key={interaction}>{interaction}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p className={cn("font-semibold", subTitleClass)}>사용 시 참고</p>
+                  <ul className={cn("mt-1 list-disc space-y-1 pl-5", listTextClass)}>
+                    {item.guidelines.map((guide) => (
+                      <li key={guide}>{guide}</li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-zinc-800">사용 시 참고</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-zinc-600">
-                  {item.guidelines.map((guide) => (
-                    <li key={guide}>{guide}</li>
-                  ))}
-                </ul>
+              <div
+                className={
+                  layout === "row"
+                    ? cn("border-t pt-4 lg:border-t-0 lg:border-l lg:pl-6", dividerClass, isDark ? "text-zinc-100" : undefined)
+                    : cn("border-t pt-4", dividerClass, isDark ? "text-zinc-100" : undefined)
+                }
+              >
+                {renderPreview(item.name)}
               </div>
             </div>
           </article>
         ))}
       </div>
-      <p className="text-xs text-zinc-400">
-        각 카드에는 컴포넌트 스토리, 테스트, 접근성 체크리스트가 연결될
-        예정입니다.
+      <p className={cn("text-xs", isDark ? "text-zinc-500" : "text-zinc-400") }>
+        각 카드에는 컴포넌트 스토리, 테스트, 접근성 체크리스트가 연결될 예정입니다.
       </p>
     </section>
   );
 }
 
 export default function DevCatalogPage() {
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  const [isMobilePreview, setIsMobilePreview] = React.useState(false);
+  const pageBg = theme === "dark" ? "bg-zinc-900" : "bg-zinc-100";
+  const containerClass = isMobilePreview ? "mx-auto w-full max-w-[420px]" : "mx-auto w-full max-w-6xl";
   return (
-    <div className="min-h-screen bg-zinc-100 py-16">
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6">
+    <div className={cn("min-h-screen py-16", pageBg)}>
+      <main className={cn("flex flex-col gap-10 px-6", containerClass)}>
         <header className="flex flex-col gap-4">
           <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
             디자인 시스템 카탈로그
           </p>
-          <h1 className="text-4xl font-semibold text-zinc-900">
+          <h1 className={cn("text-4xl font-semibold", theme === "dark" ? "text-zinc-100" : "text-zinc-900")}>
             FM 법인 홈페이지 UI 컴포넌트
           </h1>
-          <p className="max-w-3xl text-base text-zinc-600">
+          <p className={cn("max-w-3xl text-base", theme === "dark" ? "text-zinc-400" : "text-zinc-600") }>
             이 페이지는 디자인 시스템 컴포넌트를 한눈에 검토하기 위한 카탈로그
             입니다. 각 컴포넌트는 우선순위, 주요 역할과 함께 스토리/테스트
             상태, 상호작용 가이드, 사용 시 유의사항을 함께 제공합니다.
@@ -542,142 +1091,52 @@ export default function DevCatalogPage() {
           title="Atoms"
           description="가장 작은 UI 단위로, 다른 모든 컴포넌트의 기반이 됩니다."
           items={atoms}
+          layout="row"
+          columns={1}
+          theme={theme}
         />
         <ComponentSection
           title="Molecules"
           description="Atoms를 조합해 특정 목적을 수행하는 중간 규모의 패턴입니다."
           items={molecules}
+          layout="column"
+          columns={1}
+          theme={theme}
         />
         <ComponentSection
           title="Organisms"
           description="페이지 섹션을 구성하는 대형 컴포넌트로, 완성된 사용자 경험을 제공합니다."
           items={organisms}
+          layout="column"
+          columns={1}
+          theme={theme}
         />
-        <section className="flex flex-col gap-8 rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
-          <header className="flex flex-col gap-3">
-            <h2 className="text-2xl font-semibold text-zinc-900">
-              샘플 컴포넌트 프리뷰
-            </h2>
-            <p className="text-sm text-zinc-500">
-              Storybook 기본 args와 동일한 속성으로 렌더링하여 Dev Preview와
-              디자인 명세 간 일관성을 확인합니다.
-            </p>
-          </header>
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-              <h3 className="text-sm font-semibold uppercase text-zinc-500">
-                Atoms
-              </h3>
-              <div className="flex flex-wrap items-center gap-4">
-                <Button>Primary</Button>
-                <Button variant="secondary">Secondary</Button>
-                <Button variant="ghost">Ghost</Button>
-                <Button loading>Loading</Button>
-                <IconButton aria-label="즐겨찾기">★</IconButton>
-                <Badge>공지</Badge>
-              </div>
-              <Divider />
-              <div className="grid gap-4">
-                <Input
-                  label="이메일"
-                  placeholder="example@fm-corp.com"
-                  helperText="업무용 이메일을 입력해주세요."
-                  defaultValue=""
-                />
-                <Select
-                  label="카테고리"
-                  placeholder="카테고리 선택"
-                  options={[
-                    { label: "공지", value: "notice" },
-                    { label: "IR", value: "ir" },
-                  ]}
-                  defaultValue="notice"
-                />
-                <TextArea label="메모" placeholder="내용을 입력하세요" />
-                <Checkbox label="뉴스레터 수신 동의" defaultChecked />
-                <Radio label="IR" name="category" defaultChecked />
-                <div className="flex items-center gap-3">
-                  <Spinner size="sm" />
-                  <Skeleton variant="text" className="w-32" />
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Tag>전체</Tag>
-                  <Toggle checked label="활성" />
-                  <Tooltip content="추가 정보를 확인하세요">
-                    <IconButton aria-label="도움말">?</IconButton>
-                  </Tooltip>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4 rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-              <h3 className="text-sm font-semibold uppercase text-zinc-500">
-                Molecules
-              </h3>
-              <HeroBanner
-                title="FM 법인의 통합 플랫폼"
-                subtitle="기업 비전과 핵심 사업을 빠르게 확인하고 문의까지 연결하세요."
-                primaryAction={{ label: "서비스 살펴보기", href: "#" }}
-                secondaryAction={{ label: "문의하기", href: "#" }}
-              />
-              <NewsTicker items={newsTickerItems} autoplay={false} />
-              <FeatureCard
-                title="ESG 컨설팅"
-                description="규제 대응과 지속가능 경영을 위한 맞춤형 전략을 제안합니다."
-                href="#"
-              />
-              <CtaSection
-                title="프로젝트 상담을 신청하세요"
-                description="전문 컨설턴트가 2영업일 내에 연락드립니다."
-                primaryAction={{ label: "상담 예약", href: "#" }}
-                secondaryAction={{ label: "자료 요청", href: "#" }}
-              />
-              <ContactForm fields={contactFormFields} />
-              {timelineItems.map((item) => (
-                <TimelineItem key={item.year} {...item} />
-              ))}
-              <div className="grid gap-4 sm:grid-cols-2">
-                {teamMembers.map((member) => (
-                  <TeamMemberCard key={member.name} {...member} />
-                ))}
-              </div>
-            </div>
+        {/* 항목별 프리뷰는 각 섹션 카드 내 좌/우 또는 상/하로 렌더링됩니다. */}
+        {/* 플로팅 프리뷰 컨트롤 */}
+        <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2">
+          <div className={cn("flex items-center gap-2 rounded-full border px-3 py-2 shadow-sm",
+            theme === "dark" ? "bg-zinc-800/90 border-zinc-700 text-zinc-200" : "bg-white/90 border-zinc-200 text-zinc-700")}
+          >
+            <Tooltip content={isMobilePreview ? "데스크톱 미리보기" : "모바일 미리보기"} placement="left">
+              <IconButton
+                aria-label={isMobilePreview ? "데스크톱 미리보기" : "모바일 미리보기"}
+                onClick={() => setIsMobilePreview((v) => !v)}
+                theme={theme}
+              >
+                {isMobilePreview ? "🖥️" : "📱"}
+              </IconButton>
+            </Tooltip>
+            <Tooltip content={theme === "dark" ? "라이트 테마" : "다크 테마"} placement="left">
+              <IconButton
+                aria-label={theme === "dark" ? "라이트 테마" : "다크 테마"}
+                onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
+                theme={theme}
+              >
+                {theme === "dark" ? "☀️" : "🌙"}
+              </IconButton>
+            </Tooltip>
           </div>
-          <div className="flex flex-col gap-6 rounded-2xl border border-zinc-100 bg-zinc-50 p-5">
-            <h3 className="text-sm font-semibold uppercase text-zinc-500">
-              Organisms
-            </h3>
-            <GlobalHeader
-              brandName="FM Corporation"
-              navigation={sampleNavigation}
-              cta={{ label: "문의하기", href: "/contact" }}
-            />
-            <NoticeList items={sampleNotices} variant="grid" />
-            <CategoryFilterPanel
-              categories={[
-                { id: "notice", label: "공지", count: 12 },
-                { id: "ir", label: "IR", count: 8 },
-              ]}
-            />
-            <PostDetail
-              title="2025년 4분기 사업 보고서"
-              category="IR"
-              author="FM Corporation"
-              publishedAt="2025-10-01T00:00:00.000Z"
-              content="<p>4분기 주요 실적과 향후 계획을 공유드립니다.</p>"
-            />
-            <AdminDashboardOverview
-              stats={dashboardStats}
-              recentActivities={dashboardActivities}
-              alerts={dashboardAlerts}
-            />
-            <GlobalFooter
-              {...sampleFooter}
-              newsletter={{
-                description: "FM의 최신 소식과 인사이트를 받아보세요.",
-              }}
-            />
-          </div>
-        </section>
+        </div>
         <section className="flex flex-col gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-8 text-amber-700">
           <h2 className="text-2xl font-semibold">다음 단계 안내</h2>
           <ul className="list-disc space-y-2 pl-6 text-sm leading-6">

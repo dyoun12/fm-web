@@ -8,6 +8,7 @@ export type TimelineItemProps = {
   title: string;
   description: string;
   icon?: ReactNode;
+  theme?: "light" | "dark";
   align?: "left" | "right";
 };
 
@@ -16,8 +17,10 @@ export function TimelineItem({
   title,
   description,
   icon,
+  theme = "light",
   align = "left",
 }: TimelineItemProps) {
+  const isDark = theme === "dark";
   return (
     <div
       className={cn(
@@ -27,18 +30,18 @@ export function TimelineItem({
     >
       <div className="flex flex-col items-center">
         <span className="text-lg font-semibold text-blue-600">{year}</span>
-        <span className="mt-2 h-full w-px bg-zinc-200" aria-hidden="true" />
+        <span className={cn("mt-2 h-full w-px", isDark ? "bg-zinc-700" : "bg-zinc-200")} aria-hidden="true" />
       </div>
-      <div className="flex-1 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className={cn("flex-1 rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
         <div className="flex items-center gap-3">
           {icon && (
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
               {icon}
             </span>
           )}
-          <h3 className="text-lg font-semibold text-zinc-900">{title}</h3>
+          <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>{title}</h3>
         </div>
-        <p className="mt-3 text-sm leading-6 text-zinc-600">{description}</p>
+        <p className={cn("mt-3 text-sm leading-6", isDark ? "text-zinc-400" : "text-zinc-600")}>{description}</p>
       </div>
     </div>
   );
