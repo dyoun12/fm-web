@@ -81,13 +81,24 @@ export function HeroBanner({
           {(primaryAction || secondaryAction) && (
             <div className="flex flex-wrap items-center gap-3">
               {primaryAction && (
-                <Button className="bg-white text-blue-700 hover:bg-blue-50">
-                  <Link href={primaryAction.href}>{primaryAction.label}</Link>
+                <Button
+                  asChild
+                  className="!bg-white !text-blue-700 hover:!bg-blue-50"
+                >
+                  <Link href={primaryAction.href} className="no-underline">
+                    {primaryAction.label}
+                  </Link>
                 </Button>
               )}
               {secondaryAction && (
-                <Button variant="ghost" className="text-white border border-white/60 hover:bg-white/10">
-                  <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="!text-white !border !border-white/80 hover:!bg-white/10"
+                >
+                  <Link href={secondaryAction.href} className="no-underline">
+                    {secondaryAction.label}
+                  </Link>
                 </Button>
               )}
             </div>

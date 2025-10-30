@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
 import { cn } from "@/lib/classnames";
 import { Spinner } from "../spinner/spinner";
 
@@ -30,6 +30,7 @@ export type ButtonProps = {
   loading?: boolean;
   fullWidth?: boolean;
   theme?: "light" | "dark";
+  asChild?: boolean;
 } & ComponentPropsWithoutRef<"button">;
 
 export function Button({
@@ -44,6 +45,7 @@ export function Button({
   className,
   type = "button",
   theme = "light",
+  asChild = false,
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading;
@@ -62,20 +64,17 @@ export function Button({
     return VARIANT_STYLES.primary;
   })();
 
-  return (
-    <button
-      type={type}
-      disabled={isDisabled}
-      className={cn(
-        "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
-        "disabled:cursor-not-allowed disabled:opacity-60",
-        variantStyles,
-        SIZE_STYLES[size],
-        fullWidth && "w-full",
-        className,
-      )}
-      {...rest}
-    >
+  const commonClasses = cn(
+    "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+    variantStyles,
+    SIZE_STYLES[size],
+    fullWidth && "w-full",
+    className,
+    isDisabled && "pointer-events-none opacity-60",
+  );
+
+  const content = (
+    <>
       {leadingIcon && (
         <span className="-ml-1 inline-flex items-center" aria-hidden="true">
           {leadingIcon}
@@ -88,12 +87,28 @@ export function Button({
         </span>
       )}
       {loading && (
-        <Spinner
-          size="sm"
-          aria-label="로딩 중"
-          data-testid="button-spinner"
-        />
+        <Spinner size="sm" aria-label="로딩 중" data-testid="button-spinner" />
       )}
+    </>
+  );
+
+  if (asChild && isValidElement(children)) {
+    const child = children as ReactElement;
+    return cloneElement(child, {
+      className: cn((child.props as { className?: string }).className, commonClasses),
+      "aria-disabled": isDisabled || undefined,
+      children: content,
+    });
+  }
+
+  return (
+    <button
+      type={type}
+      disabled={isDisabled}
+      className={commonClasses}
+      {...rest}
+    >
+      {content}
     </button>
   );
 }
