@@ -28,7 +28,7 @@ export function PostDetail({
   return (
     <article className="mx-auto flex w-full max-w-3xl flex-col gap-8">
       <header className="flex flex-col gap-4">
-        <Badge variant="info" theme={theme}>{category}</Badge>
+        <Badge variant="info" theme={theme} className="self-start">{category}</Badge>
         <h1 className={cn("text-3xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>
           {title}
         </h1>
