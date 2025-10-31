@@ -268,3 +268,7 @@ $RECYCLE.BIN/
 
 /codex/
 AGENTS.md
+*storybook.log
+storybook-static
+.storybook/
+stories/
