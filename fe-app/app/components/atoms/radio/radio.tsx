@@ -24,7 +24,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
       <label
         htmlFor={radioId}
         className={cn(
-          "flex items-start gap-3 rounded-lg border border-transparent px-2 py-1 transition hover:border-blue-200",
+          "flex items-center gap-3 rounded-lg border border-transparent px-2 py-1 transition hover:border-blue-200",
           className,
         )}
       >
@@ -32,7 +32,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
           ref={ref}
           id={radioId}
           type="radio"
-          className="mt-1 h-5 w-5 border border-zinc-300 text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          className="h-5 w-5 border border-zinc-300 text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
           {...rest}
         />
         <span className="flex flex-col gap-1">
