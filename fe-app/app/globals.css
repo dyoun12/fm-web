@@ -3,6 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Design tokens (docs/design-guide.md) */
+  --color-primary: #0B5CF2;
+  --color-primary-dark: #083F9B;
+  --color-secondary: #00B6A0;
+  --color-neutral-900: #111827;
+  --color-neutral-600: #4B5563;
+  --color-neutral-200: #E5E7EB;
+  --color-background: var(--background);
+  --color-background-alt: #F9FAFB;
+  --color-danger: #DC3545;
+  --color-success: #16A34A;
+  /* Link tokens (light): lighter base, darker on hover */
+  --link-color: #9CA3AF; /* neutral-400 */
+  --link-color-hover: var(--color-neutral-900);
 }
 
 @theme inline {
@@ -16,6 +30,9 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    /* Link tokens (dark): lighter hues for contrast */
+    --link-color: #93C5FD; /* blue-300 */
+    --link-color-hover: #BFDBFE; /* blue-200 */
   }
 }
 

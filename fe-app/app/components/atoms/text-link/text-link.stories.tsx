@@ -21,3 +21,18 @@ export const External = {
   },
 };
 
+export const NoIcon = {
+  args: {
+    href: "#",
+    children: "아이콘 숨김",
+    showIcon: false,
+  },
+};
+
+export const DarkTheme = {
+  args: {
+    href: "#",
+    theme: "dark",
+    children: "문서 보기 (Dark)",
+  },
+};

@@ -98,20 +98,14 @@ export function GlobalHeader({
           aria-expanded={isMenuOpen}
           onClick={() => setMenuOpen((prev) => !prev)}
         >
-          <span className="sr-only">메뉴 열기</span>
-          <svg
-            className="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
+          <span className="sr-only">{isMenuOpen ? "메뉴 닫기" : "메뉴 열기"}</span>
+          <i
+            className={cn(
+              "text-xl",
+              isMenuOpen ? "ri-close-line" : "ri-menu-line",
+            )}
+            aria-hidden="true"
+          />
         </button>
       </div>
 
