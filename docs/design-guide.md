@@ -49,10 +49,10 @@
 ### 4.1 Atoms (우선순위: A=즉시, B=2차, C=후순위)
 | 컴포넌트 | 우선순위 | 변형/상태 | 설명 |
 |-----------|-----------|-------------|------|
-| Button | A | Primary, Secondary, Ghost / Hover, Loading, Disabled | 주요 액션용 기본 버튼 |
-| IconButton | B | Square, Circle / Hover | 아이콘 기반 액션 |
+| Button | A | variant: default, outline, ghost / color: primary, neutral | 주요 액션용 기본 버튼 |
+| IconButton | B | variant: default, ghost / color: primary, neutral / shape: square, circle | 아이콘 기반 액션 |
 | TextLink | A | 기본, 강조 | 본문 내 링크 스타일 |
-| Badge | B | 상태별 색상 (정보, 성공, 경고) | 상태 표시 |
+| Badge | B | variant: default / color: default, info, success, warning | 상태 표시 |
 | Tag | C | 필터 선택형 | 사용자가 선택 가능한 태그 |
 | Input | A | 기본, 오류, 성공 | 텍스트 입력 |
 | TextArea | B | 기본, 오류 | 문의 폼 등 멀티라인 입력 |
@@ -94,8 +94,17 @@
 
 ### 4.4 컴포넌트 속성 · 변형 · 상태 명세
 
+#### Variant/Color 정책
+- 변형(variant)은 "스타일 방식"을 의미하며 모든 컴포넌트는 반드시 `default` 변형을 가진다.
+- 색상(color)은 "팔레트"를 의미하며 시맨틱 색상은 `color` prop으로만 제어한다.
+- 금지: 색상 이름을 `variant`에 포함하는 패턴(예: `variant="primary"`).
+- 채택 컴포넌트(Atoms 기준)
+  - Button: `variant("default"|"outline"|"ghost")`, `color("primary"|"neutral")`
+  - IconButton: `variant("default"|"ghost")`, `color("primary"|"neutral")`
+  - Badge: `variant("default")`, `color("default"|"info"|"success"|"warning")`
+
 #### Button (Atom)
-- **주요 Props**: `variant("primary" | "secondary" | "ghost")`, `size("sm" | "md" | "lg")`, `leadingIcon`, `trailingIcon`, `loading`, `disabled`, `type`.
+- **주요 Props**: `variant("default" | "outline" | "ghost")`, `color("primary" | "neutral")`, `size("sm" | "md" | "lg")`, `leadingIcon`, `trailingIcon`, `loading`, `disabled`, `type`.
 - **상태**: 기본(Default), Hover, Active, Focus, Disabled, Loading(스피너 + 텍스트 반투명).
 - **사용 가이드**: Width는 기본 auto, 필요 시 `fullWidth` 플래그 사용. 아이콘만 사용하는 경우 `aria-label` 필수.
 
