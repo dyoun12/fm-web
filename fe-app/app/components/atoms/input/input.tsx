@@ -124,7 +124,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {suffix && <span className={cn(isDark ? "text-zinc-400" : "text-zinc-500")}>{suffix}</span>}
         </div>
         {helperText && (
-          <p id={helperId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
+          <p
+            id={helperId}
+            className={cn(
+              "text-xs",
+              state === "error"
+                ? "text-red-500"
+                : isDark
+                  ? "text-zinc-400"
+                  : "text-zinc-500",
+            )}
+          >
             {helperText}
           </p>
         )}
