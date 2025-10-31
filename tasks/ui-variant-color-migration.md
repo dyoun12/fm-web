@@ -23,13 +23,13 @@
   - `variant="info|success|warning|default"` -> `variant="default"`, `color="info|success|warning|default"`
 
 ## 체크리스트
-- [ ] 코드 전역에서 금칙 패턴(`variant="primary"|"secondary"|"subtle"` 등) 검색
-- [ ] Button 호출부 일괄 치환 및 시각 확인(Dev Preview)
-- [ ] IconButton 호출부 일괄 치환 및 포커스/호버 상태 확인
-- [ ] Badge 호출부 일괄 치환 및 다크/라이트 대비 검증
-- [ ] 스토리 파일 업데이트(컨트롤 문구, Args 키)
-- [ ] 유닛 테스트 Prop 변경 반영
-- [ ] 디자인 문서(`/docs/design-guide.md`) 정책 섹션 확인 및 링크
+- [x] 코드 전역에서 금칙 패턴(`variant="primary"|"secondary"|"subtle"` 등) 검색 (남은 사용처 없음)
+- [x] Button 호출부 일괄 치환 및 시각 확인(Dev Preview)
+- [x] IconButton 호출부 일괄 치환 및 포커스/호버 상태 확인(Dev 카탈로그에서 프리뷰 갱신)
+- [x] Badge 호출부 일괄 치환 및 다크/라이트 대비 검증(사용처 업데이트 완료)
+- [x] 스토리 파일 업데이트(컨트롤 문구, Args 키) — IconButton, Badge 반영
+- [x] 유닛 테스트 Prop 변경 반영(기존 테스트는 prop 의존성 없음, 영향 없음 확인)
+- [x] 디자인 문서(`/docs/design-guide.md`) 정책 섹션 확인 및 링크 추가 완료
 
 ## 참고 커밋
 - IconButton API: 22be677
@@ -39,4 +39,3 @@
 - Dev Preview(`fe-app/app/dev/page.tsx`)에서 Atoms 섹션의 Button/IconButton/Badge 조합 확인
 - 라이트/다크 테마 토글, 아이콘 전용(ghost) 접근성 라벨 확인
 - ESLint, 테스트(`npm run lint`, `npm run test -- --run`) 정상 확인
-
