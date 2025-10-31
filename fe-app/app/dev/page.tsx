@@ -8,6 +8,7 @@ import { Spinner } from "../components/atoms/spinner/spinner";
 import { IconButton } from "../components/atoms/icon-button/icon-button";
 import { Badge } from "../components/atoms/badge/badge";
 import { Tooltip } from "../components/atoms/tooltip/tooltip";
+import { TextLink } from "../components/atoms/text-link/text-link";
 import { cn } from "@/lib/classnames";
 import { Select } from "../components/atoms/select/select";
 import { TextArea } from "../components/atoms/text-area/text-area";
@@ -713,6 +714,13 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           <IconButton aria-label="툴팁">?</IconButton>
         </Tooltip>
       );
+    case "TextLink":
+      return (
+        <div className="flex items-center gap-4">
+          <TextLink href="#" theme={theme}>내부 링크</TextLink>
+          <TextLink href="https://example.com" target="_blank" theme={theme}>외부 링크</TextLink>
+        </div>
+      );
     default:
       return <p className="text-sm text-zinc-500">프리뷰 준비 중</p>;
   }
@@ -945,6 +953,17 @@ function ComponentSection({
   columns?: 1 | 2; // 카드 그리드 열 수
   theme?: "light" | "dark";
 }) {
+  // Storybook의 kind 슬러그 규칙을 따름: 카테고리/컴포넌트명 →
+  // `category`는 소문자, `컴포넌트명`은 영숫자만 남기고 모두 소문자 (CamelCase도 하이픈 없이 연결)
+  // 예) Organisms/GlobalHeader → organisms-globalheader
+  const toStoryKindSlug = (name: string) => name.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+  const getStorybookDocsUrl = (section: CatalogCategory, compName: string) => {
+    const group = section.toLowerCase();
+    const id = `${group}-${toStoryKindSlug(compName)}`;
+    // 스토리 변형이 아닌 컴포넌트 Docs 페이지로 연결
+    return `http://localhost:6006/?path=/docs/${id}`;
+  };
   const getPriorityBadgeClasses = (priority: ComponentItem["priority"]) => {
     switch (priority) {
       case "A":
@@ -985,16 +1004,23 @@ function ComponentSection({
             key={item.name}
             className={cn("flex flex-col gap-4 p-5", cardClass)}
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-3">
               <h3 className={cn("text-lg font-bold", isDark ? "text-zinc-100" : "text-zinc-900")}>{item.name}</h3>
-              <span
-                className={
-                  "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase " +
-                  getPriorityBadgeClasses(item.priority)
-                }
-              >
-                Priority {item.priority}
-              </span>
+              <div className="flex items-center gap-2">
+                <Button asChild variant="secondary" size="sm">
+                  <Link href={getStorybookDocsUrl(title, item.name)} target="_blank" rel="noreferrer">
+                    Docs
+                  </Link>
+                </Button>
+                <span
+                  className={
+                    "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase " +
+                    getPriorityBadgeClasses(item.priority)
+                  }
+                >
+                  Priority {item.priority}
+                </span>
+              </div>
             </div>
             <p className="text-sm leading-6">{item.description}</p>
             <div

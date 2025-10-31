@@ -94,10 +94,29 @@ export function Button({
 
   if (asChild && isValidElement(children)) {
     const child = children as ReactElement;
+    const childLabel = (child.props as { children?: ReactNode }).children;
+    const composed = (
+      <>
+        {leadingIcon && (
+          <span className="-ml-1 inline-flex items-center" aria-hidden="true">
+            {leadingIcon}
+          </span>
+        )}
+        <span className={loading ? "opacity-70" : undefined}>{childLabel}</span>
+        {trailingIcon && !loading && (
+          <span className="-mr-1 inline-flex items-center" aria-hidden="true">
+            {trailingIcon}
+          </span>
+        )}
+        {loading && (
+          <Spinner size="sm" aria-label="로딩 중" data-testid="button-spinner" />
+        )}
+      </>
+    );
     return cloneElement(child, {
       className: cn((child.props as { className?: string }).className, commonClasses),
       "aria-disabled": isDisabled || undefined,
-      children: content,
+      children: composed,
     });
   }
 

@@ -16,7 +16,7 @@ export function FooterLinks({ title, links, theme = "light" }: FooterLinksProps)
       <h3 className={cn("text-sm font-semibold", isDark ? "text-zinc-200" : "text-zinc-800")}>{title}</h3>
       <ul className={cn("flex flex-col gap-2 text-sm", isDark ? "text-zinc-400" : "text-zinc-600") }>
         {links.map((link) => (
-          <li key={link.href}>
+          <li key={`${link.href}-${link.label}`}>
             <Link
               href={link.href}
               target={link.external ? "_blank" : undefined}
@@ -31,4 +31,3 @@ export function FooterLinks({ title, links, theme = "light" }: FooterLinksProps)
     </div>
   );
 }
-

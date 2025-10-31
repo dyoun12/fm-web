@@ -17,7 +17,7 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
       <nav className="flex flex-col gap-1 text-sm">
         {items.map((item) => (
           <Link
-            key={item.href}
+            key={`${item.href}-${item.label}`}
             href={item.href}
             className={cn(
               "flex items-center gap-2 rounded-lg px-3 py-2",
@@ -36,4 +36,3 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
     </aside>
   );
 }
-
