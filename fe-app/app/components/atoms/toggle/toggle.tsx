@@ -24,7 +24,8 @@ export function Toggle({
       aria-checked={checked}
       onClick={() => onCheckedChange?.(!checked)}
       className={cn(
-        "inline-flex items-center gap-2",
+        "inline-flex items-center",
+        label ? "gap-2" : undefined,
         className,
       )}
       {...rest}
