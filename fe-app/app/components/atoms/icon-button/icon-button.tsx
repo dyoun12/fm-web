@@ -3,15 +3,35 @@
 import { cn } from "@/lib/classnames";
 import { ComponentPropsWithoutRef } from "react";
 
-type IconButtonVariant = "primary" | "subtle";
+type IconButtonVariant = "default" | "ghost"; // style: filled vs icon-only
+type IconButtonColor = "neutral" | "primary"; // palette
 type IconButtonShape = "circle" | "square";
 type IconButtonSize = "sm" | "md" | "lg";
 
-const VARIANT_STYLES: Record<IconButtonVariant, string> = {
-  primary:
-    "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-500",
-  subtle:
-    "bg-white text-zinc-600 border border-zinc-200 hover:border-blue-300 hover:text-blue-600 focus-visible:outline-blue-400",
+const getStyleByColor = (
+  color: IconButtonColor,
+  variant: IconButtonVariant,
+  isDark: boolean,
+) => {
+  if (color === "primary") {
+    if (variant === "default") {
+      return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-500";
+    }
+    // ghost
+    return isDark
+      ? "bg-transparent text-blue-400 hover:bg-blue-950 focus-visible:outline-blue-500"
+      : "bg-transparent text-blue-600 hover:bg-blue-50 focus-visible:outline-blue-500";
+  }
+  // neutral
+  if (variant === "default") {
+    return isDark
+      ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 focus-visible:outline-zinc-500"
+      : "bg-zinc-200 text-zinc-800 hover:bg-zinc-300 focus-visible:outline-zinc-500";
+  }
+  // ghost neutral
+  return isDark
+    ? "bg-transparent text-zinc-300 hover:bg-zinc-800 focus-visible:outline-zinc-500"
+    : "bg-transparent text-zinc-600 hover:bg-zinc-100 focus-visible:outline-zinc-400";
 };
 
 const SIZE_STYLES: Record<IconButtonSize, string> = {
@@ -21,14 +41,16 @@ const SIZE_STYLES: Record<IconButtonSize, string> = {
 };
 
 export type IconButtonProps = {
-  variant?: IconButtonVariant;
+  variant?: IconButtonVariant; // default(filled) | ghost(icon-only)
+  color?: IconButtonColor; // primary palette vs neutral
   shape?: IconButtonShape;
   size?: IconButtonSize;
   theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"button">;
 
 export function IconButton({
-  variant = "subtle",
+  variant = "default",
+  color = "neutral",
   shape = "circle",
   size = "md",
   className,
@@ -37,13 +59,7 @@ export function IconButton({
   ...rest
 }: IconButtonProps) {
   const isDark = theme === "dark";
-  const variantClass = (() => {
-    if (variant === "primary") return VARIANT_STYLES.primary;
-    // subtle
-    return isDark
-      ? "bg-zinc-900 text-zinc-300 border border-zinc-700 hover:border-blue-400 hover:text-blue-400 focus-visible:outline-blue-500"
-      : VARIANT_STYLES.subtle;
-  })();
+  const variantClass = getStyleByColor(color, variant, isDark);
   return (
     <button
       type={type}

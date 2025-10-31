@@ -6,17 +6,19 @@ export default {
   tags: ["autodocs"],
 };
 
-export const Primary = {
+export const Default = {
   args: {
-    variant: "primary",
+    variant: "default",
+    color: "neutral",
     children: "★",
     "aria-label": "즐겨찾기",
   },
 };
 
-export const Subtle = {
+export const GhostPrimary = {
   args: {
-    variant: "subtle",
+    variant: "ghost",
+    color: "primary",
     children: "✉",
     "aria-label": "메시지 보내기",
   },

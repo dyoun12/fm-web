@@ -609,9 +609,9 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
     case "IconButton":
       return (
         <div className="flex flex-wrap items-center gap-3">
-          <IconButton aria-label="즐겨찾기" theme={theme}>★</IconButton>
-          <IconButton aria-label="도움말" theme={theme}>?</IconButton>
-          <IconButton aria-label="확정" variant="primary" theme={theme}>✓</IconButton>
+          <IconButton aria-label="즐겨찾기" variant="ghost" theme={theme}>★</IconButton>
+          <IconButton aria-label="도움말" variant="ghost" theme={theme}>?</IconButton>
+          <IconButton aria-label="확정" color="primary" theme={theme}>✓</IconButton>
           <IconButton aria-label="작게" size="sm" theme={theme}>i</IconButton>
           <IconButton aria-label="크게" size="lg" theme={theme}>i</IconButton>
         </div>
@@ -1148,6 +1148,7 @@ export default function DevCatalogPage() {
                 aria-label={isMobilePreview ? "데스크톱 미리보기" : "모바일 미리보기"}
                 onClick={() => setIsMobilePreview((v) => !v)}
                 theme={theme}
+                variant="ghost"
               >
                 {isMobilePreview ? "🖥️" : "📱"}
               </IconButton>
@@ -1157,6 +1158,7 @@ export default function DevCatalogPage() {
                 aria-label={theme === "dark" ? "라이트 테마" : "다크 테마"}
                 onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
                 theme={theme}
+                variant="ghost"
               >
                 {theme === "dark" ? "☀️" : "🌙"}
               </IconButton>
