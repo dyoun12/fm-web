@@ -33,7 +33,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
 
     const isDark = theme === "dark";
     return (
-      <div className={cn("flex items-start gap-3", className)}>
+      <div className={cn("flex items-center gap-3", className)}>
         <input
           ref={(node) => {
             internalRef.current = node;
@@ -46,7 +46,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           id={checkboxId}
           type="checkbox"
           className={cn(
-            "mt-1 h-5 w-5 rounded text-blue-600 accent-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
+            "h-5 w-5 rounded text-blue-600 accent-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500",
             isDark ? "border border-zinc-700 bg-zinc-900" : "border border-zinc-300 bg-white",
           )}
           {...rest}
