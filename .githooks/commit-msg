@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MSG_FILE="$1"
+HEADER=$(head -n1 "$MSG_FILE")
+
+# Allow merge commits without checks
+if [[ "$HEADER" =~ ^Merge\  ]]; then
+  exit 0
+fi
+
+ALLOWED_TYPES='feat|fix|refactor|test|chore|docs|init|build|ci|perf|style|revert'
+
+# Pattern: type: space + subject (no scope)
+if ! echo "$HEADER" | grep -Eq "^(${ALLOWED_TYPES}):\s[^ ].+"; then
+  echo "\n[commit-msg] Invalid header: '$HEADER'" >&2
+  echo "Expected: type: subject" >&2
+  echo "- type: ${ALLOWED_TYPES}" >&2
+  echo "Examples:" >&2
+  echo "  feat: 모던 링크 스타일 적용" >&2
+  echo "  fix: 빌드 스크립트 경로 수정" >&2
+  exit 1
+fi
+
+# Header length <= 72
+if [ "${#HEADER}" -gt 72 ]; then
+  echo "[commit-msg] Header too long (${#HEADER} > 72). Please shorten." >&2
+  exit 1
+fi
+
+exit 0

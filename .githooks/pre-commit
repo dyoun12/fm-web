@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[pre-commit] Running lint and tests..."
+
+# Skip checks if only docs/media/markdown/config changed
+STAGED_FILES=$(git diff --cached --name-only)
+if [[ -z "$STAGED_FILES" ]]; then
+  exit 0
+fi
+
+ALL_DOCS=true
+while IFS= read -r f; do
+  if [[ ! "$f" =~ ^docs/ && \
+        ! "$f" =~ ^tasks/ && \
+        ! "$f" =~ ^AGENTS\.md$ && \
+        ! "$f" =~ ^\.gitmessage\.txt$ && \
+        ! "$f" =~ ^.*\.(md|mdx|png|jpg|jpeg|gif|webp|svg|yml|yaml)$ ]]; then
+    ALL_DOCS=false
+    break
+  fi
+done <<< "$STAGED_FILES"
+
+if $ALL_DOCS; then
+  echo "[pre-commit] Only docs/media changed — skipping lint/tests."
+  exit 0
+fi
+
+if [ ! -d "fe-app/node_modules" ]; then
+  echo "[pre-commit] fe-app/node_modules not found. Skipping lint/tests."
+  echo "           Run 'cd fe-app && npm install' to enable checks."
+  exit 0
+fi
+
+# Run lint and tests within fe-app
+(cd fe-app && npm run lint)
+(cd fe-app && npm run test -- --run)
+
+echo "[pre-commit] All checks passed."
+
+exit 0
+
