@@ -622,7 +622,7 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           <Badge variant="info" theme={theme}>정보</Badge>
           <Badge variant="success" theme={theme}>성공</Badge>
           <Badge variant="warning" theme={theme}>경고</Badge>
-          <Badge variant="neutral" theme={theme}>중립</Badge>
+          <Badge variant="default" theme={theme}>기본</Badge>
         </div>
       );
     case "Input":
