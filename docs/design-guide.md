@@ -49,6 +49,9 @@
 ### 4.1 Atoms (우선순위: A=즉시, B=2차, C=후순위)
 | 컴포넌트 | 우선순위 | 변형/상태 | 설명 |
 |-----------|-----------|-------------|------|
+| Card | A | variant: outline, elevated, ghost, soft / padding: none, sm, md, lg | 콘텐츠 컨테이너(카드 레이아웃 표준) |
+| ImageCard | A | backgroundImageUrl, overlay | 배경 이미지가 있는 카드 컨테이너 |
+| ColorCard | A | tone: solid/gradient/tint, color, gradientFrom/To | 색/그라디언트 배경 카드 컨테이너 |
 | Button | A | variant: default, outline, ghost / color: primary, neutral | 주요 액션용 기본 버튼 |
 | IconButton | B | variant: default, ghost / color: primary, neutral / shape: square, circle | 아이콘 기반 액션 |
 | TextLink | A | 기본, 강조 | 본문 내 링크 스타일 |
@@ -102,6 +105,32 @@
   - Button: `variant("default"|"outline"|"ghost")`, `color("primary"|"neutral")`
   - IconButton: `variant("default"|"ghost")`, `color("primary"|"neutral")`
   - Badge: `variant("default")`, `color("default"|"info"|"success"|"warning")`
+
+#### Card (Atom)
+- Props: `variant("outline" | "elevated" | "ghost" | "soft")`, `padding("none" | "sm" | "md" | "lg")`, `theme("light" | "dark")`.
+- 변형 가이드
+  | variant | 라이트 | 다크 | 용도 |
+  |---------|--------|------|------|
+  | outline | 흰색 배경 + 보더 | 짙은 배경 + 보더 | 기본 카드, 리스트 아이템, 패널 |
+  | elevated | 흰색 배경 + 그림자 | 짙은 배경 + 그림자 | 강조 카드, Hover 강조 필요 시 |
+  | ghost | 투명 배경, hover tint | 투명 배경, hover tint | 배경에 녹아드는 컨테이너 |
+  | soft | 연한 배경 + 보더 | 짙은 반투명 배경 + 보더 | 섹션 내 보조 카드 |
+- 사용 원칙: 상위 레이어에서는 카드의 시각 스타일을 직접 정의하지 말고 Card 변형으로 해결한다. 상호작용은 자식 요소(Button/Link)에 위임한다.
+
+#### ImageCard / ColorCard (Atom)
+- ImageCard: `backgroundImageUrl`와 선택적 `overlay`로 배경 이미지를 처리. 히어로, 미디어 강조 영역에 사용.
+- ColorCard: `tone(solid|gradient|tint)`와 `color` 또는 `gradientFrom/To`로 색/그라디언트 배경 제공. 공지 배너, CTA 영역 등 강조 배경에 사용.
+
+참고: 기존 Molecule/Organism에서 카드 레이아웃을 재사용하도록 다음을 Card로 치환함
+- FeatureCard(기본 변형 외곽 컨테이너)
+- StatCard 외곽 컨테이너
+- TeamMemberCard 외곽 컨테이너
+- TimelineItem 본문 컨테이너
+- AboutOverview 각 항목 카드
+- ContactSection 좌측 정보 패널
+- CategoryFilterPanel 패널 래퍼
+- VisionValues 래퍼
+- NoticeList 아이템 컨테이너(grid/list 공통)
 
 #### Button (Atom)
 - **주요 Props**: `variant("default" | "outline" | "ghost")`, `color("primary" | "neutral")`, `size("sm" | "md" | "lg")`, `leadingIcon`, `trailingIcon`, `loading`, `disabled`, `type`.
@@ -186,6 +215,7 @@
 ## 9. 변경 이력
 | 일시 | 변경자 | 변경 내용 | 비고 |
 |------|--------|-----------|------|
+| 2025-11-01 | Codex Agent | Card(Atom) 변형 표 추가 및 Molecule/Organism 카드 컨테이너를 Card로 통일 | Dev Preview 동기화
 | 2025-10-27 | Codex Agent | 초기 디자인 토큰·컴포넌트 인벤토리 정의 | -
 | 2025-10-27 | Codex Agent | Button/FeatureCard 등 주요 컴포넌트 속성·상태 명세 추가, Dev Preview 가이드 보강 | 피드백 없음
 | 2025-10-30 | Codex Agent | StatCard, FooterLinks, AboutOverview, VisionValues, ContactSection, AdminSidebar 구현 반영 및 Dev Preview 동기화 | 다크 테마 대응 추가

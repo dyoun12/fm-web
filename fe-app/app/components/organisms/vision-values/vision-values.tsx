@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 
 export type VisionItem = { key: string; title: string; description: string };
 
@@ -15,7 +16,7 @@ export function VisionValues({ items, theme = "light" }: VisionValuesProps) {
   const isDark = theme === "dark";
   const current = items.find((i) => i.key === active) ?? items[0];
   return (
-    <section className={cn("rounded-2xl border p-6", isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white") }>
+    <Card theme={theme}>
       <nav className="flex flex-wrap gap-2">
         {items.map((i) => (
           <button
@@ -41,7 +42,6 @@ export function VisionValues({ items, theme = "light" }: VisionValuesProps) {
           <p className={cn("mt-2 text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>{current.description}</p>
         </div>
       )}
-    </section>
+    </Card>
   );
 }
-

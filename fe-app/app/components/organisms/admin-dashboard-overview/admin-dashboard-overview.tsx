@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 
 export type DashboardStat = {
   label: string;
@@ -37,10 +38,7 @@ export function AdminDashboardOverview({
     <section className="flex flex-col gap-8">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => (
-          <article
-            key={stat.label}
-            className={cn("rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white")}
-          >
+          <Card key={stat.label} theme={theme}>
             <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-500")}>{stat.label}</p>
             <div className="mt-2 flex items-baseline gap-2">
               <span className={cn("text-3xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>
@@ -67,12 +65,12 @@ export function AdminDashboardOverview({
                 {stat.trend.value}
               </p>
             )}
-          </article>
+          </Card>
         ))}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className={cn("rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
+        <Card theme={theme}>
           <header className="flex items-center justify-between">
             <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>최근 활동</h3>
             <span className={cn("text-xs", isDark ? "text-zinc-500" : "text-zinc-400")}>최근 24시간</span>
@@ -89,7 +87,7 @@ export function AdminDashboardOverview({
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
 
         <section className={cn("rounded-2xl p-6", isDark ? "border border-amber-900 bg-amber-950 text-amber-300" : "border border-amber-200 bg-amber-50 text-amber-800") }>
           <h3 className="text-lg font-semibold">알림 및 경고</h3>

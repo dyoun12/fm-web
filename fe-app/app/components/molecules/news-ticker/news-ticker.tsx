@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
+import { ColorCard } from "../../atoms/color-card/color-card";
 
 export type NewsTickerItem = {
   id: string;
@@ -41,14 +42,14 @@ export function NewsTicker({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-500">
+      <ColorCard tone="tint" color="slate" padding="sm" className="text-sm">
         아직 등록된 소식이 없습니다.
-      </div>
+      </ColorCard>
     );
   }
 
   return (
-    <section className="flex w-full items-center gap-4 overflow-hidden rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+    <ColorCard tone="tint" color="blue" padding="sm" className="flex w-full items-center gap-4 overflow-hidden text-sm">
       <span className="flex items-center gap-2 font-semibold">
         <span aria-hidden="true">📣</span>
         최신 소식
@@ -88,6 +89,6 @@ export function NewsTicker({
           />
         ))}
       </div>
-    </section>
+    </ColorCard>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Card } from "../../atoms/card/card";
 
 export type TeamMemberCardProps = {
   name: string;
@@ -21,12 +22,7 @@ export function TeamMemberCard({
 }: TeamMemberCardProps) {
   const isDark = theme === "dark";
   return (
-    <article className={
-      [
-        "flex flex-col gap-4 rounded-2xl p-6 shadow-sm hover:border-blue-200 hover:shadow-md",
-        isDark ? "border border-zinc-700 bg-zinc-900 text-zinc-300" : "border border-zinc-200 bg-white text-zinc-700",
-      ].join(" ")
-    }>
+    <Card theme={theme}>
       <div className="flex items-center gap-4">
         <div className="h-16 w-16 overflow-hidden rounded-full bg-blue-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -55,6 +51,6 @@ export function TeamMemberCard({
           ))}
         </div>
       )}
-    </article>
+    </Card>
   );
 }

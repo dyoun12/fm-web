@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { ReactNode } from "react";
+import { Card } from "../../atoms/card/card";
 
 export type TimelineItemProps = {
   year: string;
@@ -32,7 +33,7 @@ export function TimelineItem({
         <span className="text-lg font-semibold text-blue-600">{year}</span>
         <span className={cn("mt-2 h-full w-px", isDark ? "bg-zinc-700" : "bg-zinc-200")} aria-hidden="true" />
       </div>
-      <div className={cn("flex-1 rounded-2xl p-6 shadow-sm border", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
+      <Card className="flex-1" theme={theme}>
         <div className="flex items-center gap-3">
           {icon && (
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
@@ -42,7 +43,7 @@ export function TimelineItem({
           <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>{title}</h3>
         </div>
         <p className={cn("mt-3 text-sm leading-6", isDark ? "text-zinc-400" : "text-zinc-600")}>{description}</p>
-      </div>
+      </Card>
     </div>
   );
 }

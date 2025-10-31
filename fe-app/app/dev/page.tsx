@@ -17,6 +17,9 @@ import { Divider } from "../components/atoms/divider/divider";
 import { Skeleton } from "../components/atoms/skeleton/skeleton";
 import { Tag } from "../components/atoms/tag/tag";
 import { Toggle } from "../components/atoms/toggle/toggle";
+import { Card } from "../components/atoms/card/card";
+import { ImageCard } from "../components/atoms/image-card/image-card";
+import { ColorCard } from "../components/atoms/color-card/color-card";
 // 아래 원자 컴포넌트 중 현재 프리뷰에 사용되는 항목만 유지
 import { FeatureCard } from "../components/molecules/feature-card/feature-card";
 import { HeroBanner } from "../components/molecules/hero-banner/hero-banner";
@@ -48,6 +51,45 @@ type ComponentItem = {
 };
 
 const atoms: ComponentItem[] = [
+  {
+    name: "Card",
+    priority: "A",
+    description: "콘텐츠를 담는 기본 카드 컨테이너(variant/padding 제공)",
+    interactions: [
+      "Hover 시 elevated/ghost 변형에서 미세한 배경 또는 그림자 변화",
+      "포커스 이동 시 내부 요소의 키보드 탐색과 대비 유지",
+    ],
+    guidelines: [
+      "상호작용은 자식 요소(Link/Button)로 위임하고, 카드는 컨테이너 역할만 수행",
+      "레이아웃 간격은 padding props로 제어하며 임의 Tailwind 유틸 추가 지양",
+    ],
+  },
+  {
+    name: "ImageCard",
+    priority: "A",
+    description: "배경 이미지를 가진 카드 컨테이너(오버레이 지원)",
+    interactions: [
+      "배경 이미지 위에 그라디언트 오버레이로 대비 확보",
+      "반응형에서 이미지 크기는 container-fit 유지",
+    ],
+    guidelines: [
+      "텍스트 대비가 낮을 경우 overlay 강도를 높인다",
+      "중요 CTA는 상단/좌측 정렬을 우선 고려",
+    ],
+  },
+  {
+    name: "ColorCard",
+    priority: "A",
+    description: "색/그라디언트/틴트 배경 카드를 제공",
+    interactions: [
+      "Tint 변형은 hover 시 미세 음영 변화",
+      "Gradient 변형은 텍스트는 기본적으로 밝은 색",
+    ],
+    guidelines: [
+      "배경과 텍스트 대비를 AA 이상으로 유지",
+      "팔레트는 브랜드 컬러 토큰을 우선 사용",
+    ],
+  },
   {
     name: "Button",
     priority: "A",
@@ -585,6 +627,58 @@ type CatalogCategory = "Atoms" | "Molecules" | "Organisms";
 // 프리뷰 매퍼: 항목 이름 → JSX 프리뷰
 function renderAtomPreview(name: string, theme: "light" | "dark") {
   switch (name) {
+    case "Card":
+      return (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card theme={theme}>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-semibold">Outline</p>
+              <p className="text-sm text-zinc-600">보더+화이트 배경</p>
+            </div>
+          </Card>
+          <Card variant="elevated" theme={theme}>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-semibold">Elevated</p>
+              <p className="text-sm text-zinc-600">그림자 강조</p>
+            </div>
+          </Card>
+          <Card variant="soft" theme={theme}>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-semibold">Soft</p>
+              <p className="text-sm text-zinc-600">은은한 배경</p>
+            </div>
+          </Card>
+          <Card variant="ghost" theme={theme}>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm font-semibold">Ghost</p>
+              <p className="text-sm text-zinc-600">투명 배경, hover tint</p>
+            </div>
+          </Card>
+        </div>
+      );
+    case "ImageCard":
+      return (
+        <ImageCard backgroundImageUrl="https://picsum.photos/1200/600" padding="md">
+          <div className="text-white">
+            <p className="text-sm font-semibold">ImageCard</p>
+            <p className="text-sm text-white/85">배경 이미지 + 오버레이</p>
+          </div>
+        </ImageCard>
+      );
+    case "ColorCard":
+      return (
+        <div className="grid gap-4">
+          <ColorCard tone="solid" color="blue">
+            <p className="text-white">Solid(blue)</p>
+          </ColorCard>
+          <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500">
+            <p className="text-white">Gradient</p>
+          </ColorCard>
+          <ColorCard tone="tint" color="blue">
+            <p className="text-blue-700">Tint(blue)</p>
+          </ColorCard>
+        </div>
+      );
     case "Button":
       return (
         <div className="grid gap-4">

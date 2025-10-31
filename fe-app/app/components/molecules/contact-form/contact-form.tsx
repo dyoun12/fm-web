@@ -5,6 +5,7 @@ import { Input } from "../../atoms/input/input";
 import { Button } from "../../atoms/button/button";
 import { TextArea } from "../../atoms/text-area/text-area";
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 
 export type ContactFormField = {
   id: string;
@@ -76,14 +77,8 @@ export function ContactForm({
 
   const isDark = theme === "dark";
   return (
-    <form
-      className={cn(
-        "flex w-full flex-col gap-6 rounded-3xl border p-8 shadow-sm",
-        isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white",
-      )}
-      onSubmit={handleSubmit}
-      noValidate
-    >
+    <Card theme={theme} padding="lg" className="w-full">
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h2 className={cn("text-2xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>문의하기</h2>
         <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>
@@ -163,6 +158,7 @@ export function ContactForm({
           {submitLabel}
         </Button>
       </div>
-    </form>
+      </form>
+    </Card>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/classnames";
 import { Input } from "../../atoms/input/input";
 import { Checkbox } from "../../atoms/checkbox/checkbox";
+import { Card } from "../../atoms/card/card";
 
 export type CategoryFilter = {
   id: string;
@@ -42,7 +43,7 @@ export function CategoryFilterPanel({
   };
 
   return (
-    <aside className={cn("flex w-full max-w-xs flex-col gap-4 rounded-2xl border p-6 shadow-sm", isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white") }>
+    <Card className="flex w-full max-w-xs flex-col gap-4" theme={theme}>
       <h2 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>카테고리 필터</h2>
       <Input
         label="검색"
@@ -82,6 +83,6 @@ export function CategoryFilterPanel({
       >
         필터 초기화
       </button>
-    </aside>
+    </Card>
   );
 }

@@ -4,6 +4,8 @@ import { cn } from "@/lib/classnames";
 import Link from "next/link";
 import { Button } from "../../atoms/button/button";
 import { ReactNode } from "react";
+import { ImageCard } from "../../atoms/image-card/image-card";
+import { ColorCard } from "../../atoms/color-card/color-card";
 
 type BackgroundType = "solid" | "gradient" | "image";
 
@@ -40,22 +42,31 @@ export function HeroBanner({
   alignment = "left",
   media,
 }: HeroBannerProps) {
+  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+    if (backgroundType === "image" && backgroundImageUrl) {
+      return (
+        <ImageCard backgroundImageUrl={backgroundImageUrl} padding="lg">
+          {children}
+        </ImageCard>
+      );
+    }
+    if (backgroundType === "gradient") {
+      return (
+        <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg">
+          {children}
+        </ColorCard>
+      );
+    }
+    // solid
+    return (
+      <ColorCard tone="solid" color="blue" padding="lg">
+        {children}
+      </ColorCard>
+    );
+  };
+
   return (
-    <section
-      className={cn(
-        "relative overflow-hidden rounded-3xl",
-        BACKGROUND_CLASSES[backgroundType],
-      )}
-      style={
-        backgroundType === "image" && backgroundImageUrl
-          ? {
-              backgroundImage: `linear-gradient(120deg, rgba(11,92,242,0.85), rgba(0,182,160,0.85)), url(${backgroundImageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : undefined
-      }
-    >
+    <Wrapper>
       <div
         className={cn(
           "mx-auto flex w-full max-w-6xl flex-col gap-8 px-8 py-16 lg:flex-row lg:items-center lg:justify-between",
@@ -110,6 +121,6 @@ export function HeroBanner({
           </div>
         )}
       </div>
-    </section>
+    </Wrapper>
   );
 }

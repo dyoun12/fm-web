@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { Badge } from "../../atoms/badge/badge";
+import { Card } from "../../atoms/card/card";
 
 export type PostDetailProps = {
   title: string;
@@ -59,14 +60,16 @@ export function PostDetail({
           />
         </div>
       )}
-      <section
-        className={cn(
-          "prose max-w-none leading-7",
-          isDark ? "prose-invert" : "prose-zinc",
-          "[&_h2]:mt-10 [&_h2]:text-2xl",
-        )}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
+      <Card theme={theme} variant="soft">
+        <section
+          className={cn(
+            "prose max-w-none leading-7",
+            isDark ? "prose-invert" : "prose-zinc",
+            "[&_h2]:mt-10 [&_h2]:text-2xl",
+          )}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      </Card>
     </article>
   );
 }

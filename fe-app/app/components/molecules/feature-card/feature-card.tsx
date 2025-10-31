@@ -3,6 +3,7 @@
 import { cn } from "@/lib/classnames";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { Card } from "../../atoms/card/card";
 
 type FeatureCardVariant = "default" | "emphasis";
 
@@ -35,18 +36,8 @@ export function FeatureCard({
   theme = "light",
 }: FeatureCardProps) {
   const isDark = theme === "dark";
-  const content = (
-    <div
-      className={cn(
-        "flex h-full flex-col gap-4 rounded-2xl p-6 transition-all",
-        variant === "default"
-          ? isDark
-            ? "bg-zinc-900 border border-zinc-700 hover:border-blue-400"
-            : VARIANT_CLASSES.default
-          : VARIANT_CLASSES.emphasis,
-        className,
-      )}
-    >
+  const contentInner = (
+    <div className="flex h-full flex-col gap-4">
       {icon && (
         <div
           className={cn(
@@ -90,6 +81,18 @@ export function FeatureCard({
         </span>
       )}
     </div>
+  );
+
+  const content = (
+    variant === "default" ? (
+      <Card theme={theme} className={cn("h-full transition-all", className)}>
+        {contentInner}
+      </Card>
+    ) : (
+      <div className={cn("flex h-full flex-col gap-4 rounded-2xl p-6 transition-all", VARIANT_CLASSES.emphasis, className)}>
+        {contentInner}
+      </div>
+    )
   );
 
   if (href) {

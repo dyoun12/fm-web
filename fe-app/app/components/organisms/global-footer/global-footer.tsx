@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { Input } from "../../atoms/input/input";
 import { Button } from "../../atoms/button/button";
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 
 export type FooterLinkGroup = {
   title: string;
@@ -167,10 +168,8 @@ function NewsletterForm({ description, onSubmit, theme = "light" }: NewsletterFo
   };
 
   return (
-    <form
-      className="mt-4 flex w-full flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4"
-      onSubmit={handleSubmit}
-    >
+    <Card className="mt-4 w-full" padding="sm">
+      <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
       <p className="text-sm text-zinc-600">{description}</p>
       <div className="flex items-center gap-2">
         <Input
@@ -195,6 +194,7 @@ function NewsletterForm({ description, onSubmit, theme = "light" }: NewsletterFo
           구독 처리에 실패했습니다. 잠시 후 다시 시도해주세요.
         </p>
       )}
-    </form>
+      </form>
+    </Card>
   );
 }

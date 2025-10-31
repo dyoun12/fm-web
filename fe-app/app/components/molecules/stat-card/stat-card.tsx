@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { ReactNode } from "react";
+import { Card } from "../../atoms/card/card";
 
 export type StatCardVariant = "default" | "compact";
 
@@ -26,13 +27,7 @@ export function StatCard({
 }: StatCardProps) {
   const isDark = theme === "dark";
   return (
-    <article
-      className={cn(
-        "rounded-2xl border p-5 shadow-sm",
-        isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white",
-        variant === "compact" && "p-4",
-      )}
-    >
+    <Card theme={theme} padding={variant === "compact" ? "sm" : "md"}>
       <div className="flex items-center gap-3">
         {icon && (
           <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", isDark ? "bg-zinc-800" : "bg-blue-50 text-blue-600")}>{icon}</span>
@@ -60,7 +55,6 @@ export function StatCard({
           {trend.value}
         </p>
       )}
-    </article>
+    </Card>
   );
 }
-

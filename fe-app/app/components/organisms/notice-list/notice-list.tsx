@@ -4,6 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/classnames";
 import { Badge } from "../../atoms/badge/badge";
 import { Button } from "../../atoms/button/button";
+import { Card } from "../../atoms/card/card";
 
 export type NoticeItem = {
   id: string;
@@ -87,13 +88,7 @@ export function NoticeList({
         )}
       >
         {items.map((item) => (
-          <article
-            key={item.id}
-            className={cn(
-              "flex flex-col gap-3 rounded-2xl p-6 transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-md border",
-              isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white",
-            )}
-          >
+          <Card key={item.id} theme={theme} className="flex flex-col gap-3 transition hover:-translate-y-1">
             <div className={cn("flex items-center justify-between text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
               <Badge color="info" theme={theme}>{item.category}</Badge>
               <time dateTime={item.publishedAt}>
@@ -127,7 +122,7 @@ export function NoticeList({
                 <path d="m12 5 7 7-7 7" />
               </svg>
             </Link>
-          </article>
+          </Card>
         ))}
       </div>
       {onLoadMore && (

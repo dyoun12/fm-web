@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "../../atoms/button/button";
+import { ColorCard } from "../../atoms/color-card/color-card";
 
 export type CtaSectionProps = {
   eyebrow?: string;
@@ -25,7 +26,7 @@ export function CtaSection({
   secondaryAction,
 }: CtaSectionProps) {
   return (
-    <section className="rounded-3xl bg-gradient-to-r from-blue-600 to-emerald-500 px-8 py-12 text-white shadow-lg">
+    <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg" className="text-white shadow-lg">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 flex-col gap-2">
           {eyebrow && (
@@ -58,6 +59,6 @@ export function CtaSection({
           )}
         </div>
       </div>
-    </section>
+    </ColorCard>
   );
 }

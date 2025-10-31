@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 import { ContactForm, ContactFormField } from "../../molecules/contact-form/contact-form";
 
 export type ContactSectionProps = {
@@ -15,16 +16,15 @@ export function ContactSection({ address, email, phone, formFields, theme = "lig
   const isDark = theme === "dark";
   return (
     <section className="grid gap-6 lg:grid-cols-2">
-      <aside className={cn("rounded-2xl border p-6", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
+      <Card theme={theme}>
         <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>연락처</h3>
         <dl className={cn("mt-3 space-y-2 text-sm", isDark ? "text-zinc-400" : "text-zinc-600") }>
           <div className="flex gap-2"><dt className="font-medium">주소</dt><dd>{address}</dd></div>
           <div className="flex gap-2"><dt className="font-medium">이메일</dt><dd>{email}</dd></div>
           {phone && <div className="flex gap-2"><dt className="font-medium">전화</dt><dd>{phone}</dd></div>}
         </dl>
-      </aside>
+      </Card>
       <ContactForm fields={formFields} theme={theme} />
     </section>
   );
 }
-
