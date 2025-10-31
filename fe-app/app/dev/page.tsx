@@ -20,6 +20,7 @@ import { Toggle } from "../components/atoms/toggle/toggle";
 import { Card } from "../components/atoms/card/card";
 import { ImageCard } from "../components/atoms/image-card/image-card";
 import { ColorCard } from "../components/atoms/color-card/color-card";
+import { GlassCard } from "../components/atoms/glass-card/glass-card";
 // 아래 원자 컴포넌트 중 현재 프리뷰에 사용되는 항목만 유지
 import { FeatureCard } from "../components/molecules/feature-card/feature-card";
 import { HeroBanner } from "../components/molecules/hero-banner/hero-banner";
@@ -88,6 +89,19 @@ const atoms: ComponentItem[] = [
     guidelines: [
       "배경과 텍스트 대비를 AA 이상으로 유지",
       "팔레트는 브랜드 컬러 토큰을 우선 사용",
+    ],
+  },
+  {
+    name: "GlassCard",
+    priority: "B",
+    description: "백드롭 블러 기반 유리 효과 카드",
+    interactions: [
+      "배경 컨텍스트에 따라 투명도/블러로 깊이감 제공",
+      "키보드 포커스 시 내부 요소 대비 유지",
+    ],
+    guidelines: [
+      "가독성을 위해 대비 낮은 배경 위에서 사용",
+      "중첩 사용 시 blur 강도는 상위보다 낮게 설정",
     ],
   },
   {
@@ -677,6 +691,48 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           <ColorCard tone="tint" color="blue">
             <p className="text-blue-700">Tint(blue)</p>
           </ColorCard>
+        </div>
+      );
+    case "GlassCard":
+      return (
+        <div className="relative overflow-hidden rounded-3xl border border-zinc-200">
+          {/* 배경: 텍스트 + 이미지가 섞인 레이어(프리즘 효과 확인용) */}
+          <div className="absolute inset-0">
+            <div className="h-full w-full bg-gradient-to-br from-sky-100 to-indigo-200">
+              <div className="mx-auto max-w-4xl p-6">
+                <h3 className="text-xl font-semibold text-zinc-800">배경 컨텐츠</h3>
+                <p className="mt-1 text-sm text-zinc-600">프리즘 하이라이트가 배경 텍스트/이미지 위에서 곡선 형태로 반사됩니다.</p>
+                <div className="mt-4 grid grid-cols-6 gap-2 opacity-90">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <img
+                      key={i}
+                      src={`https://picsum.photos/seed/${i + 1}/120/80`}
+                      alt={`bg-${i + 1}`}
+                      className="h-16 w-full rounded object-cover"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* 포그라운드: 글래스 카드들 */}
+          <div className="relative z-10 p-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <GlassCard>
+                <div className="text-zinc-900">
+                  <p className="text-sm font-semibold">Glass md</p>
+                  <p className="text-sm text-zinc-700">곡선형 프리즘 하이라이트</p>
+                </div>
+              </GlassCard>
+              <GlassCard blur="lg">
+                <div className="text-zinc-900">
+                  <p className="text-sm font-semibold">Glass lg</p>
+                  <p className="text-sm text-zinc-700">블러 강하게</p>
+                </div>
+              </GlassCard>
+            </div>
+          </div>
         </div>
       );
     case "Button":
