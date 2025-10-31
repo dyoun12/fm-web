@@ -590,7 +590,7 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
         <div className="grid gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <Button theme={theme}>Primary</Button>
-            <Button variant="secondary" theme={theme}>Secondary</Button>
+            <Button variant="outline" color="primary" theme={theme}>Outline</Button>
             <Button variant="ghost" theme={theme}>Ghost</Button>
             <Button loading theme={theme}>Loading</Button>
           </div>
@@ -601,7 +601,7 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button leadingIcon={<span>⬅️</span>} theme={theme}>Leading</Button>
-            <Button trailingIcon={<span>➡️</span>} variant="secondary" theme={theme}>Trailing</Button>
+            <Button trailingIcon={<span>➡️</span>} variant="outline" color="primary" theme={theme}>Trailing</Button>
             <Button fullWidth theme={theme} className="max-w-xs">Full width</Button>
           </div>
         </div>
@@ -619,10 +619,10 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
     case "Badge":
       return (
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="info" theme={theme}>정보</Badge>
-          <Badge variant="success" theme={theme}>성공</Badge>
-          <Badge variant="warning" theme={theme}>경고</Badge>
-          <Badge variant="default" theme={theme}>기본</Badge>
+          <Badge color="info" theme={theme}>정보</Badge>
+          <Badge color="success" theme={theme}>성공</Badge>
+          <Badge color="warning" theme={theme}>경고</Badge>
+          <Badge color="default" theme={theme}>기본</Badge>
         </div>
       );
     case "Input":
@@ -1007,7 +1007,7 @@ function ComponentSection({
             <div className="flex items-center justify-between gap-3">
               <h3 className={cn("text-lg font-bold", isDark ? "text-zinc-100" : "text-zinc-900")}>{item.name}</h3>
               <div className="flex items-center gap-2">
-                <Button asChild variant="secondary" size="sm">
+                <Button asChild variant="outline" color="primary" size="sm">
                   <Link href={getStorybookDocsUrl(title, item.name)} target="_blank" rel="noreferrer">
                     Docs
                   </Link>

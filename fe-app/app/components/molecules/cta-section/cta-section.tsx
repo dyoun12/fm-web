@@ -39,8 +39,8 @@ export function CtaSection({
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          {/* Primary: 가시성 확보를 위해 Button secondary 변형 사용 (흰 배경 + 파란 텍스트) */}
-          <Button asChild variant="secondary" className="text-blue-700">
+          {/* Primary: outline 스타일 + primary 팔레트 */}
+          <Button asChild variant="outline" color="primary" className="text-blue-700">
             <Link href={primaryAction.href} className="text-current no-underline">
               {primaryAction.label}
             </Link>

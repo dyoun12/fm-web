@@ -95,7 +95,7 @@ export function NoticeList({
             )}
           >
             <div className={cn("flex items-center justify-between text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
-              <Badge variant="info" theme={theme}>{item.category}</Badge>
+              <Badge color="info" theme={theme}>{item.category}</Badge>
               <time dateTime={item.publishedAt}>
                 {new Date(item.publishedAt).toLocaleDateString("ko-KR")}
               </time>
@@ -133,7 +133,8 @@ export function NoticeList({
       {onLoadMore && (
         <div className="flex justify-center">
           <Button
-            variant="secondary"
+            variant="outline"
+            color="primary"
             onClick={onLoadMore}
             disabled={isLoading}
             theme={theme}

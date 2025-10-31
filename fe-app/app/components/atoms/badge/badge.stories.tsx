@@ -9,12 +9,13 @@ export default {
 export const Info = {
   args: {
     children: "공지",
+    color: "info",
   },
 };
 
 export const Success = {
   args: {
     children: "성공",
-    variant: "success",
+    color: "success",
   },
 };

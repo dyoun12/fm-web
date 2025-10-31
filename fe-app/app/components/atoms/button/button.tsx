@@ -4,14 +4,8 @@ import { ComponentPropsWithoutRef, ReactElement, ReactNode, cloneElement, isVali
 import { cn } from "@/lib/classnames";
 import { Spinner } from "../spinner/spinner";
 
-const VARIANT_STYLES: Record<ButtonVariant, string> = {
-  primary:
-    "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-500",
-  secondary:
-    "bg-white text-blue-600 border border-blue-200 hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-blue-400",
-  ghost:
-    "bg-transparent text-blue-600 hover:bg-blue-50 focus-visible:outline-blue-400",
-};
+type ButtonVariant = "default" | "outline" | "ghost"; // 스타일
+type ButtonColor = "primary" | "neutral"; // 팔레트
 
 const SIZE_STYLES: Record<ButtonSize, string> = {
   sm: "h-9 px-3 text-sm",
@@ -19,11 +13,11 @@ const SIZE_STYLES: Record<ButtonSize, string> = {
   lg: "h-12 px-6 text-base",
 };
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 export type ButtonProps = {
-  variant?: ButtonVariant;
+  variant?: ButtonVariant; // default | outline | ghost
+  color?: ButtonColor; // primary | neutral
   size?: ButtonSize;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
@@ -35,7 +29,8 @@ export type ButtonProps = {
 
 export function Button({
   children,
-  variant = "primary",
+  variant = "default",
+  color = "primary",
   size = "md",
   leadingIcon,
   trailingIcon,
@@ -52,16 +47,35 @@ export function Button({
   const isDark = theme === "dark";
 
   const variantStyles = (() => {
-    if (variant === "primary") return VARIANT_STYLES.primary; // primary는 라이트/다크 동일 톤 유지
-    if (variant === "secondary")
-      return isDark
-        ? "bg-transparent text-blue-400 border border-zinc-700 hover:border-blue-400 hover:bg-white/5 focus-visible:outline-blue-500"
-        : VARIANT_STYLES.secondary;
-    if (variant === "ghost")
+    if (color === "primary") {
+      if (variant === "default") {
+        return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-500";
+      }
+      if (variant === "outline") {
+        return isDark
+          ? "bg-transparent text-blue-400 border border-zinc-700 hover:border-blue-400 hover:bg-white/5 focus-visible:outline-blue-500"
+          : "bg-white text-blue-600 border border-blue-200 hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-blue-400";
+      }
+      // ghost
       return isDark
         ? "bg-transparent text-blue-400 hover:bg-white/10 focus-visible:outline-blue-500"
-        : VARIANT_STYLES.ghost;
-    return VARIANT_STYLES.primary;
+        : "bg-transparent text-blue-600 hover:bg-blue-50 focus-visible:outline-blue-400";
+    }
+    // neutral palette
+    if (variant === "default") {
+      return isDark
+        ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 focus-visible:outline-zinc-500"
+        : "bg-zinc-200 text-zinc-900 hover:bg-zinc-300 focus-visible:outline-zinc-500";
+    }
+    if (variant === "outline") {
+      return isDark
+        ? "bg-transparent text-zinc-300 border border-zinc-700 hover:bg-zinc-800 focus-visible:outline-zinc-500"
+        : "bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-50 focus-visible:outline-zinc-400";
+    }
+    // ghost neutral
+    return isDark
+      ? "bg-transparent text-zinc-300 hover:bg-zinc-800 focus-visible:outline-zinc-500"
+      : "bg-transparent text-zinc-600 hover:bg-zinc-100 focus-visible:outline-zinc-400";
   })();
 
   const commonClasses = cn(
