@@ -98,7 +98,7 @@ export function GlobalFooter({
 
           {/* 우측: FooterLinks + 구독 패널을 같은 컬럼에 배치 */}
           <div className="place-self-start lg:justify-self-end w-full">
-            <div className="grid w-full gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid w-full gap-6 grid-cols-3">
               {navigationSections.map((section) => (
                 <FooterLinksGroup
                   key={section.title}
