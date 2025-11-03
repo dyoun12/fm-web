@@ -42,6 +42,7 @@ import { AboutOverview } from "../components/organisms/about-overview/about-over
 import { VisionValues } from "../components/organisms/vision-values/vision-values";
 import { ContactSection } from "../components/organisms/contact-section/contact-section";
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
+import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 
 type ComponentItem = {
   name: string;
@@ -485,6 +486,13 @@ const organisms: ComponentItem[] = [
     description: "관리자 개요 대시보드",
     interactions: ["카드 hover, 리스트 제공"],
     guidelines: ["카드 단위로 통계 그룹화"],
+  },
+  {
+    name: "BusinessExplorer",
+    priority: "A",
+    description: "사업 카드 클릭에 따른 동적 컨텐츠 노출",
+    interactions: ["카드 선택 시 하단 컨텐츠 업데이트"],
+    guidelines: ["기본 활성 항목 1개, 요약은 1~2줄"],
   },
 ];
 
@@ -1085,6 +1093,54 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
           stats={dashboardStats}
           recentActivities={dashboardActivities}
           alerts={dashboardAlerts}
+          theme={theme}
+        />
+      );
+    case "BusinessExplorer":
+      return (
+        <BusinessExplorer
+          items={[
+            {
+              key: "platform",
+              title: "플랫폼 개발",
+              summary: "UX 중심 설계 + 클라우드 네이티브",
+              content: (
+                <div>
+                  <p>맞춤형 플랫폼 설계·구축 및 시스템 통합.</p>
+                  <ul className="mt-2 list-disc pl-5">
+                    <li>Web/App, SSO, API, 인증, CMS</li>
+                    <li>클라우드 아키텍처, 데이터 관리</li>
+                  </ul>
+                </div>
+              ),
+            },
+            {
+              key: "investment",
+              title: "투자 및 사업 육성",
+              summary: "성과 창출형 투자 구조",
+              content: (
+                <div>
+                  <p>기술 스타트업/프로젝트에 전략적 투자.</p>
+                  <ul className="mt-2 list-disc pl-5">
+                    <li>공동 개발, R&D 지원, IP 사업화</li>
+                  </ul>
+                </div>
+              ),
+            },
+            {
+              key: "public",
+              title: "공공 및 사회혁신",
+              summary: "기술로 사회적 가치 확산",
+              content: (
+                <div>
+                  <p>공공데이터 플랫폼과 행정정보 통합.</p>
+                  <ul className="mt-2 list-disc pl-5">
+                    <li>디지털화/자동화/시각화 기반 혁신</li>
+                  </ul>
+                </div>
+              ),
+            },
+          ]}
           theme={theme}
         />
       );
