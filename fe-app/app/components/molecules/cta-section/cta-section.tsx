@@ -23,6 +23,11 @@ export type CtaSectionProps = {
   gradientTo?: string;
   rounded?: "xl" | "2xl" | "3xl";
   padding?: "none" | "sm" | "md" | "lg";
+  // Text and button theme overrides
+  textOnColor?: "light" | "dark";
+  buttonsTheme?: "light" | "dark";
+  primaryButtonTheme?: "light" | "dark";
+  secondaryButtonTheme?: "light" | "dark";
 };
 
 export function CtaSection({
@@ -38,10 +43,17 @@ export function CtaSection({
   gradientTo = "to-emerald-500",
   rounded = "3xl",
   padding = "lg",
+  // overrides
+  textOnColor,
+  buttonsTheme,
+  primaryButtonTheme,
+  secondaryButtonTheme,
 }: CtaSectionProps) {
   // Surface contrast: treat non-tint as dark surface
   const isDarkSurface = tone !== "tint";
-  const textOnColor = isDarkSurface ? "dark" : "light";
+  const resolvedTextOnColor = textOnColor ?? (isDarkSurface ? "dark" : "light");
+  const resolvedPrimaryTheme = primaryButtonTheme ?? buttonsTheme ?? "light"; // keep white pill as default
+  const resolvedSecondaryTheme = secondaryButtonTheme ?? buttonsTheme ?? (isDarkSurface ? "dark" : "light");
   return (
     <ColorCard
       tone={tone}
@@ -50,7 +62,7 @@ export function CtaSection({
       gradientTo={gradientTo}
       rounded={rounded}
       padding={padding}
-      textOnColor={textOnColor}
+      textOnColor={resolvedTextOnColor}
       className="shadow-lg"
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
@@ -67,13 +79,13 @@ export function CtaSection({
         </div>
         <div className="flex flex-wrap items-center gap-3">
           {/* Primary: white background (outline primary) */}
-          <Button asChild variant="outline" color="primary">
+          <Button asChild variant="outline" color="primary" theme={resolvedPrimaryTheme}>
             <Link href={primaryAction.href} className="no-underline">
               {primaryAction.label}
             </Link>
           </Button>
           {secondaryAction && (
-            <Button asChild variant="ghost" color="neutral" theme={isDarkSurface ? "dark" : "light"}>
+            <Button asChild variant="ghost" color="neutral" theme={resolvedSecondaryTheme}>
               <Link href={secondaryAction.href} className="no-underline">
                 {secondaryAction.label}
               </Link>

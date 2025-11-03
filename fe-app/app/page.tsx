@@ -21,8 +21,8 @@ export default function Home() {
         <HeroBanner
           title="미래를 설계하는 FM Corp"
           subtitle="혁신적인 기술과 디자인으로 더 나은 경험을 만듭니다."
-          primaryAction={{ label: "회사 소개", href: "/about" }}
-          secondaryAction={{ label: "연락처", href: "/contact" }}
+          primaryAction={{ label: "문의하기", href: "/contact" }}
+          secondaryAction={{ label: "회사 소개", href: "/about" }}
           backgroundType="image"
           backgroundImageUrl="/hero.png"
           className="mx-6 md:mx-8 rounded-3xl"

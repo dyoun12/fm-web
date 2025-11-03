@@ -30,3 +30,18 @@ export const LightTint = {
     color: "slate",
   },
 };
+
+export const GradientWithOverrides = {
+  args: {
+    eyebrow: "Custom themes",
+    title: "배경과 무관하게 주입된 테마 사용",
+    description: "텍스트와 버튼 테마를 tone 계산 대신 props로 강제합니다.",
+    primaryAction: { label: "Action", href: "#" },
+    secondaryAction: { label: "Secondary", href: "#" },
+    tone: "gradient",
+    gradientFrom: "from-zinc-800",
+    gradientTo: "to-slate-700",
+    textOnColor: "light",
+    buttonsTheme: "dark",
+  },
+};
