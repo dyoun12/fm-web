@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { AboutOverview } from "../components/organisms/about-overview/about-overview";
+import { Location } from "../components/organisms/location/location";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 import { TimelineItem } from "../components/molecules/timeline-item/timeline-item";
 import { TeamMemberCard } from "../components/molecules/team-member-card/team-member-card";
@@ -94,8 +95,17 @@ export default function AboutPage() {
 
       <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="about-location">
         <h2 id="about-location" className="mb-6 text-2xl font-semibold">오시는 길</h2>
-        <div className="h-64 w-full rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 text-center text-sm text-zinc-500 flex items-center justify-center">
-          지도 자리표시자 영역
+        <div className="grid gap-4">
+          <Location
+            address="서울특별시 강남구 테헤란로 123"
+            lat={37.49795}
+            lng={127.02764}
+            height={360}
+            queryText="서울특별시 강남구 테헤란로 123"
+          />
+          <p className="text-sm text-zinc-600">
+            대중교통: 2호선 강남역 11번 출구 도보 5분, 신분당선 신논현역 5번 출구 도보 8분
+          </p>
         </div>
       </section>
 
