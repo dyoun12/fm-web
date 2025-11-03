@@ -26,3 +26,10 @@ export const Default = {
     items,
   },
 };
+
+export const Dark = {
+  args: {
+    items,
+    theme: "dark" as const,
+  },
+};

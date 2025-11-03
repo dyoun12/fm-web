@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
 import { ColorCard } from "../../atoms/color-card/color-card";
+import { Badge } from "../../atoms/badge/badge";
 
 export type NewsTickerItem = {
   id: string;
@@ -16,15 +17,18 @@ export type NewsTickerProps = {
   items: NewsTickerItem[];
   intervalMs?: number;
   autoplay?: boolean;
+  theme?: "light" | "dark";
 };
 
 export function NewsTicker({
   items,
   intervalMs = 4000,
   autoplay = true,
+  theme = "light",
 }: NewsTickerProps) {
   const [index, setIndex] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const isDark = theme === "dark";
 
   useEffect(() => {
     if (!autoplay || items.length <= 1) return undefined;
@@ -42,14 +46,24 @@ export function NewsTicker({
 
   if (items.length === 0) {
     return (
-      <ColorCard tone="tint" color="slate" padding="sm" className="text-sm">
+      <ColorCard
+        tone={isDark ? "solid" : "tint"}
+        color={isDark ? "slate" : "slate"}
+        padding="sm"
+        className="text-sm"
+      >
         아직 등록된 소식이 없습니다.
       </ColorCard>
     );
   }
 
   return (
-    <ColorCard tone="tint" color="blue" padding="sm" className="flex w-full items-center gap-4 overflow-hidden text-sm">
+    <ColorCard
+      tone={isDark ? "solid" : "tint"}
+      color={isDark ? "slate" : "blue"}
+      padding="sm"
+      className="flex w-full items-center gap-4 overflow-hidden text-sm"
+    >
       <span className="flex items-center gap-2 font-semibold">
         <span aria-hidden="true">📣</span>
         최신 소식
@@ -66,9 +80,9 @@ export function NewsTicker({
               className="flex min-w-full items-center gap-3"
             >
               {item.category && (
-                <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-blue-600">
+                <Badge color="info" theme={theme}>
                   {item.category}
-                </span>
+                </Badge>
               )}
               <span className="truncate">{item.title}</span>
             </Link>
@@ -82,8 +96,9 @@ export function NewsTicker({
             type="button"
             onClick={() => setIndex(itemIndex)}
             className={cn(
-              "h-2 w-2 rounded-full border border-blue-300 transition",
-              index === itemIndex ? "bg-blue-600" : "bg-white",
+              "h-2 w-2 rounded-full transition",
+              isDark ? "border border-zinc-600" : "border border-blue-300",
+              index === itemIndex ? (isDark ? "bg-blue-400" : "bg-blue-600") : isDark ? "bg-zinc-800" : "bg-white",
             )}
             aria-label={`${itemIndex + 1}번째 소식 보기`}
           />

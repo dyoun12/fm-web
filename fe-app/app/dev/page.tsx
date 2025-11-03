@@ -942,8 +942,8 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
     case "NewsTicker":
       return (
         <div className="grid gap-4">
-          <NewsTicker items={newsTickerItems} autoplay={false} />
-          <NewsTicker items={newsTickerItems} autoplay />
+          <NewsTicker items={newsTickerItems} autoplay={false} theme={theme} />
+          <NewsTicker items={newsTickerItems} autoplay theme={theme} />
         </div>
       );
     case "CtaSection":
