@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 // Google Fonts remote fetch is disabled in offline CI; use system fonts.
 import "./globals.css";
 import { StoreProvider } from "../store/provider";
-import { GlobalFooter } from "./components/organisms/global-footer/global-footer";
+import SiteFooter from "./site-footer";
 import SiteHeader from "./site-header";
 
 // const geistSans = Geist({
@@ -84,48 +84,14 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`antialiased font-sans`}>
+      <body className={`antialiased font-sans min-h-screen flex flex-col`}>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-blue-600 focus:px-3 focus:py-2 focus:text-white">본문으로 건너뛰기</a>
         <StoreProvider>
           <SiteHeader />
-          <main id="main-content" role="main">
+          <main id="main-content" role="main" className="flex-1">
             {children}
           </main>
-          <GlobalFooter
-            companyInfo={{
-              name: "FM Corp",
-              address: "서울특별시 중구 세종대로 110",
-              businessNumber: "000-00-00000",
-              representative: "홍길동",
-              email: "contact@fm-corp.example",
-              phone: "02-000-0000",
-            }}
-            navigationSections={[
-              {
-                title: "회사",
-                links: [
-                  { label: "회사 소개", href: "/about" },
-                  { label: "비전", href: "/vision" },
-                  { label: "연락처", href: "/contact" },
-                ],
-              },
-              {
-                title: "자료",
-                links: [
-                  { label: "공지사항", href: "/notice" },
-                  { label: "IR", href: "/ir" },
-                ],
-              },
-              {
-                title: "정책",
-                links: [
-                  { label: "개인정보 처리방침", href: "/privacy" },
-                  { label: "이용약관", href: "/terms" },
-                ],
-              },
-            ]}
-            legalLinks={[{ label: "개인정보 처리방침", href: "/privacy" }, { label: "이용약관", href: "/terms" }]}
-          />
+          <SiteFooter />
         </StoreProvider>
       </body>
     </html>

@@ -20,6 +20,38 @@
   --link-color-hover: var(--color-neutral-900);
 }
 
+/* Route-scoped theme: Contact page
+   Apply by setting data-theme="contact" on <html> or <body>.
+   Components using CSS variables (e.g., TextLink) will automatically pick these. */
+[data-theme="contact"] {
+  /* Background can be a solid color or a gradient */
+  --background: linear-gradient(135deg, #2563EB 0%, #10B981 100%);
+  --foreground: #F8FAFC; /* slate-50 */
+
+  /* Optional: palette tweaks used by atoms consuming tokens */
+  --color-primary: #38BDF8; /* sky-400 */
+  --color-primary-dark: #0EA5E9; /* sky-500 */
+  --color-secondary: #34D399; /* emerald-400 */
+
+  /* Links on dark-ish backgrounds */
+  --link-color: #BFDBFE; /* sky-200 */
+  --link-color-hover: #FFFFFF;
+}
+
+/* Contact-only: transparent header/footer backgrounds over themed backdrop */
+[data-theme="contact"] header {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+[data-theme="contact"] footer {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+[data-theme="contact"] footer > div:last-child {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

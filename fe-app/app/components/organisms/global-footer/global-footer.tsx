@@ -30,7 +30,7 @@ export type GlobalFooterProps = {
     description: string;
     onSubmit?: (email: string) => Promise<void> | void;
   };
-  theme?: "light" | "dark";
+  theme?: "light" | "dark" | "contact";
 };
 
 export function GlobalFooter({
@@ -41,18 +41,20 @@ export function GlobalFooter({
   newsletter,
   theme = "light",
 }: GlobalFooterProps) {
-  const isDark = theme === "dark";
+  const isContact = theme === "contact";
+  const isDark = theme === "dark" || isContact;
+  const linkHover = isContact ? "hover:text-white" : "hover:text-blue-600";
   return (
-    <footer className={cn(isDark ? "border-t border-zinc-800 bg-zinc-900" : "border-t border-zinc-200 bg-zinc-50") }>
+    <footer className={cn(isDark ? "border-t border-zinc-800 bg-zinc-900" : "border-t border-zinc-200 bg-zinc-50", isContact && "text-white") }>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-12">
         {/* 1행: 좌측 회사 정보 / 우측 상단 FooterLinks */}
         <div className="grid w-full gap-10 lg:grid-cols-2">
           <aside className="flex flex-col gap-4">
-            <h2 className={cn("text-xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
+            <h2 className={cn("text-xl font-semibold", isContact ? "text-white" : isDark ? "text-zinc-100" : "text-zinc-900") }>
               {companyInfo.name}
             </h2>
-            <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>{companyInfo.address}</p>
-            <dl className={cn("flex flex-col gap-1 text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
+            <p className={cn("text-sm", isContact ? "text-white" : isDark ? "text-zinc-400" : "text-zinc-600")}>{companyInfo.address}</p>
+            <dl className={cn("flex flex-col gap-1 text-xs", isContact ? "text-white" : isDark ? "text-zinc-400" : "text-zinc-500") }>
               {companyInfo.businessNumber && (
                 <div className="flex gap-2">
                   <dt className="font-medium">사업자등록번호</dt>
@@ -102,7 +104,7 @@ export function GlobalFooter({
                   key={section.title}
                   title={section.title}
                   links={section.links}
-                  theme={theme}
+                  theme={isContact ? "contact" : theme}
                 />
               ))}
             </div>
@@ -121,14 +123,14 @@ export function GlobalFooter({
       </div>
 
       <div className={cn(isDark ? "border-t border-zinc-800 bg-zinc-900" : "border-t border-zinc-200 bg-white") }>
-        <div className={cn("mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-6 text-sm md:flex-row md:items-center md:justify-between", isDark ? "text-zinc-400" : "text-zinc-500") }>
+        <div className={cn("mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-6 text-sm md:flex-row md:items-center md:justify-between", isContact ? "text-white" : isDark ? "text-zinc-400" : "text-zinc-500") }>
           <span>© {new Date().getFullYear()} {companyInfo.name}. All rights reserved.</span>
           <div className="flex flex-wrap items-center gap-4">
             {legalLinks?.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="transition hover:text-blue-600"
+                className={cn("transition", linkHover)}
               >
                 {item.label}
               </Link>
@@ -137,7 +139,7 @@ export function GlobalFooter({
               <Link
                 key={item.href}
                 href={item.href}
-                className="transition hover:text-blue-600"
+                className={cn("transition", linkHover)}
               >
                 {item.label}
               </Link>

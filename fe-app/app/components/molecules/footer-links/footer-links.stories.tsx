@@ -15,3 +15,14 @@ export const Default = {
     ],
   },
 };
+
+export const ContactTheme = {
+  args: {
+    title: "회사",
+    links: [
+      { label: "소개", href: "#" },
+      { label: "연혁", href: "#" },
+    ],
+    theme: "contact",
+  },
+};

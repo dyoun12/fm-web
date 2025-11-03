@@ -44,6 +44,9 @@ import { ContactSection } from "../components/organisms/contact-section/contact-
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 
+// SSR/CSR 일관성을 위한 고정 시각 스냅샷(Dev 카탈로그에서만 사용)
+const DEV_NOW_ISO = "2025-01-01T00:00:00.000Z";
+
 type ComponentItem = {
   name: string;
   priority: "A" | "B" | "C";
@@ -378,7 +381,7 @@ const organisms: ComponentItem[] = [
   {
     name: "GlobalHeader",
     priority: "A",
-    description: "상단 네비게이션과 CTA를 담은 헤더",
+    description: "상단 네비게이션과 CTA를 담은 헤더 (contact 테마 지원)",
     interactions: [
       "스크롤 시 Sticky + 배경 색상 전환",
       "모바일에서 메뉴 버튼 클릭 시 Drawer Slide-in",
@@ -391,7 +394,7 @@ const organisms: ComponentItem[] = [
   {
     name: "GlobalFooter",
     priority: "A",
-    description: "회사 정보, 링크, 저작권 포함 푸터",
+    description: "회사 정보, 링크, 저작권 포함 푸터 (contact 테마 지원)",
     interactions: [
       "링크 Focus 시 아웃라인 강조",
       "뉴스레터 제출 후 성공 메시지 표시",
@@ -497,14 +500,24 @@ const organisms: ComponentItem[] = [
 ];
 
 const contactFormFields: ContactFormField[] = [
+  { id: "company", label: "회사명", type: "text", colSpan: 2 },
+  { id: "title", label: "직책", type: "text" },
   { id: "name", label: "이름", type: "text", required: true },
-  { id: "email", label: "이메일", type: "email", required: true },
+  { id: "email", label: "이메일", type: "email", required: true, colSpan: 2 },
   {
-    id: "message",
-    label: "문의 내용",
-    type: "textarea",
-    required: true,
+    id: "referral",
+    label: "유입경로",
+    type: "select",
+    placeholder: "유입경로 선택",
+    options: [
+      { label: "인터넷검색", value: "search" },
+      { label: "지인추천", value: "friend" },
+      { label: "기타", value: "other" },
+    ],
+    colSpan: 2,
   },
+  { id: "subject", label: "제목", type: "text", colSpan: 2 },
+  { id: "message", label: "내용", type: "textarea", required: true },
 ];
 
 const sampleNavigation = [
@@ -632,13 +645,13 @@ const dashboardActivities = [
     id: "activity-1",
     actor: "김지현",
     action: "이 ‘2025 Q4 IR 보고서’를 게시했습니다.",
-    timestamp: new Date().toISOString(),
+    timestamp: DEV_NOW_ISO,
   },
   {
     id: "activity-2",
     actor: "박성민",
     action: "이 ‘공지: 시스템 점검 안내’를 수정했습니다.",
-    timestamp: new Date().toISOString(),
+    timestamp: DEV_NOW_ISO,
   },
 ];
 
@@ -888,6 +901,7 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
   }
 }
 
+
 function renderMoleculePreview(name: string, theme: "light" | "dark") {
   switch (name) {
     case "HeroBanner":
@@ -990,20 +1004,34 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
   switch (name) {
     case "GlobalHeader":
       return (
-        <GlobalHeader
-          brandName="FM Corporation"
-          navigation={sampleNavigation}
-          cta={{ label: "문의하기", href: "/contact" }}
-          theme={theme}
-        />
+        <div className="grid gap-6">
+          <GlobalHeader
+            brandName="FM Corporation"
+            navigation={sampleNavigation}
+            cta={{ label: "문의하기", href: "/contact" }}
+            theme={theme}
+          />
+          <GlobalHeader
+            brandName="FM Corporation"
+            navigation={sampleNavigation}
+            cta={{ label: "문의하기", href: "/contact" }}
+            theme="contact"
+          />
+        </div>
       );
     case "GlobalFooter":
       return (
-        <GlobalFooter
-          {...sampleFooter}
-          newsletter={{ description: "FM의 최신 소식과 인사이트를 받아보세요." }}
-          theme={theme}
-        />
+        <div className="grid gap-6">
+          <GlobalFooter
+            {...sampleFooter}
+            newsletter={{ description: "FM의 최신 소식과 인사이트를 받아보세요." }}
+            theme={theme}
+          />
+          <GlobalFooter
+            {...sampleFooter}
+            theme="contact"
+          />
+        </div>
       );
     case "NoticeList":
       return (

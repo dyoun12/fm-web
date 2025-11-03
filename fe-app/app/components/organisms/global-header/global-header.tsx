@@ -24,7 +24,7 @@ export type GlobalHeaderProps = {
     href: string;
   };
   isSticky?: boolean;
-  theme?: "light" | "dark";
+  theme?: "light" | "dark" | "contact";
 };
 
 export function GlobalHeader({
@@ -36,7 +36,10 @@ export function GlobalHeader({
   theme = "light",
 }: GlobalHeaderProps) {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const isDark = theme === "dark";
+  const isContact = theme === "contact";
+  const isDark = theme === "dark" || isContact;
+  const linkHover = isContact ? "hover:text-[var(--link-color-hover)]" : "hover:text-blue-600";
+  const linkActive = isContact ? "text-[var(--link-color-hover)]" : "text-blue-600";
 
   return (
     <header
@@ -74,8 +77,9 @@ export function GlobalHeader({
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
-                "transition hover:text-blue-600",
-                item.isActive && "text-blue-600",
+                "transition",
+                linkHover,
+                item.isActive && linkActive,
               )}
             >
               {item.label}
@@ -124,8 +128,9 @@ export function GlobalHeader({
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               className={cn(
-                "transition hover:text-blue-600",
-                item.isActive && "text-blue-600",
+                "transition",
+                linkHover,
+                item.isActive && linkActive,
               )}
             >
               {item.label}
