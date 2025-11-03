@@ -16,6 +16,13 @@ export type CtaSectionProps = {
     label: string;
     href: string;
   };
+  // Color tokens for the section surface
+  tone?: "solid" | "gradient" | "tint";
+  color?: "blue" | "emerald" | "zinc" | "amber" | "red" | "slate";
+  gradientFrom?: string;
+  gradientTo?: string;
+  rounded?: "xl" | "2xl" | "3xl";
+  padding?: "none" | "sm" | "md" | "lg";
 };
 
 export function CtaSection({
@@ -24,35 +31,50 @@ export function CtaSection({
   description,
   primaryAction,
   secondaryAction,
+  // surface tokens with sensible defaults
+  tone = "gradient",
+  color = "blue",
+  gradientFrom = "from-blue-600",
+  gradientTo = "to-emerald-500",
+  rounded = "3xl",
+  padding = "lg",
 }: CtaSectionProps) {
+  // Surface contrast: treat non-tint as dark surface
+  const isDarkSurface = tone !== "tint";
+  const textOnColor = isDarkSurface ? "dark" : "light";
   return (
-    <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg" className="text-white shadow-lg">
+    <ColorCard
+      tone={tone}
+      color={color}
+      gradientFrom={gradientFrom}
+      gradientTo={gradientTo}
+      rounded={rounded}
+      padding={padding}
+      textOnColor={textOnColor}
+      className="shadow-lg"
+    >
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 flex-col gap-2">
           {eyebrow && (
-            <span className="text-xs font-semibold uppercase tracking-wide text-white/80">
+            <span className="text-xs font-semibold uppercase tracking-wide opacity-90">
               {eyebrow}
             </span>
           )}
           <h2 className="text-3xl font-semibold">{title}</h2>
           {description && (
-            <p className="text-sm text-white/85">{description}</p>
+            <p className="text-sm opacity-90">{description}</p>
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          {/* Primary: outline 스타일 + primary 팔레트 */}
-          <Button asChild variant="outline" color="primary" className="text-blue-700">
-            <Link href={primaryAction.href} className="text-current no-underline">
+          {/* Primary: white background (outline primary) */}
+          <Button asChild variant="outline" color="primary">
+            <Link href={primaryAction.href} className="no-underline">
               {primaryAction.label}
             </Link>
           </Button>
           {secondaryAction && (
-            <Button
-              asChild
-              variant="ghost"
-              className="text-white border border-white/60 hover:bg-white/10"
-            >
-              <Link href={secondaryAction.href} className="text-current no-underline">
+            <Button asChild variant="ghost" color="neutral" theme={isDarkSurface ? "dark" : "light"}>
+              <Link href={secondaryAction.href} className="no-underline">
                 {secondaryAction.label}
               </Link>
             </Button>
