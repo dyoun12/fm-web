@@ -43,6 +43,7 @@ import { VisionValues, VisionValuesContent } from "../components/organisms/visio
 import { ContactSection } from "../components/organisms/contact-section/contact-section";
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
+import { Location as LocationMap } from "../components/organisms/location/location";
 
 // SSR/CSR 일관성을 위한 고정 시각 스냅샷(Dev 카탈로그에서만 사용)
 const DEV_NOW_ISO = "2025-01-01T00:00:00.000Z";
@@ -389,6 +390,19 @@ const organisms: ComponentItem[] = [
     guidelines: [
       "현재 페이지는 underline으로 강조",
       "CTA 버튼은 한 개만 유지해 시선 집중",
+    ],
+  },
+  {
+    name: "Location",
+    priority: "A",
+    description: "주소를 주입받아 Google 지도(Embed)와 마커를 표시",
+    interactions: [
+      "기본은 상호작용 비활성(휠 잠금)이며 버튼으로 활성화",
+      "주소 변경 시 임베드 src가 갱신되어 위치 업데이트",
+    ],
+    guidelines: [
+      "정확한 주소 문자열을 전달(도로명/지번 둘 중 하나로 일관)",
+      "높이(height)는 레이아웃 맥락에 맞춰 320~480px 권장",
     ],
   },
   {
@@ -1181,6 +1195,19 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
           ]}
           theme={theme}
         />
+      );
+    case "Location":
+      return (
+        <div className="grid gap-4">
+          <p className="text-sm text-zinc-600">샘플 주소: 서울특별시 강남구 테헤란로 (강남역 인근 좌표 사용)</p>
+          <LocationMap
+            address="서울특별시 강남구 테헤란로"
+            lat={37.49795}
+            lng={127.02764}
+            height={320}
+            label="FM Headquarters - Gangnam, Seoul"
+          />
+        </div>
       );
     default:
       return <p className="text-sm text-zinc-500">프리뷰 준비 중</p>;
