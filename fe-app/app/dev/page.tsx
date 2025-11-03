@@ -576,7 +576,7 @@ const timelineItems = [
   {
     year: "2023",
     title: "창립",
-    description: "FM 법인이 설립되며 플랫폼 전략을 수립했습니다.",
+    description: "법인이 설립되며 플랫폼 전략을 수립했습니다.",
   },
   {
     year: "2024",
@@ -1242,7 +1242,7 @@ export default function DevCatalogPage() {
             디자인 시스템 카탈로그
           </p>
           <h1 className={cn("text-4xl font-semibold", theme === "dark" ? "text-zinc-100" : "text-zinc-900")}>
-            FM 법인 홈페이지 UI 컴포넌트
+            홈페이지 UI 컴포넌트
           </h1>
           <p className={cn("max-w-3xl text-base", theme === "dark" ? "text-zinc-400" : "text-zinc-600") }>
             이 페이지는 디자인 시스템 컴포넌트를 한눈에 검토하기 위한 카탈로그
