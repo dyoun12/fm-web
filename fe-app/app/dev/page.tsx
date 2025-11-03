@@ -39,7 +39,7 @@ import { PostDetail } from "../components/organisms/post-detail/post-detail";
 import { CategoryFilterPanel } from "../components/organisms/category-filter-panel/category-filter-panel";
 import { AdminDashboardOverview } from "../components/organisms/admin-dashboard-overview/admin-dashboard-overview";
 import { AboutOverview } from "../components/organisms/about-overview/about-overview";
-import { VisionValues } from "../components/organisms/vision-values/vision-values";
+import { VisionValues, VisionValuesContent } from "../components/organisms/vision-values/vision-values";
 import { ContactSection } from "../components/organisms/contact-section/contact-section";
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
@@ -1049,12 +1049,22 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
       return (
         <VisionValues
           items={[
-            { key: "vision", title: "Vision", description: "사람과 도시를 연결" },
-            { key: "mission", title: "Mission", description: "데이터 기반 의사결정" },
-            { key: "values", title: "Values", description: "신뢰, 투명, 혁신" },
+            { key: "vision", title: "Vision", imageUrl: "https://picsum.photos/seed/dev-vision/640/360", imageAlt: "비전 이미지" },
+            { key: "mission", title: "Mission", imageUrl: "https://picsum.photos/seed/dev-mission/640/360", imageAlt: "미션 이미지" },
+            { key: "values", title: "Values", imageUrl: "https://picsum.photos/seed/dev-values/640/360", imageAlt: "핵심 가치 이미지" },
           ]}
           theme={theme}
-        />
+        >
+          <VisionValuesContent tabKey="vision">
+            <p className="text-sm leading-relaxed text-zinc-600">사람과 도시를 연결</p>
+          </VisionValuesContent>
+          <VisionValuesContent tabKey="mission">
+            <p className="text-sm leading-relaxed text-zinc-600">데이터 기반 의사결정</p>
+          </VisionValuesContent>
+          <VisionValuesContent tabKey="values">
+            <p className="text-sm leading-relaxed text-zinc-600">신뢰, 투명, 혁신</p>
+          </VisionValuesContent>
+        </VisionValues>
       );
     case "ContactSection":
       return (

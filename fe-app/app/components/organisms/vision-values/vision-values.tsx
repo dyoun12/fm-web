@@ -1,23 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { Children, isValidElement, ReactElement, ReactNode, useMemo, useState } from "react";
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
 
-export type VisionItem = { key: string; title: string; description: string };
+export type VisionItem = {
+  key: string;
+  title: string;
+  // 아래 필드는 하위 호환을 위한 옵션(권장: children 기반 콘텐츠 구성)
+  description?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+};
 
 export type VisionValuesProps = {
   items: VisionItem[];
   theme?: "light" | "dark";
+  children?: ReactNode; // 탭별 자유로운 콘텐츠 제공 (VisionValuesContent 사용 권장)
 };
 
-export function VisionValues({ items, theme = "light" }: VisionValuesProps) {
+export type VisionValuesContentProps = {
+  tabKey: string; // items[].key 와 매칭
+  children: ReactNode;
+};
+
+export function VisionValuesContent({ children }: VisionValuesContentProps) {
+  return <>{children}</>;
+}
+
+export function VisionValues({ items, theme = "light", children }: VisionValuesProps) {
   const [active, setActive] = useState(items[0]?.key);
   const isDark = theme === "dark";
   const current = items.find((i) => i.key === active) ?? items[0];
+
+  const contentMap = useMemo(() => {
+    const map = new Map<string, ReactNode>();
+    if (!children) return map;
+    const arr = Children.toArray(children);
+    for (const child of arr) {
+      if (isValidElement(child)) {
+        const el = child as ReactElement<any>;
+        const keyProp = (el.props && (el.props.tabKey as string)) || undefined;
+        if (keyProp) {
+          map.set(keyProp, el);
+        }
+      }
+    }
+    return map;
+  }, [children]);
   return (
-    <Card theme={theme}>
-      <nav className="flex flex-wrap gap-2">
+    <div>
+      <nav className="mb-4 flex flex-wrap gap-2">
         {items.map((i) => (
           <button
             key={i.key}
@@ -37,11 +70,38 @@ export function VisionValues({ items, theme = "light" }: VisionValuesProps) {
         ))}
       </nav>
       {current && (
-        <div className="mt-4">
-          <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>{current.title}</h3>
-          <p className={cn("mt-2 text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>{current.description}</p>
+        <div>
+          <div className={cn(
+            "mt-3 gap-4",
+            current.imageUrl ? "grid md:grid-cols-2 md:items-stretch" : "",
+          )}>            
+            {current.imageUrl && (
+              <div className="overflow-hidden rounded-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={current.imageUrl}
+                  alt={current.imageAlt || `${current.title} 이미지`}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <Card theme={theme} className="h-full flex flex-col justify-center">
+              {contentMap.get(current.key) ?? (
+                current.description ? (
+                  <p
+                    className={cn(
+                      "whitespace-pre-line text-sm leading-relaxed",
+                      isDark ? "text-zinc-400" : "text-zinc-600",
+                    )}
+                  >
+                    {current.description}
+                  </p>
+                ) : null
+              )}
+            </Card>
+          </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
