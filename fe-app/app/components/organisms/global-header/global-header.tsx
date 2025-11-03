@@ -56,17 +56,21 @@ export function GlobalHeader({
             <img
               src={logo.src}
               alt={logo.alt}
-              className="h-10 w-auto"
+              className={cn("h-20 w-auto", isContact && "brightness-0 invert")}
               loading="lazy"
             />
           ) : (
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+            <span
+              className={cn(
+                "flex h-20 w-20 items-center justify-center rounded-full text-xl font-bold",
+                isContact
+                  ? "border-2 border-white text-white"
+                  : "bg-blue-600 text-white",
+              )}
+            >
               FM
             </span>
           )}
-          <span className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
-            {brandName}
-          </span>
         </Link>
 
         <nav className={cn("hidden items-center gap-6 text-sm font-medium lg:flex", isDark ? "text-zinc-300" : "text-zinc-600") }>

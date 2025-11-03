@@ -14,6 +14,7 @@ export default function SiteHeader() {
 
   return (
     <GlobalHeader
+      logo={{ src: "/logo.svg", alt: "FM Corp 로고" }}
       brandName="FM Corp"
       navigation={nav}
       cta={{ label: "문의하기", href: "/contact" }}
