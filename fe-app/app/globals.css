@@ -43,6 +43,10 @@
   background-color: transparent !important;
   border-color: transparent !important;
 }
+[data-theme="contact"] header[data-elevated="true"] {
+  /* 메뉴 오픈 또는 스크롤 시 배경 강화 */
+  background-color: rgba(0, 0, 0, 0.4) !important; /* bg-black/30 */
+}
 [data-theme="contact"] footer {
   background-color: transparent !important;
   border-color: transparent !important;
