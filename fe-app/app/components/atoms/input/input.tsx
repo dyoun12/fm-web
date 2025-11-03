@@ -21,6 +21,11 @@ export type InputProps = {
   suffix?: ReactNode;
   hideLabel?: boolean;
   theme?: "light" | "dark";
+  /**
+   * Outermost wrapper className for layout adjustments
+   * (e.g., collapse gaps when label is hidden)
+   */
+  wrapperClassName?: string;
 } & Omit<ComponentPropsWithoutRef<"input">, "type"> & {
   type?: Extract<
     InputType,
@@ -60,6 +65,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       required,
       disabled,
       theme = "light",
+      wrapperClassName,
       ...rest
     },
     ref,
@@ -72,8 +78,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       state === "error" && errorMessage ? `${inputId}-error` : undefined;
 
     const isDark = theme === "dark";
+    const hasAssistive = Boolean(description || helperText || (state === "error" && errorMessage));
     return (
-      <div className="flex flex-col gap-2">
+      <div
+        className={cn(
+          "flex flex-col",
+          hideLabel && !hasAssistive ? "gap-0" : "gap-2",
+          wrapperClassName,
+        )}
+      >
         <div className={cn("flex flex-col gap-1") }>
           <label
             className={cn(

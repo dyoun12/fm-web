@@ -529,7 +529,11 @@ const sampleFooter = {
   companyInfo: {
     name: "FM Corporation",
     address: "서울특별시 강남구 테헤란로 123, 9층",
+    businessNumber: "123-45-67890",
+    representative: "홍길동",
     email: "contact@fm-corp.com",
+    fax: "02-111-2222",
+    phone: "02-000-0000",
   },
   navigationSections: [
     {
