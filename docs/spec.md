@@ -121,6 +121,32 @@ fe-app/
 
 ---
 
+## 4. 정적 페이지 IA 및 라우팅
+
+- 홈 (`/`)
+  - Hero(슬로건/CTA)
+  - Feature Grid(주요 사업)
+  - Latest News Summary(공지 요약)
+  - CTA 섹션
+
+- 회사 소개 (`/about`)
+  - Company Overview
+  - 연혁(Timeline)
+  - Team Grid(사진/역할)
+  - Location(지도 자리표시자)
+
+- 비전 (`/vision`)
+  - Mission / Vision / Values
+  - 일러스트/이미지 자리표시자
+
+- 연락처 (`/contact`)
+  - 연락처 카드(전화/이메일/주소)
+  - Contact Form(UI)
+
+참고: 각 페이지는 App Router 정적 빌드 대상이며 외부 데이터 호출을 수행하지 않는다. 메타데이터(title/description/OG/canonical)와 JSON-LD(Organization, WebSite)는 `app/layout.tsx` 및 개별 `page.tsx`에서 정의한다.
+
+---
+
 ### 3.3 카테고리 관리
 
 | 메서드 | 엔드포인트 | 설명 |

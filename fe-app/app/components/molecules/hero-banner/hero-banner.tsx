@@ -24,6 +24,7 @@ export type HeroBannerProps = {
   backgroundImageUrl?: string;
   alignment?: "left" | "center";
   media?: ReactNode;
+  className?: string;
 };
 
 const BACKGROUND_CLASSES: Record<BackgroundType, string> = {
@@ -41,25 +42,26 @@ export function HeroBanner({
   backgroundImageUrl,
   alignment = "left",
   media,
+  className,
 }: HeroBannerProps) {
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
     if (backgroundType === "image" && backgroundImageUrl) {
       return (
-        <ImageCard backgroundImageUrl={backgroundImageUrl} padding="lg">
+        <ImageCard backgroundImageUrl={backgroundImageUrl} padding="lg" className={className}>
           {children}
         </ImageCard>
       );
     }
     if (backgroundType === "gradient") {
       return (
-        <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg">
+        <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg" className={className}>
           {children}
         </ColorCard>
       );
     }
     // solid
     return (
-      <ColorCard tone="solid" color="blue" padding="lg">
+      <ColorCard tone="solid" color="blue" padding="lg" className={className}>
         {children}
       </ColorCard>
     );
@@ -80,7 +82,7 @@ export function HeroBanner({
           )}
         >
           <div className="flex flex-col gap-4">
-            <h1 className="text-4xl font-semibold leading-tight lg:text-5xl">
+            <h1 className="text-4xl font-semibold leading-tight lg:text-5xl text-white">
               {title}
             </h1>
             {subtitle && (

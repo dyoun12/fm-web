@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light;
   /* Design tokens (docs/design-guide.md) */
   --color-primary: #0B5CF2;
   --color-primary-dark: #083F9B;
@@ -26,15 +27,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    /* Link tokens (dark): lighter hues for contrast */
-    --link-color: #93C5FD; /* blue-300 */
-    --link-color-hover: #BFDBFE; /* blue-200 */
-  }
-}
+/* Force light theme by default. If dark theme is needed,
+   implement explicit class-based theming (e.g., .theme-dark) later. */
 
 body {
   background: var(--background);
