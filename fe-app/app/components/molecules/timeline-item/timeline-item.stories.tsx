@@ -13,3 +13,12 @@ export const Default = {
     description: "기업 홈페이지와 관리자 콘솔의 첫 버전을 론칭했습니다.",
   },
 };
+
+export const RightAligned = {
+  args: {
+    year: "2024",
+    title: "해외 진출",
+    description: "3개국 프로젝트 런칭",
+    align: "right",
+  },
+};

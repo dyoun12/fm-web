@@ -22,19 +22,20 @@ export function TimelineItem({
   align = "left",
 }: TimelineItemProps) {
   const isDark = theme === "dark";
+  const isRight = align === "right";
   return (
     <div
       className={cn(
         "flex gap-6",
-        align === "right" ? "flex-row-reverse text-right" : "flex-row",
+        isRight ? "flex-row-reverse" : "flex-row",
       )}
     >
       <div className="flex flex-col items-center">
         <span className="text-lg font-semibold text-blue-600">{year}</span>
         <span className={cn("mt-2 h-full w-px", isDark ? "bg-zinc-700" : "bg-zinc-200")} aria-hidden="true" />
       </div>
-      <Card className="flex-1" theme={theme}>
-        <div className="flex items-center gap-3">
+      <Card className={cn("flex-1", isRight && "text-right")} theme={theme}>
+        <div className={cn("flex items-center gap-3", isRight ? "justify-end" : "justify-start")}> 
           {icon && (
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
               {icon}
