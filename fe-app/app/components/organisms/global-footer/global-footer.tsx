@@ -41,40 +41,44 @@ export function GlobalFooter({
   const isDark = theme === "dark";
   return (
     <footer className={cn(isDark ? "border-t border-zinc-800 bg-zinc-900" : "border-t border-zinc-200 bg-zinc-50") }>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-12 lg:flex-row lg:gap-16">
-        <aside className="flex flex-1 flex-col gap-4">
-          <h2 className={cn("text-xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
-            {companyInfo.name}
-          </h2>
-          <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>{companyInfo.address}</p>
-          <dl className={cn("flex flex-col gap-1 text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
-            {companyInfo.businessNumber && (
-              <div className="flex gap-2">
-                <dt className="font-medium">사업자등록번호</dt>
-                <dd>{companyInfo.businessNumber}</dd>
-              </div>
-            )}
-            {companyInfo.email && (
-              <div className="flex gap-2">
-                <dt className="font-medium">이메일</dt>
-                <dd>
-                  <Link href={`mailto:${companyInfo.email}`}>
-                    {companyInfo.email}
-                  </Link>
-                </dd>
-              </div>
-            )}
-            {companyInfo.phone && (
-              <div className="flex gap-2">
-                <dt className="font-medium">대표번호</dt>
-                <dd>
-                  <Link href={`tel:${companyInfo.phone}`}>
-                    {companyInfo.phone}
-                  </Link>
-                </dd>
-              </div>
-            )}
-          </dl>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-12">
+        {/* 1행: 회사 정보 + 최신 소식 구독 */}
+        <div className="grid w-full gap-10 lg:grid-cols-2">
+          <aside className="flex flex-col gap-4">
+            <h2 className={cn("text-xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
+              {companyInfo.name}
+            </h2>
+            <p className={cn("text-sm", isDark ? "text-zinc-400" : "text-zinc-600")}>{companyInfo.address}</p>
+            <dl className={cn("flex flex-col gap-1 text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
+              {companyInfo.businessNumber && (
+                <div className="flex gap-2">
+                  <dt className="font-medium">사업자등록번호</dt>
+                  <dd>{companyInfo.businessNumber}</dd>
+                </div>
+              )}
+              {companyInfo.email && (
+                <div className="flex gap-2">
+                  <dt className="font-medium">이메일</dt>
+                  <dd>
+                    <Link href={`mailto:${companyInfo.email}`}>
+                      {companyInfo.email}
+                    </Link>
+                  </dd>
+                </div>
+              )}
+              {companyInfo.phone && (
+                <div className="flex gap-2">
+                  <dt className="font-medium">대표번호</dt>
+                  <dd>
+                    <Link href={`tel:${companyInfo.phone}`}>
+                      {companyInfo.phone}
+                    </Link>
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </aside>
+
           {newsletter && (
             <NewsletterForm
               description={newsletter.description}
@@ -82,9 +86,10 @@ export function GlobalFooter({
               theme={theme}
             />
           )}
-        </aside>
+        </div>
 
-        <div className="grid flex-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {/* 2행: FooterLinks(네비게이션 섹션) */}
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {navigationSections.map((section) => (
             <div key={section.title} className="flex flex-col gap-3">
               <h3 className={cn("text-sm font-semibold", isDark ? "text-zinc-200" : "text-zinc-800") }>
@@ -147,6 +152,7 @@ type NewsletterFormProps = {
 function NewsletterForm({ description, onSubmit, theme = "light" }: NewsletterFormProps) {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [loading, setLoading] = useState(false);
+  const isDark = theme === "dark";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -168,9 +174,9 @@ function NewsletterForm({ description, onSubmit, theme = "light" }: NewsletterFo
   };
 
   return (
-    <Card className="mt-4 w-full" padding="sm">
+    <Card className="mt-4 w-full" padding="sm" theme={theme}>
       <form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
-      <p className="text-sm text-zinc-600">{description}</p>
+      <p className={cn("text-sm", isDark ? "text-zinc-300" : "text-zinc-600")}>{description}</p>
       <div className="flex items-center gap-2">
         <Input
           label="뉴스레터 이메일"
@@ -187,10 +193,10 @@ function NewsletterForm({ description, onSubmit, theme = "light" }: NewsletterFo
         </Button>
       </div>
       {status === "success" && (
-        <p className="text-xs text-green-600">구독이 완료되었습니다.</p>
+        <p className={cn("text-xs", isDark ? "text-emerald-300" : "text-emerald-600")}>구독이 완료되었습니다.</p>
       )}
       {status === "error" && (
-        <p className="text-xs text-red-500">
+        <p className={cn("text-xs", isDark ? "text-red-300" : "text-red-500") }>
           구독 처리에 실패했습니다. 잠시 후 다시 시도해주세요.
         </p>
       )}
