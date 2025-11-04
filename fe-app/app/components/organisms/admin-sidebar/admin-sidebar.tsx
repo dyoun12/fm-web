@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
+import { Card } from "../../atoms/card/card";
 
 export type AdminSidebarItem = { label: string; href: string; icon?: string; active?: boolean };
 
@@ -13,8 +14,9 @@ export type AdminSidebarProps = {
 export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
   const isDark = theme === "dark";
   return (
-    <aside className={cn("w-64 rounded-2xl border p-6", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-200" : "border-zinc-200 bg-white") }>
-      <nav className="flex flex-col gap-1 text-sm">
+    <aside className={cn("w-64") }>
+      <Card padding="md" theme={theme}>
+        <nav className="flex flex-col gap-1 text-sm">
         {items.map((item) => (
           <Link
             key={`${item.href}-${item.label}`}
@@ -32,7 +34,8 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
             {item.label}
           </Link>
         ))}
-      </nav>
+        </nav>
+      </Card>
     </aside>
   );
 }

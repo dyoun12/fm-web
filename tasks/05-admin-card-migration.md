@@ -27,8 +27,8 @@
   - [x] 다크/라이트 토글 시 `theme`를 `Card`에도 전달
   - [ ] 스냅샷/렌더 테스트 업데이트
 - [ ] AdminSidebar: `<Card padding="md" className="w-64">`로 래핑, 내부 `<nav>` 유지
-  - [ ] 기존 외곽 클래스 제거 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:13`
-  - [ ] 다크/라이트 `theme` 전달, 스토리/테스트 업데이트
+  - [x] 기존 외곽 클래스 제거 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:13`
+  - [x] 다크/라이트 `theme` 전달, 스토리/테스트 업데이트
 - [ ] DashboardOverview(알림 패널): 알림 섹션을 `<Card variant="soft" padding="md" className="border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300">`로 교체
   - [ ] 헤딩/목록 마크업 유지 — `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx:92`
   - [ ] theme 연동 및 콘트라스트 확인(AA)
