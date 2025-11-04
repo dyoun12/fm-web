@@ -43,7 +43,11 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
     >
       <div className="flex items-center gap-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logo.src} alt={logo.alt} className="h-12 w-auto" />
+        <img
+          src={logo.src}
+          alt={logo.alt}
+          className={cn("h-12 w-auto", isDark && "brightness-0 invert")}
+        />
         <h2 className="text-base font-semibold">{title}</h2>
       </div>
       <div className="flex items-center gap-2">
