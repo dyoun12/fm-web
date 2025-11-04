@@ -43,7 +43,7 @@
 
 ## 기타 아톰 대체 체크리스트(카드 외)
 - [ ] AdminHeader: 구분선 `Divider` 아톰 사용
-  - [ ] 드롭다운 내부 임시 구분선(`div.my-1.h-px`) → `Divider`로 교체, 다크 모드 대비 보정 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:96`
+  - [x] 드롭다운 내부 임시 구분선(`div.my-1.h-px`) → `Divider`로 교체, 다크 모드 대비 보정 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:96`
 - [ ] AdminHeader: 메뉴 항목 `Button` 아톰으로 교체
   - [ ] 현재 `button` + 유틸 클래스 → `<Button variant="ghost" size="sm" theme={theme}>`로 치환(아이콘은 children로 유지)
   - [ ] 접근성 속성(`role="menuitem"`) 유지, 포커스 링 확인

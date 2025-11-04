@@ -6,6 +6,7 @@ import { SearchInput } from "../../molecules/search-input/search-input";
 import { Avatar } from "../../atoms/avatar/avatar";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Card } from "../../atoms/card/card";
+import { Divider } from "../../atoms/divider/divider";
 
 export type AdminHeaderProps = {
   title?: string;
@@ -125,7 +126,7 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
               >
                 <i className="ri-moon-line" aria-hidden="true" /> 다크 테마
               </button>
-              <div className={cn("my-1 h-px", isDark ? "bg-zinc-800" : "bg-zinc-200")} />
+              <Divider className={cn("my-1", isDark ? "bg-zinc-800" : "bg-zinc-200")} />
               <button
                 className={cn(
                   "flex w-full items-center justify-start gap-2 rounded px-2 py-2 text-left text-sm text-rose-600 transition-colors",
