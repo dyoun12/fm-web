@@ -1110,16 +1110,36 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
           <Tag variant="outline">공지</Tag>
         </FilterBar>
       );
-    case "DataTable":
-      return (
-        <DataTable
-          caption="목록"
-          columns={[{ key: "title", header: "제목" }, { key: "category", header: "카테고리" }, { key: "author", header: "작성자" }]}
-          rows={[{ title: "Q4 보고서", category: "IR", author: "admin" }]}
-          onSort={() => {}}
-          theme={theme}
-        />
-      );
+    case "DataTable": {
+      const Demo = () => {
+        const [page, setPage] = React.useState(1);
+        const [pageSize, setPageSize] = React.useState(10);
+        const rows = Array.from({ length: 12 }).map((_, i) => ({
+          title: `Q${i + 1} 보고서`,
+          category: i % 2 ? "IR" : "공지",
+          author: i % 3 ? "admin" : "editor",
+        }));
+        return (
+          <DataTable
+            caption="목록"
+            columns={[
+              { key: "title", header: "제목" },
+              { key: "category", header: "카테고리" },
+              { key: "author", header: "작성자" },
+            ]}
+            rows={rows}
+            theme={theme}
+            page={page}
+            pageSize={pageSize}
+            total={42}
+            onPageChange={setPage}
+            onPageSizeChange={setPageSize}
+            onSortChange={() => {}}
+          />
+        );
+      };
+      return <Demo />;
+    }
     case "Pagination":
       return <Pagination page={1} pageSize={10} total={42} theme={theme} />;
     case "ConfirmDialog": {
