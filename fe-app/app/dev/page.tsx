@@ -1165,8 +1165,8 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
       return (
         <div className="grid gap-2">
           <Toast type="info" message="안내" theme={theme} />
-          <Toast type="success" message="성공" theme={theme} />
-          <Toast type="error" message="오류" theme={theme} />
+          <Toast type="success" message="성공" theme={theme} close />
+          <Toast type="error" message="3초 후 자동으로 사라집니다" theme={theme} timeLimit={3000} />
         </div>
       );
     case "EmptyState":
