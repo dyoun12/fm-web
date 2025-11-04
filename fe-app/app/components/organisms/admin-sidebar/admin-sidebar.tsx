@@ -14,6 +14,22 @@ export type AdminSidebarProps = {
 
 export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
   const isDark = theme === "dark";
+  const toIconClass = (item: AdminSidebarItem) => {
+    const k = (item.icon || item.label || "").trim();
+    if (k.startsWith("ri-")) return k; // 이미 Remix 아이콘 클래스 전달 시
+    // 이모지/라벨 매핑
+    const map: Record<string, string> = {
+      "📊": "ri-dashboard-line",
+      "📰": "ri-newspaper-line",
+      "🏷️": "ri-price-tag-3-line",
+      "👤": "ri-user-3-line",
+      "대시보드": "ri-dashboard-line",
+      "게시물": "ri-newspaper-line",
+      "카테고리": "ri-price-tag-3-line",
+      "사용자": "ri-user-3-line",
+    };
+    return map[k] ?? "";
+  };
   return (
     <aside className={cn("w-64") }>
       <Card padding="md" theme={theme}>
@@ -27,7 +43,12 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
             role={undefined}
           >
             <Link href={item.href} className="flex w-full items-center gap-2">
-              {item.icon && <span aria-hidden>{item.icon}</span>}
+              {(() => {
+                const ic = toIconClass(item);
+                return ic ? (
+                  <i className={cn(ic, "text-[1.1em]")} aria-hidden="true" />
+                ) : null;
+              })()}
               {item.label}
             </Link>
           </MenuItem>
