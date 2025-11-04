@@ -21,6 +21,7 @@ import { Card } from "../components/atoms/card/card";
 import { ImageCard } from "../components/atoms/image-card/image-card";
 import { ColorCard } from "../components/atoms/color-card/color-card";
 import { GlassCard } from "../components/atoms/glass-card/glass-card";
+import { Avatar } from "../components/atoms/avatar/avatar";
 // 아래 원자 컴포넌트 중 현재 프리뷰에 사용되는 항목만 유지
 import { FeatureCard } from "../components/molecules/feature-card/feature-card";
 import { HeroBanner } from "../components/molecules/hero-banner/hero-banner";
@@ -34,6 +35,13 @@ import { TimelineItem } from "../components/molecules/timeline-item/timeline-ite
 import { TeamMemberCard } from "../components/molecules/team-member-card/team-member-card";
 import { StatCard } from "../components/molecules/stat-card/stat-card";
 import { FooterLinks } from "../components/molecules/footer-links/footer-links";
+import { DataTable } from "../components/molecules/data-table/data-table";
+import { Pagination } from "../components/molecules/pagination/pagination";
+import { SearchInput as SearchInputMolecule } from "../components/molecules/search-input/search-input";
+import { FilterBar } from "../components/molecules/filter-bar/filter-bar";
+import { ConfirmDialog } from "../components/molecules/confirm-dialog/confirm-dialog";
+import { Toast } from "../components/molecules/toast/toast";
+import { EmptyState } from "../components/molecules/empty-state/empty-state";
 import { GlobalHeader } from "../components/organisms/global-header/global-header";
 import { GlobalFooter } from "../components/organisms/global-footer/global-footer";
 import { NoticeList } from "../components/organisms/notice-list/notice-list";
@@ -46,6 +54,7 @@ import { ContactSection } from "../components/organisms/contact-section/contact-
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 import { Location as LocationMap } from "../components/organisms/location/location";
+import { AdminHeader } from "../components/organisms/admin-header/admin-header";
 
 // SSR/CSR 일관성을 위한 고정 시각 스냅샷(Dev 카탈로그에서만 사용)
 const DEV_NOW_ISO = "2025-01-01T00:00:00.000Z";
@@ -276,6 +285,13 @@ const atoms: ComponentItem[] = [
     interactions: ["호버/포커스 시 표시"],
     guidelines: ["간결한 텍스트 유지"],
   },
+  {
+    name: "Avatar",
+    priority: "B",
+    description: "사용자 이니셜/이미지 아바타",
+    interactions: ["이미지 로딩 실패 시 이니셜 대체"],
+    guidelines: ["크기/대비 일관 유지"],
+  },
 ];
 
 const molecules: ComponentItem[] = [
@@ -392,6 +408,55 @@ const molecules: ComponentItem[] = [
     interactions: ["스와치 Hover 시 그림자 강조"],
     guidelines: ["WCAG 대비 준수"],
   },
+  {
+    name: "SearchInput",
+    priority: "A",
+    description: "검색 입력 필드 + 아이콘",
+    interactions: ["입력, 포커스"],
+    guidelines: ["aria-label 제공"],
+  },
+  {
+    name: "FilterBar",
+    priority: "B",
+    description: "필터/태그/선택 바",
+    interactions: ["필터 선택"],
+    guidelines: ["반응형 줄바꿈"],
+  },
+  {
+    name: "DataTable",
+    priority: "A",
+    description: "간단한 데이터 테이블",
+    interactions: ["헤더 클릭 정렬 콜백"],
+    guidelines: ["셀 정렬/정렬 아이콘"],
+  },
+  {
+    name: "Pagination",
+    priority: "A",
+    description: "페이지네이션 컨트롤",
+    interactions: ["이전/다음"],
+    guidelines: ["현재/전체 페이지 표시"],
+  },
+  {
+    name: "ConfirmDialog",
+    priority: "B",
+    description: "확인 모달",
+    interactions: ["확인/취소"],
+    guidelines: ["role=dialog, aria-modal"],
+  },
+  {
+    name: "Toast",
+    priority: "B",
+    description: "알림 토스트",
+    interactions: ["자동/수동 닫기(후속)"],
+    guidelines: ["role=status"],
+  },
+  {
+    name: "EmptyState",
+    priority: "B",
+    description: "빈 목록 상태",
+    interactions: ["CTA 클릭"],
+    guidelines: ["명확한 지시문"],
+  },
 ];
 
 const organisms: ComponentItem[] = [
@@ -498,6 +563,13 @@ const organisms: ComponentItem[] = [
       "너비 256px 기준, 모바일에서는 Drawer 전환",
       "아이콘과 라벨 간 8px 간격 유지",
     ],
+  },
+  {
+    name: "AdminHeader",
+    priority: "A",
+    description: "관리자 상단 헤더(제목/검색/아바타)",
+    interactions: ["검색 입력", "프로필 클릭(후속)"],
+    guidelines: ["우측 유틸리티 간격 12px"],
   },
   {
     name: "CategoryFilterPanel",
@@ -919,6 +991,13 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           <IconButton aria-label="툴팁">?</IconButton>
         </Tooltip>
       );
+    case "Avatar":
+      return (
+        <div className="flex items-center gap-3">
+          <Avatar name="홍 길동" theme={theme} />
+          <Avatar name="관리자" src="https://picsum.photos/80" theme={theme} />
+        </div>
+      );
     case "TextLink":
       return (
         <div className="flex items-center gap-4">
@@ -1022,6 +1101,56 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
           theme={theme}
         />
       );
+    case "SearchInput":
+      return <SearchInputMolecule placeholder="검색" theme={theme} />;
+    case "FilterBar":
+      return (
+        <FilterBar theme={theme}>
+          <Select options={[{ label: "전체", value: "all" }, { label: "IR", value: "ir" }]} aria-label="카테고리" />
+          <Tag>공지</Tag>
+        </FilterBar>
+      );
+    case "DataTable":
+      return (
+        <DataTable
+          caption="목록"
+          columns={[{ key: "title", header: "제목" }, { key: "category", header: "카테고리" }, { key: "author", header: "작성자" }]}
+          rows={[{ title: "Q4 보고서", category: "IR", author: "admin" }]}
+          onSort={() => {}}
+          theme={theme}
+        />
+      );
+    case "Pagination":
+      return <Pagination page={1} pageSize={10} total={42} theme={theme} />;
+    case "ConfirmDialog": {
+      const Demo = () => {
+        const [open, setOpen] = React.useState(false);
+        return (
+          <>
+            <Button onClick={() => setOpen(true)} theme={theme}>모달 열기</Button>
+            <ConfirmDialog
+              open={open}
+              title="삭제"
+              description="되돌릴 수 없습니다"
+              onCancel={() => setOpen(false)}
+              onConfirm={() => setOpen(false)}
+              theme={theme}
+            />
+          </>
+        );
+      };
+      return <Demo />;
+    }
+    case "Toast":
+      return (
+        <div className="grid gap-2">
+          <Toast type="info" message="안내" theme={theme} />
+          <Toast type="success" message="성공" theme={theme} />
+          <Toast type="error" message="오류" theme={theme} />
+        </div>
+      );
+    case "EmptyState":
+      return <EmptyState title="데이터 없음" description="조건을 변경하거나 새 항목을 추가하세요" theme={theme} />;
     case "BrandColorPalette":
       return (
         <BrandColorPalette
@@ -1163,13 +1292,16 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
       return (
         <AdminSidebar
           items={[
-            { label: "대시보드", href: "#", icon: "🏠", active: true },
-            { label: "게시물", href: "#", icon: "📝" },
-            { label: "사용자", href: "#", icon: "👥" },
+            { label: "대시보드", href: "#dashboard", icon: "📊", active: true },
+            { label: "게시물", href: "#posts", icon: "📰" },
+            { label: "카테고리", href: "#categories", icon: "🏷️" },
+            { label: "사용자", href: "#users", icon: "👤" },
           ]}
           theme={theme}
         />
       );
+    case "AdminHeader":
+      return <AdminHeader title="대시보드" theme={theme} />;
     case "CategoryFilterPanel":
       return (
         <CategoryFilterPanel

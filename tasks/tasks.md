@@ -6,8 +6,8 @@
 - 기능 구현 완료 기준은 테스트(단위, 통합, 접근성)와 보안 점검까지 포함한다.
 
 ## 태스크 그룹
-- [ ] 01. 기본 UI 컴포넌트 구현 (`tasks/01-UI-components.md`)
-- [ ] 02. 정적 페이지 구축 (`tasks/02-frontend-static-pages.md`)
+- [x] 01. 기본 UI 컴포넌트 구현 (`tasks/01-UI-components.md`)
+- [x] 02. 정적 페이지 구축 (`tasks/02-frontend-static-pages.md`)
 - [ ] 03. 동적 콘텐츠 및 게시판 (`tasks/03-frontend-dynamic-pages.md`)
 - [ ] 04. 인증 및 보안 (`tasks/04-auth-security.md`)
 - [ ] 05. 관리자 콘솔 (`tasks/05-admin-console.md`)

@@ -83,6 +83,13 @@
 - 신규 컴포넌트는 반드시 스토리/테스트를 먼저 작성하고 Dev 카탈로그(`fe-app/app/dev/page.tsx`)에 등록한다.
 - Organisms에는 임의 Tailwind 유틸을 추가하지 말고 Atoms 변형으로 해결한다.
 
+## 선행 작업 진행사항(완료 체크)
+- [x] Avatar(Atom) 스캐폴딩 + 스토리/테스트
+- [x] Molecules 스캐폴딩 + 스토리/테스트: DataTable, Pagination, SearchInput, FilterBar, ConfirmDialog, Toast, EmptyState
+- [x] AdminHeader(Organism) 스캐폴딩 + 스토리/테스트
+- [x] Dev 카탈로그 등록 및 프리뷰 추가(Atoms/Molecules/Organisms 섹션)
+- [x] ConfirmDialog 프리뷰/스토리 버튼 트리거 적용(기본 자동 출력 방지)
+
 ## 세부 태스크(체크리스트)
 
 ### 1) 라우팅/레이아웃 스캐폴딩
@@ -118,9 +125,9 @@
 - [ ] 업로드는 presigned URL 정책 메모만 추가(실제 업로드는 백엔드 태스크 참조)
 
 ### 7) Dev Preview 연동
-- [ ] `fe-app/app/dev/page.tsx`에 Organisms 프리뷰 검토(이미 존재: AdminSidebar, AdminDashboardOverview)
-- [ ] 대시보드 상태 예시(통계/활동/알림) 샘플을 Dev 카탈로그에 유지(이름/Docs 링크 확인)
-- [ ] Docs 버튼 규칙(title → `/docs/organisms-...`) 준수 확인
+- [x] `fe-app/app/dev/page.tsx`에 Organisms 프리뷰 검토(이미 존재: AdminSidebar, AdminDashboardOverview) 및 AdminHeader 추가
+- [x] 대시보드 상태 예시(통계/활동/알림) 샘플을 Dev 카탈로그에 유지(이름/Docs 링크 확인)
+- [x] Docs 버튼 규칙(title → `/docs/organisms-...`) 준수 확인
 
 ### 8) 테스트(단위/접근성)
 - [ ] 각 페이지 렌더 스모크 테스트(Vitest + Testing Library)
