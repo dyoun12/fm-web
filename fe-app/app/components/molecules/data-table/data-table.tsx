@@ -6,6 +6,7 @@ import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Pagination } from "../pagination/pagination";
 import { Select } from "../../atoms/select/select";
 import { Card } from "../../atoms/card/card";
+import { Skeleton } from "../../atoms/skeleton/skeleton";
 
 export type DataTableColumn = {
   key: string;
@@ -109,9 +110,15 @@ export function DataTable({ columns, rows, loading = false, caption, theme = "li
         </thead>
         <tbody>
           {loading ? (
-            <tr>
-              <td className="px-4 py-6 text-center text-zinc-500" colSpan={columns.length}>불러오는 중...</td>
-            </tr>
+            Array.from({ length: Math.min(3, Math.max(1, Math.ceil((total ?? columns.length) / (columns.length || 1)))) }).map((_, rIdx) => (
+              <tr key={`sk-${rIdx}`} className={cn("border-b last:border-b-0", isDark ? "border-zinc-800" : "border-zinc-200") }>
+                {columns.map((col) => (
+                  <td key={`sk-${rIdx}-${col.key}`} className="px-4 sm:px-5 py-3">
+                    <Skeleton variant="text" />
+                  </td>
+                ))}
+              </tr>
+            ))
           ) : rows.length === 0 ? (
             <tr>
               <td className="px-4 py-6 text-center text-zinc-500" colSpan={columns.length}>데이터가 없습니다</td>
