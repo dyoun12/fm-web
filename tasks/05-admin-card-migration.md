@@ -48,8 +48,8 @@
   - [x] 현재 `button` + 유틸 클래스 → `<Button variant="ghost" size="sm" theme={theme}>`로 치환(아이콘은 children로 유지)
   - [x] 접근성 속성(`role="menuitem"`) 유지, 포커스 링 확인
 - [ ] AdminSidebar: 네비게이션 항목을 `Button asChild + <Link>`로 마이그레이션
-  - [ ] 현재 `Link` + 유틸 클래스 → `<Button asChild variant="ghost" color={item.active ? 'primary' : 'neutral'} size="sm"><Link .../></Button>`
-  - [ ] 중첩 앵커 금지 규칙 준수, 활성/호버 상태를 Button 팔레트로 일원화 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:17`
+  - [x] 현재 `Link` + 유틸 클래스 → `<Button asChild variant="ghost" color={item.active ? 'primary' : 'neutral'} size="sm"><Link .../></Button>`
+  - [x] 중첩 앵커 금지 규칙 준수, 활성/호버 상태를 Button 팔레트로 일원화 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:17`
 - [ ] SearchInput: 내부 입력 요소를 `Input` 아톰으로 대체
   - [ ] 라벨은 `hideLabel`로 숨기고, 좌측 돋보기는 `prefix`로 전달, 지우기(X)는 `suffix` 버튼 처리
   - [ ] 현재 커스텀 `input` 스타일 제거, 포커스/에러 상태는 `Input` 상태 토큰 사용 — `fe-app/app/components/molecules/search-input/search-input.tsx:34`

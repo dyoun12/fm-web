@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
+import { Button } from "../../atoms/button/button";
 
 export type AdminSidebarItem = { label: string; href: string; icon?: string; active?: boolean };
 
@@ -18,21 +19,20 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
       <Card padding="md" theme={theme}>
         <nav className="flex flex-col gap-1 text-sm">
         {items.map((item) => (
-          <Link
+          <Button
             key={`${item.href}-${item.label}`}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-2 rounded-lg px-3 py-2",
-              item.active
-                ? "bg-blue-600 text-white"
-                : isDark
-                  ? "hover:bg-zinc-800"
-                  : "hover:bg-zinc-50",
-            )}
+            asChild
+            variant="ghost"
+            size="sm"
+            color={item.active ? "primary" : "neutral"}
+            theme={theme}
+            className="justify-start"
           >
-            {item.icon && <span aria-hidden>{item.icon}</span>}
-            {item.label}
-          </Link>
+            <Link href={item.href}>
+              {item.icon && <span aria-hidden>{item.icon}</span>}
+              {item.label}
+            </Link>
+          </Button>
         ))}
         </nav>
       </Card>
