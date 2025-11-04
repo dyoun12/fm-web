@@ -96,6 +96,7 @@
 - [x] App Router 경로 생성: `/admin`, `/admin/posts`, `/admin/categories`, `/admin/users`
 - [x] `fe-app/app/admin/layout.tsx`에서 사이드바 배치(Organisms `AdminSidebar` 사용)
 - [x] 레이아웃 내 헤더(간단한 페이지 타이틀/아바타 자리표시자) 구성
+- [x] 관리자 경로에서 글로벌 헤더/푸터 제거 — `fe-app/app/site-header.tsx:1`, `fe-app/app/site-footer.tsx:1`
 - [ ] 보호 라우팅 훅 연동 지점 작성(의존 태스크 완료 시 `requireAuth()` 같은 훅 연결)
 
 ### 2) 대시보드(개요)
@@ -133,7 +134,7 @@
 - [ ] 각 페이지 렌더 스모크 테스트(Vitest + Testing Library)
 - [ ] 주요 상호작용 버튼 접근성 속성(`aria-label`, `role`, `tabindex`) 검사
 - [ ] MSW 기반 목 API로 네트워크 호출 차단
-- [ ] 선택: Playwright E2E 스모크(`/admin` 보호 리다이렉트 확인) — `fe-app/tests/e2e/admin/`
+- [ ] Playwright E2E 스모크(`/admin` 보호 리다이렉트 확인) — `fe-app/tests/e2e/admin/`
 
 ### 9) 문서화/로그
 - [ ] `docs/spec.md`의 관리자 IA/흐름 최신화(라우트/컴포넌트 매핑)

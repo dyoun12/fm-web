@@ -2,7 +2,6 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { AdminHeader } from "../components/organisms/admin-header/admin-header";
 import { cn } from "@/lib/classnames";
@@ -18,26 +17,37 @@ export default function AdminLayout({ children }: Props) {
     { label: "사용자", href: "/admin/users", icon: "👤", active: pathname?.startsWith("/admin/users") },
   ];
 
+  const pageTitle =
+    pathname === "/admin"
+      ? "대시보드"
+      : pathname?.startsWith("/admin/posts")
+        ? "게시물"
+        : pathname?.startsWith("/admin/categories")
+          ? "카테고리"
+          : pathname?.startsWith("/admin/users")
+            ? "사용자"
+            : "관리자";
+
   return (
-    <div className={cn("mx-auto grid max-w-7xl gap-6 p-6 lg:grid-cols-[256px_1fr]") }>
-      <div className="lg:sticky lg:top-6 lg:self-start">
-        <AdminSidebar items={items} />
+    // 전체 화면을 고정하고, 스크롤은 컨텐츠 영역에서만 발생
+    <div className={cn("grid h-screen grid-rows-[auto_1fr] overflow-hidden") }>
+      {/* 1행: 어드민 헤더 (고정) */}
+      <div className="bg-white px-6 py-3">
+        <AdminHeader title={pageTitle} className="rounded-xl" />
       </div>
-      <main className="grid gap-4">
-        <AdminHeader title={
-          pathname === "/admin"
-            ? "대시보드"
-            : pathname?.startsWith("/admin/posts")
-              ? "게시물"
-              : pathname?.startsWith("/admin/categories")
-                ? "카테고리"
-                : pathname?.startsWith("/admin/users")
-                  ? "사용자"
-                  : "관리자"
-        } />
-        <div>{children}</div>
-      </main>
+
+      {/* 2행: 사이드바 + 컨텐츠 (컨텐츠만 스크롤) */}
+      <div className="grid min-h-0 grid-cols-[256px_1fr] gap-6 px-6 pb-6">
+        {/* 사이드바 (고정) */}
+        <div className="bg-white">
+          <AdminSidebar items={items} />
+        </div>
+
+        {/* 컨텐츠 (스크롤 영역) */}
+        <main className="min-h-0 overflow-y-auto">
+          <div className="mx-auto max-w-6xl">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }
-

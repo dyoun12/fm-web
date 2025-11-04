@@ -5,7 +5,10 @@ import { GlobalFooter } from "./components/organisms/global-footer/global-footer
 
 export default function SiteFooter() {
   const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/admin");
   const isContact = pathname === "/contact";
+
+  if (isAdmin) return null;
 
   return (
     <GlobalFooter
