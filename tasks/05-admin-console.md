@@ -21,11 +21,11 @@
 - [ ] 디자인 시스템(Atoms/Molecules/Organisms) 재사용 우선. 신규 스타일은 Atoms 변형으로만 추가
 
 ## 디렉터리/파일 계획(생성 대상)
-- [ ] `fe-app/app/admin/layout.tsx` — 관리자 공통 레이아웃(사이드바 포함)
-- [ ] `fe-app/app/admin/page.tsx` — 대시보드(개요)
-- [ ] `fe-app/app/admin/posts/page.tsx` — 게시물 관리 리스트 스켈레톤
-- [ ] `fe-app/app/admin/categories/page.tsx` — 카테고리 관리 리스트 스켈레톤
-- [ ] `fe-app/app/admin/users/page.tsx` — 사용자 관리 리스트 스켈레톤
+- [x] `fe-app/app/admin/layout.tsx` — 관리자 공통 레이아웃(사이드바 포함)
+- [x] `fe-app/app/admin/page.tsx` — 대시보드(개요)
+- [x] `fe-app/app/admin/posts/page.tsx` — 게시물 관리 리스트 스켈레톤
+- [x] `fe-app/app/admin/categories/page.tsx` — 카테고리 관리 리스트 스켈레톤
+- [x] `fe-app/app/admin/users/page.tsx` — 사용자 관리 리스트 스켈레톤
 - [ ] `fe-app/api/admin.ts` — 목 API(posts/categories/users)
 - [ ] `fe-app/tests/pages/admin/dashboard.test.tsx` — 대시보드 렌더 테스트
 - [ ] `fe-app/tests/pages/admin/posts.test.tsx` — 게시물 페이지 렌더 테스트
@@ -93,30 +93,30 @@
 ## 세부 태스크(체크리스트)
 
 ### 1) 라우팅/레이아웃 스캐폴딩
-- [ ] App Router 경로 생성: `/admin`, `/admin/posts`, `/admin/categories`, `/admin/users`
-- [ ] `fe-app/app/admin/layout.tsx`에서 사이드바 배치(Organisms `AdminSidebar` 사용)
-- [ ] 레이아웃 내 헤더(간단한 페이지 타이틀/아바타 자리표시자) 구성
+- [x] App Router 경로 생성: `/admin`, `/admin/posts`, `/admin/categories`, `/admin/users`
+- [x] `fe-app/app/admin/layout.tsx`에서 사이드바 배치(Organisms `AdminSidebar` 사용)
+- [x] 레이아웃 내 헤더(간단한 페이지 타이틀/아바타 자리표시자) 구성
 - [ ] 보호 라우팅 훅 연동 지점 작성(의존 태스크 완료 시 `requireAuth()` 같은 훅 연결)
 
 ### 2) 대시보드(개요)
-- [ ] `AdminDashboardOverview` 조합하여 통계/최근 활동/알림 섹션 렌더
-- [ ] 통계 카드/활동/알림 데이터는 목 데이터로 주입(파일 상단 주석에 샘플 스키마 명시)
+- [x] `AdminDashboardOverview` 조합하여 통계/최근 활동/알림 섹션 렌더
+- [x] 통계 카드/활동/알림 데이터는 목 데이터로 주입(파일 상단 주석에 샘플 스키마 명시)
 - [ ] 반응형 레이아웃(그리드) 및 a11y 속성(label/aria-live 등) 확인
 
 ### 3) 게시물 관리 스켈레톤
-- [ ] 테이블/리스트 레이아웃(Atoms Card/Table 대체 조합 가능 시 사용) 스켈레톤 구성
+- [x] 테이블/리스트 레이아웃(Atoms Card/Table 대체 조합 가능 시 사용) 스켈레톤 구성
 - [ ] 상단 툴바: 검색, 필터(카테고리), `새 게시물` 버튼
 - [ ] 행 액션: 보기/수정/삭제 버튼 자리표시자(아이콘은 Remix 아이콘 규칙 적용)
-- [ ] 페이지ने이션 UI 자리표시자(후속 API 연동 시 활성)
+- [x] 페이지네이션 UI 자리표시자(후속 API 연동 시 활성)
 
 ### 4) 카테고리 관리 스켈레톤
 - [ ] 카테고리 리스트 + 생성/수정/삭제 버튼 자리표시자
-- [ ] 정렬(order) 필드 노출, slug 표시
+- [x] 정렬(order) 필드 노출, slug 표시
 - [ ] 사용처 주석: 프론트 라우팅 `/category/[slug]` 연계 메모
 
 ### 5) 사용자 관리 스켈레톤
 - [ ] 사용자 목록(이메일/역할/상태) + 초대/권한변경/비활성화 버튼 자리표시자
-- [ ] 역할(RBAC): admin/editor/viewer 탭/필터 UI
+- [x] 역할(RBAC): admin/editor/viewer 탭/필터 UI
 - [ ] 감사 로그 링크 자리표시자(후속 구현 참조)
 
 ### 6) API 목업 및 스키마 문서화
