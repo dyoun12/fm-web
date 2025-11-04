@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
+import { Badge } from "../../atoms/badge/badge";
 
 export type DashboardStat = {
   label: string;
@@ -49,13 +50,16 @@ export function AdminDashboardOverview({
               )}
             </div>
             {stat.trend && (
-              <p
-                className={cn(
-                  "mt-3 flex items-center gap-2 text-sm",
-                  stat.trend.direction === "up" && "text-emerald-600",
-                  stat.trend.direction === "down" && "text-red-600",
-                  stat.trend.direction === "flat" && "text-zinc-500",
-                )}
+              <Badge
+                theme={theme}
+                color={
+                  stat.trend.direction === "up"
+                    ? "success"
+                    : stat.trend.direction === "down"
+                      ? "warning"
+                      : "default"
+                }
+                className="mt-3 inline-flex w-fit items-center gap-2"
               >
                 <span aria-hidden="true">
                   {stat.trend.direction === "up" && "▲"}
@@ -63,7 +67,7 @@ export function AdminDashboardOverview({
                   {stat.trend.direction === "flat" && "■"}
                 </span>
                 {stat.trend.value}
-              </p>
+              </Badge>
             )}
           </Card>
         ))}

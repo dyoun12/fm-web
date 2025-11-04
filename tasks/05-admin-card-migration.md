@@ -60,7 +60,7 @@
   - [x] `<button>` → `<Button variant="ghost" size="sm" color="neutral">`로 치환, 비활성 시 `disabled` 처리
   - [x] 전/후 이동 버튼에 `aria-label` 유지, 포커스 표시 일관화 — `fe-app/app/components/molecules/pagination/pagination.tsx:20`
 - [ ] DashboardOverview: 지표(trend) 표시를 `Badge` 아톰으로 통일
-  - [ ] up=success, down=warning, flat=default 맵핑, 화살표 아이콘은 `children`로 포함 — `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx:30`
+  - [x] up=success, down=warning, flat=default 맵핑, 화살표 아이콘은 `children`로 포함 — `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx:30`
 
 ## 검증 항목
 - [ ] 시각 회귀: Dev 카탈로그(`/app/dev`) 및 Storybook(카드/필터바/테이블/빈 상태) 스크린 비교
