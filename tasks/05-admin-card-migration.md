@@ -33,7 +33,7 @@
   - [x] 헤딩/목록 마크업 유지 — `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx:92`
   - [x] theme 연동 및 콘트라스트 확인(AA)
 - [ ] FilterBar: 루트 컨테이너를 `<Card padding="sm" className="flex flex-wrap items-center gap-2">`로 교체
-  - [ ] 외곽선/배경 클래스 제거 — `fe-app/app/components/molecules/filter-bar/filter-bar.tsx:12`
+  - [x] 외곽선/배경 클래스 제거 — `fe-app/app/components/molecules/filter-bar/filter-bar.tsx:12`
   - [ ] 스토리/테스트에서 회귀(regression) 확인
 - [ ] DataTable: 최상위 래퍼를 `<Card padding="none" className="relative overflow-x-auto">`로 교체
   - [ ] 테이블 경계선 유지(헤더/바디 구분선은 기존 유지) — `fe-app/app/components/molecules/data-table/data-table.tsx:60`
