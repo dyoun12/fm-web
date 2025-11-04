@@ -22,6 +22,7 @@ import { ImageCard } from "../components/atoms/image-card/image-card";
 import { ColorCard } from "../components/atoms/color-card/color-card";
 import { GlassCard } from "../components/atoms/glass-card/glass-card";
 import { Avatar } from "../components/atoms/avatar/avatar";
+import { MenuItem } from "../components/atoms/menu-item/menu-item";
 // 아래 원자 컴포넌트 중 현재 프리뷰에 사용되는 항목만 유지
 import { FeatureCard } from "../components/molecules/feature-card/feature-card";
 import { HeroBanner } from "../components/molecules/hero-banner/hero-banner";
@@ -291,6 +292,16 @@ const atoms: ComponentItem[] = [
     description: "사용자 이니셜/이미지 아바타",
     interactions: ["이미지 로딩 실패 시 이니셜 대체"],
     guidelines: ["크기/대비 일관 유지"],
+  },
+  {
+    name: "MenuItem",
+    priority: "A",
+    description: "드롭다운/메뉴 내 항목(아이콘+라벨, 톤 지원)",
+    interactions: ["Hover 시 배경 강조", "키보드 포커스 링 표시"],
+    guidelines: [
+      "링크 조합 시 asChild로 중첩 앵커 방지",
+      "위험 동작은 tone=\"danger\"로 표현",
+    ],
   },
 ];
 
@@ -998,6 +1009,20 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
           <Avatar name="관리자" src="https://picsum.photos/80" theme={theme} />
         </div>
       );
+    case "MenuItem":
+      return (
+        <div className="w-72 border rounded-lg p-2 grid gap-1">
+          <MenuItem theme={theme}>
+            <i className="ri-settings-3-line" aria-hidden="true" /> 환경설정
+          </MenuItem>
+          <MenuItem theme={theme} tone="primary">
+            <i className="ri-share-forward-line" aria-hidden="true" /> 내보내기
+          </MenuItem>
+          <MenuItem theme={theme} tone="danger">
+            <i className="ri-delete-bin-line" aria-hidden="true" /> 삭제
+          </MenuItem>
+        </div>
+      );
     case "TextLink":
       return (
         <div className="flex items-center gap-4">
@@ -1330,15 +1355,15 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
             onThemeChange={(next) => setHdrTheme(next)}
             onLogout={() => alert("로그아웃")}
           >
-            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+            <MenuItem theme={hdrTheme}>
               <i className="ri-settings-3-line" aria-hidden="true" /> 환경설정
-            </button>
-            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+            </MenuItem>
+            <MenuItem theme={hdrTheme} tone="primary">
               <i className="ri-share-forward-line" aria-hidden="true" /> 내보내기
-            </button>
-            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+            </MenuItem>
+            <MenuItem theme={hdrTheme}>
               <i className="ri-question-line" aria-hidden="true" /> 도움말
-            </button>
+            </MenuItem>
           </AdminHeader>
         );
       };

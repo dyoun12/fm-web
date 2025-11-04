@@ -8,6 +8,7 @@ import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
 import { Button } from "../../atoms/button/button";
+import { MenuItem } from "../../atoms/menu-item/menu-item";
 
 export type AdminHeaderProps = {
   title?: string;
@@ -70,16 +71,7 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
                 isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white",
               )}
             >
-              {React.Children.map(children, (child) => {
-                if (!React.isValidElement(child)) return child;
-                const prev = (child.props as any).className as string | undefined;
-                const merged = cn(
-                  prev,
-                  "flex w-full items-center justify-start gap-2 rounded px-2 py-2 text-left text-sm transition-colors",
-                  isDark ? "hover:bg-zinc-800" : "hover:bg-zinc-200",
-                );
-                return React.cloneElement(child, { className: merged });
-              })}
+              {children}
             </div>
           )}
         </div>
@@ -101,49 +93,35 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
                 isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white",
               )}
             >
-              <Button
-                variant="ghost"
-                size="sm"
+              <MenuItem
                 theme={theme}
-                className={cn("w-full justify-start gap-2 rounded px-2 py-2")}
-                role="menuitem"
                 onClick={() => {
                   onThemeChange?.("light");
                   setOpenUser(false);
                 }}
               >
                 <i className="ri-sun-line" aria-hidden="true" /> 라이트 테마
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
+              </MenuItem>
+              <MenuItem
                 theme={theme}
-                className={cn("w-full justify-start gap-2 rounded px-2 py-2")}
-                role="menuitem"
                 onClick={() => {
                   onThemeChange?.("dark");
                   setOpenUser(false);
                 }}
               >
                 <i className="ri-moon-line" aria-hidden="true" /> 다크 테마
-              </Button>
+              </MenuItem>
               <Divider className={cn("my-1", isDark ? "bg-zinc-800" : "bg-zinc-200")} />
-              <Button
-                variant="ghost"
-                size="sm"
+              <MenuItem
                 theme={theme}
-                className={cn(
-                  "w-full justify-start gap-2 rounded px-2 py-2 text-rose-600",
-                  isDark ? undefined : "hover:bg-rose-100",
-                )}
-                role="menuitem"
+                tone="danger"
                 onClick={() => {
                   onLogout?.();
                   setOpenUser(false);
                 }}
               >
                 <i className="ri-logout-box-r-line" aria-hidden="true" /> 로그아웃
-              </Button>
+              </MenuItem>
             </div>
           )}
         </div>
