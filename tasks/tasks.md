@@ -11,6 +11,7 @@
 - [ ] 03. 동적 콘텐츠 및 게시판 (`tasks/03-frontend-dynamic-pages.md`)
 - [ ] 04. 인증 및 보안 (`tasks/04-auth-security.md`)
 - [ ] 05. 관리자 콘솔 (`tasks/05-admin-console.md`)
+- [ ] 05A. 관리자 카드 아톰 마이그레이션 (`tasks/05-admin-card-migration.md`)
 - [ ] 06. 백엔드 서비스 (`tasks/06-backend-services.md`)
 - [ ] 07. 인프라 및 DevOps (`tasks/07-infra-devops.md`)
 - [ ] 08. 품질 보증 (`tasks/08-quality-assurance.md`)
