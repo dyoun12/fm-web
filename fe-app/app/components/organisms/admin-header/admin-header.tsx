@@ -5,6 +5,7 @@ import React, { ComponentPropsWithoutRef, ReactNode, useEffect, useRef, useState
 import { SearchInput } from "../../molecules/search-input/search-input";
 import { Avatar } from "../../atoms/avatar/avatar";
 import { IconButton } from "../../atoms/icon-button/icon-button";
+import { Card } from "../../atoms/card/card";
 
 export type AdminHeaderProps = {
   title?: string;
@@ -33,14 +34,8 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [open, openUser]);
   return (
-    <header
-      className={cn(
-        "flex items-center justify-between gap-3 rounded-2xl border p-3",
-        isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-200 bg-white",
-        className,
-      )}
-      {...rest}
-    >
+    <header className={cn(className)} {...rest}>
+      <Card padding="sm" theme={theme} className={cn("flex items-center justify-between gap-3")}>
       <div className="flex items-center gap-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -148,6 +143,7 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
           )}
         </div>
       </div>
+      </Card>
     </header>
   );
 }

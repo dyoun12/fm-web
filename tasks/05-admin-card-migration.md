@@ -23,8 +23,8 @@
 ## 체크리스트(작업 단위)
 - [ ] 공통: `Card` API 확인 및 가이드 반영 — `variant(outline|elevated|ghost|soft)`, `padding(none|sm|md|lg)`, `theme(light|dark)`
 - [ ] AdminHeader: 루트 `<header>` 내부에 `<Card padding="sm" className="flex items-center justify-between gap-3">`로 래핑
-  - [ ] 기존 외곽 클래스(rounded/border/p-3) 제거, `Card`로 위임 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:34`
-  - [ ] 다크/라이트 토글 시 `theme`를 `Card`에도 전달
+  - [x] 기존 외곽 클래스(rounded/border/p-3) 제거, `Card`로 위임 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:34`
+  - [x] 다크/라이트 토글 시 `theme`를 `Card`에도 전달
   - [ ] 스냅샷/렌더 테스트 업데이트
 - [ ] AdminSidebar: `<Card padding="md" className="w-64">`로 래핑, 내부 `<nav>` 유지
   - [ ] 기존 외곽 클래스 제거 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:13`
