@@ -3,7 +3,7 @@
 import { cn } from "@/lib/classnames";
 import { ComponentPropsWithoutRef } from "react";
 
-type IconButtonVariant = "default" | "ghost"; // style: filled vs icon-only
+type IconButtonVariant = "default" | "ghost" | "soft"; // filled | icon-only | subtle
 type IconButtonColor = "neutral" | "primary"; // palette
 type IconButtonShape = "circle" | "square";
 type IconButtonSize = "xs" | "sm" | "md" | "lg";
@@ -17,6 +17,11 @@ const getStyleByColor = (
     if (variant === "default") {
       return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-500";
     }
+    if (variant === "soft") {
+      return isDark
+        ? "bg-blue-950 text-blue-400 hover:bg-blue-900 focus-visible:outline-blue-500"
+        : "bg-blue-50 text-blue-600 hover:bg-blue-100 focus-visible:outline-blue-500";
+    }
     // ghost
     return isDark
       ? "bg-transparent text-blue-400 hover:bg-blue-950 focus-visible:outline-blue-500"
@@ -27,6 +32,11 @@ const getStyleByColor = (
     return isDark
       ? "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 focus-visible:outline-zinc-500"
       : "bg-zinc-200 text-zinc-800 hover:bg-zinc-300 focus-visible:outline-zinc-500";
+  }
+  if (variant === "soft") {
+    return isDark
+      ? "bg-zinc-800 text-zinc-200 hover:bg-zinc-700 focus-visible:outline-zinc-500"
+      : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200 focus-visible:outline-zinc-500";
   }
   // ghost neutral
   return isDark
