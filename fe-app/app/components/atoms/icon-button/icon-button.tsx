@@ -6,7 +6,7 @@ import { ComponentPropsWithoutRef } from "react";
 type IconButtonVariant = "default" | "ghost"; // style: filled vs icon-only
 type IconButtonColor = "neutral" | "primary"; // palette
 type IconButtonShape = "circle" | "square";
-type IconButtonSize = "sm" | "md" | "lg";
+type IconButtonSize = "xs" | "sm" | "md" | "lg";
 
 const getStyleByColor = (
   color: IconButtonColor,
@@ -35,6 +35,7 @@ const getStyleByColor = (
 };
 
 const SIZE_STYLES: Record<IconButtonSize, string> = {
+  xs: "h-6 w-6 text-xs",
   sm: "h-9 w-9 text-sm",
   md: "h-10 w-10 text-base",
   lg: "h-12 w-12 text-lg",
