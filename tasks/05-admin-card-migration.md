@@ -21,7 +21,7 @@
 - 기존 클래스는 `Card`의 `variant|padding|theme`로 대체하고, 부족한 경우 최소한의 유틸만 추가한다.
 
 ## 체크리스트(작업 단위)
-- [ ] 공통: `Card` API 확인 및 가이드 반영 — `variant(outline|elevated|ghost|soft)`, `padding(none|sm|md|lg)`, `theme(light|dark)`
+- [x] 공통: `Card` API 확인 및 가이드 반영 — `variant(outline|elevated|ghost|soft)`, `padding(none|sm|md|lg)`, `theme(light|dark)`
 - [ ] AdminHeader: 루트 `<header>` 내부에 `<Card padding="sm" className="flex items-center justify-between gap-3">`로 래핑
   - [x] 기존 외곽 클래스(rounded/border/p-3) 제거, `Card`로 위임 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:34`
   - [x] 다크/라이트 토글 시 `theme`를 `Card`에도 전달
