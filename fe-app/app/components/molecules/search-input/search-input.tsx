@@ -2,6 +2,7 @@
 
 import { ComponentPropsWithoutRef, useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/classnames";
+import { Input } from "../../atoms/input/input";
 
 export type SearchInputProps = {
   theme?: "light" | "dark";
@@ -51,52 +52,43 @@ export function SearchInput({ theme = "light", className, onChange, value: value
   const useIconForClear = useMemo(() => isEmojiOnly(currentValue), [currentValue]);
 
   return (
-    <div className={cn("relative", className)}>
-      <i
-        className={cn(
-          "ri-search-line pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400",
-          isDark && "text-zinc-500",
-        )}
-        aria-hidden="true"
-      />
-      <input
-        ref={inputRef}
-        type="search"
-        className={cn(
-          "h-10 w-full rounded-full border px-10 text-sm outline-none transition search-input",
-          isDark
-            ? "border-zinc-700 bg-zinc-900 text-zinc-100 focus:border-zinc-500"
-            : "border-zinc-300 bg-white text-zinc-900 focus:border-zinc-400",
-        )}
-        aria-label={rest["aria-label"] ?? "검색"}
-        placeholder={rest.placeholder ?? "검색"}
-        value={currentValue}
-        defaultValue={undefined}
-        onChange={handleChange}
-        {...rest}
-      />
-      {showClear && (
-        <button
-          type="button"
-          aria-label="지우기"
-          onClick={clear}
-          className={cn(
-            "absolute right-3 top-1/2 -translate-y-1/2 select-none rounded-full p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-            // Match theme icon color (same as left search icon)
-            isDark
-              ? "text-zinc-500 hover:text-zinc-400 focus-visible:ring-zinc-600 ring-offset-zinc-900"
-              : "text-zinc-400 hover:text-zinc-500 focus-visible:ring-zinc-300 ring-offset-white",
-          )}
-        >
-          {useIconForClear ? (
-            <i className="ri-close-line text-base" aria-hidden="true" />
-          ) : (
-            <span className="text-base leading-none" aria-hidden>
-              ×
-            </span>
-          )}
-        </button>
-      )}
-    </div>
+    <Input
+      ref={inputRef}
+      type="search"
+      label={rest["aria-label"] ?? "검색"}
+      hideLabel
+      placeholder={rest.placeholder ?? "검색"}
+      value={currentValue}
+      defaultValue={undefined}
+      onChange={handleChange}
+      theme={theme}
+      prefix={<i className={cn("ri-search-line", isDark ? "text-zinc-500" : "text-zinc-400")} aria-hidden="true" />}
+      suffix={
+        showClear ? (
+          <button
+            type="button"
+            aria-label="지우기"
+            onClick={clear}
+            className={cn(
+              "select-none rounded-full p-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+              isDark
+                ? "text-zinc-500 hover:text-zinc-400 focus-visible:ring-zinc-600 ring-offset-zinc-900"
+                : "text-zinc-400 hover:text-zinc-500 focus-visible:ring-zinc-300 ring-offset-white",
+            )}
+          >
+            {useIconForClear ? (
+              <i className="ri-close-line text-base" aria-hidden="true" />
+            ) : (
+              <span className="text-base leading-none" aria-hidden>
+                ×
+              </span>
+            )}
+          </button>
+        ) : undefined
+      }
+      className={className}
+      aria-label={rest["aria-label"] ?? "검색"}
+      {...rest}
+    />
   );
 }

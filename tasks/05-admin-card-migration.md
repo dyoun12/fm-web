@@ -51,8 +51,8 @@
   - [x] 현재 `Link` + 유틸 클래스 → `<Button asChild variant="ghost" color={item.active ? 'primary' : 'neutral'} size="sm"><Link .../></Button>`
   - [x] 중첩 앵커 금지 규칙 준수, 활성/호버 상태를 Button 팔레트로 일원화 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:17`
 - [ ] SearchInput: 내부 입력 요소를 `Input` 아톰으로 대체
-  - [ ] 라벨은 `hideLabel`로 숨기고, 좌측 돋보기는 `prefix`로 전달, 지우기(X)는 `suffix` 버튼 처리
-  - [ ] 현재 커스텀 `input` 스타일 제거, 포커스/에러 상태는 `Input` 상태 토큰 사용 — `fe-app/app/components/molecules/search-input/search-input.tsx:34`
+  - [x] 라벨은 `hideLabel`로 숨기고, 좌측 돋보기는 `prefix`로 전달, 지우기(X)는 `suffix` 버튼 처리
+  - [x] 현재 커스텀 `input` 스타일 제거, 포커스/에러 상태는 `Input` 상태 토큰 사용 — `fe-app/app/components/molecules/search-input/search-input.tsx:34`
 - [ ] DataTable: 로딩 상태에 `Skeleton` 아톰 적용
   - [ ] "불러오는 중..." 단일 셀 → 각 열에 맞춘 스켈레톤 행 렌더(열 폭 상속), 스크린리더용 `aria-live` 유지
   - [ ] 빈 상태는 기존 `EmptyState` 사용 유지 — `fe-app/app/components/molecules/data-table/data-table.tsx:134`
