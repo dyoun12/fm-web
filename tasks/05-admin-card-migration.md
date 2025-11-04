@@ -39,7 +39,7 @@
   - [x] 테이블 경계선 유지(헤더/바디 구분선은 기존 유지) — `fe-app/app/components/molecules/data-table/data-table.tsx:60`
   - [x] 페이지네이션 상단 보더는 내부 `div`에 유지
 - [ ] EmptyState: 루트 컨테이너를 `<Card padding="lg" className="grid place-items-center text-center">`로 교체
-  - [ ] 텍스트/아이콘 색상은 Card theme에 맞춰 최소 조정 — `fe-app/app/components/molecules/empty-state/empty-state.tsx:24`
+  - [x] 텍스트/아이콘 색상은 Card theme에 맞춰 최소 조정 — `fe-app/app/components/molecules/empty-state/empty-state.tsx:24`
 
 ## 기타 아톰 대체 체크리스트(카드 외)
 - [ ] AdminHeader: 구분선 `Divider` 아톰 사용

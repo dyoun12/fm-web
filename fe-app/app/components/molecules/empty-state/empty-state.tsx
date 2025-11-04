@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { ComponentPropsWithoutRef } from "react";
+import { Card } from "../../atoms/card/card";
 import { Button } from "../../atoms/button/button";
 
 export type EmptyStateProps = {
@@ -25,7 +26,7 @@ export type EmptyStateProps = {
 export function EmptyState({ icon = "inbox", title, description, actionLabel, onAction, theme = "light", className, ...rest }: EmptyStateProps) {
   const isDark = theme === "dark";
   return (
-    <div className={cn("grid place-items-center rounded-2xl border p-8 text-center", isDark ? "border-zinc-700 bg-zinc-900 text-zinc-100" : "border-zinc-200 bg-white text-zinc-900", className)} {...rest}>
+    <Card padding="lg" theme={theme} className={cn("grid place-items-center text-center", className)} {...rest}>
       <i
         aria-hidden="true"
         className={cn(
@@ -39,6 +40,6 @@ export function EmptyState({ icon = "inbox", title, description, actionLabel, on
       {actionLabel && (
         <Button className="mt-4" onClick={onAction}>{actionLabel}</Button>
       )}
-    </div>
+    </Card>
   );
 }
