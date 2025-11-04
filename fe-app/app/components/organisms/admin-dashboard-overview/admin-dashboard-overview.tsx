@@ -3,6 +3,7 @@
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
 import { Badge } from "../../atoms/badge/badge";
+import { useAppTheme } from "@/lib/theme-context";
 
 export type DashboardStat = {
   label: string;
@@ -32,8 +33,9 @@ export function AdminDashboardOverview({
   stats,
   recentActivities,
   alerts = [],
-  theme = "light",
+  theme: themeProp,
 }: AdminDashboardOverviewProps) {
+  const theme = themeProp ?? useAppTheme();
   const isDark = theme === "dark";
   return (
     <section className="flex flex-col gap-8">

@@ -4,6 +4,7 @@ import { cn } from "@/lib/classnames";
 import { ComponentPropsWithoutRef } from "react";
 import { Card } from "../../atoms/card/card";
 import { Button } from "../../atoms/button/button";
+import { useAppTheme } from "@/lib/theme-context";
 
 export type EmptyStateProps = {
   icon?:
@@ -23,7 +24,8 @@ export type EmptyStateProps = {
   theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"div">;
 
-export function EmptyState({ icon = "inbox", title, description, actionLabel, onAction, theme = "light", className, ...rest }: EmptyStateProps) {
+export function EmptyState({ icon = "inbox", title, description, actionLabel, onAction, theme: themeProp, className, ...rest }: EmptyStateProps) {
+  const theme = themeProp ?? useAppTheme();
   const isDark = theme === "dark";
   return (
     <Card padding="lg" theme={theme} className={cn("grid place-items-center text-center", className)} {...rest}>

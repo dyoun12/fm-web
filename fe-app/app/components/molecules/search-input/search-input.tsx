@@ -3,6 +3,7 @@
 import { ComponentPropsWithoutRef, useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/classnames";
 import { Input } from "../../atoms/input/input";
+import { useAppTheme } from "@/lib/theme-context";
 
 export type SearchInputProps = {
   theme?: "light" | "dark";
@@ -20,7 +21,8 @@ const isEmojiOnly = (value: string) => {
   }
 };
 
-export function SearchInput({ theme = "light", className, onChange, value: valueProp, defaultValue, ...rest }: SearchInputProps) {
+export function SearchInput({ theme: themeProp, className, onChange, value: valueProp, defaultValue, ...rest }: SearchInputProps) {
+  const theme = themeProp ?? useAppTheme();
   const isDark = theme === "dark";
   const controlled = valueProp != null;
   const [uncontrolledValue, setUncontrolledValue] = useState<string>(() => (defaultValue != null ? String(defaultValue) : ""));

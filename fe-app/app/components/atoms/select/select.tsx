@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
+import { useAppTheme } from "@/lib/theme-context";
 import {
   ComponentPropsWithoutRef,
   forwardRef,
@@ -27,6 +28,7 @@ export type SelectProps = {
   state?: SelectState;
   description?: string;
   size?: "sm" | "md" | "lg";
+  theme?: "light" | "dark";
 } & ComponentPropsWithoutRef<"select">;
 
 const STATE_CLASSES: Record<SelectState, string> = {
@@ -53,10 +55,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       required,
       disabled,
       size = "md",
+      theme: themeProp,
       ...rest
     },
     ref,
   ) {
+    const theme = themeProp ?? useAppTheme();
+    const isDark = theme === "dark";
     const generatedId = useId();
     const selectId = id ?? generatedId;
     const helperId = helperText ? `${selectId}-helper` : undefined;
@@ -138,7 +143,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <div className="flex flex-col gap-1">
             <label
               className={cn(
-                "text-sm font-medium text-zinc-700",
+                isDark ? "text-sm font-medium text-zinc-200" : "text-sm font-medium text-zinc-700",
                 disabled && "text-zinc-400",
               )}
               htmlFor={selectId}
@@ -151,7 +156,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               )}
             </label>
             {description && (
-              <p id={descriptionId} className="text-xs text-zinc-500">
+              <p id={descriptionId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
                 {description}
               </p>
             )}
@@ -200,7 +205,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             disabled={disabled}
             onClick={() => !disabled && setOpen((v) => !v)}
             className={cn(
-              "w-full rounded-lg border bg-white text-left text-zinc-900 outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100",
+              "w-full rounded-lg border text-left outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed",
+              isDark
+                ? "bg-zinc-900 text-zinc-100 disabled:bg-zinc-800 disabled:text-zinc-500 border-zinc-700"
+                : "bg-white text-zinc-900 disabled:bg-zinc-100",
               sizeTriggerClass,
               STATE_CLASSES[state],
               className,
@@ -214,7 +222,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               className={cn(
                 "ri-arrow-down-s-line pointer-events-none absolute top-1/2 -translate-y-1/2",
                 iconSizeClass,
-                disabled ? "text-zinc-400" : "text-zinc-500",
+                disabled ? "text-zinc-400" : isDark ? "text-zinc-400" : "text-zinc-500",
               )}
             />
           </button>
@@ -226,8 +234,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               role="listbox"
               ref={listRef}
               className={cn(
-                "absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-md border bg-white p-1 shadow-lg focus:outline-none",
-                "border-zinc-200",
+                "absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-md border p-1 shadow-lg focus:outline-none",
+                isDark ? "bg-zinc-900 border-zinc-700" : "bg-white border-zinc-200",
               )}
             >
               {options.map((option) => {
@@ -244,14 +252,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                       sizeOptionPadding,
                       selected
                         ? "bg-blue-50 text-blue-700"
-                        : "text-zinc-800 hover:bg-zinc-50",
+                        : isDark ? "text-zinc-200 hover:bg-white/5" : "text-zinc-800 hover:bg-zinc-50",
                     )}
                   >
                     <span>{option.label}</span>
                     {selected && (
                       <i
                         aria-hidden="true"
-                        className="ri-check-line text-blue-600"
+                        className={cn("ri-check-line", isDark ? "text-blue-400" : "text-blue-600")}
                       />
                     )}
                   </li>
@@ -261,7 +269,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           )}
         </div>
         {helperText && (
-          <p id={helperId} className="text-xs text-zinc-500">
+          <p id={helperId} className={cn("text-xs", isDark ? "text-zinc-400" : "text-zinc-500") }>
             {helperText}
           </p>
         )}

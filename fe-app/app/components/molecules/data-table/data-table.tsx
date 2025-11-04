@@ -7,6 +7,7 @@ import { Pagination } from "../pagination/pagination";
 import { Select } from "../../atoms/select/select";
 import { Card } from "../../atoms/card/card";
 import { Skeleton } from "../../atoms/skeleton/skeleton";
+import { useAppTheme } from "@/lib/theme-context";
 
 export type DataTableColumn = {
   key: string;
@@ -32,7 +33,8 @@ export type DataTableProps = {
   onPageSizeChange?: (size: number) => void;
 } & ComponentPropsWithoutRef<"div">;
 
-export function DataTable({ columns, rows, loading = false, caption, theme = "light", onSort, onSortChange, defaultSortKey, defaultSortOrder, page, pageSize, total, onPageChange, onPageSizeChange, className, ...rest }: DataTableProps) {
+export function DataTable({ columns, rows, loading = false, caption, theme: themeProp, onSort, onSortChange, defaultSortKey, defaultSortOrder, page, pageSize, total, onPageChange, onPageSizeChange, className, ...rest }: DataTableProps) {
+  const theme = themeProp ?? useAppTheme();
   const isDark = theme === "dark";
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(defaultSortOrder ?? null);
@@ -170,6 +172,7 @@ export function DataTable({ columns, rows, loading = false, caption, theme = "li
                   if (onPageSizeChange) onPageSizeChange(next);
                   else setInternalPageSize(next);
                 }}
+                theme={theme}
               />
             </div>
           </div>

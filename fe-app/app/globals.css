@@ -20,6 +20,17 @@
   --link-color-hover: var(--color-neutral-900);
 }
 
+/* Admin/Global dark theme (class-based)
+   Applied by toggling `.theme-dark` on <body> from the Admin layout.
+   Only minimal tokens are overridden to affect page background/foreground and links. */
+.theme-dark {
+  --background: #0b0b0b; /* near-black */
+  --foreground: #e5e7eb; /* zinc-200 */
+  --link-color: #9ca3af; /* neutral-400 */
+  --link-color-hover: #ffffff;
+  color-scheme: dark;
+}
+
 /* Route-scoped theme: Contact page
    Apply by setting data-theme="contact" on <html> or <body>.
    Components using CSS variables (e.g., TextLink) will automatically pick these. */

@@ -5,11 +5,22 @@ import { usePathname } from "next/navigation";
 import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sidebar";
 import { AdminHeader } from "../components/organisms/admin-header/admin-header";
 import { cn } from "@/lib/classnames";
+import { ThemeProvider } from "@/lib/theme-context";
 
 type Props = { children: React.ReactNode };
 
 export default function AdminLayout({ children }: Props) {
+  const [theme, setTheme] = React.useState<"light" | "dark">("light");
   const pathname = usePathname();
+  // 전역 배경/본문 토큰을 body에 적용
+  React.useEffect(() => {
+    if (typeof document === "undefined") return;
+    const cls = "theme-dark";
+    document.body.classList.toggle(cls, theme === "dark");
+    return () => {
+      document.body.classList.remove(cls);
+    };
+  }, [theme]);
   const items = [
     { label: "대시보드", href: "/admin", icon: "📊", active: pathname === "/admin" },
     { label: "게시물", href: "/admin/posts", icon: "📰", active: pathname?.startsWith("/admin/posts") },
@@ -30,24 +41,31 @@ export default function AdminLayout({ children }: Props) {
 
   return (
     // 전체 화면을 고정하고, 스크롤은 컨텐츠 영역에서만 발생
-    <div className={cn("grid h-screen grid-rows-[auto_1fr] overflow-hidden") }>
-      {/* 1행: 어드민 헤더 (고정) */}
-      <div className="bg-white px-6 py-3">
-        <AdminHeader title={pageTitle} className="rounded-xl" />
-      </div>
-
-      {/* 2행: 사이드바 + 컨텐츠 (컨텐츠만 스크롤) */}
-      <div className="grid min-h-0 grid-cols-[256px_1fr] gap-6 px-6 pb-6">
-        {/* 사이드바 (고정) */}
-        <div className="bg-white">
-          <AdminSidebar items={items} />
+    <ThemeProvider value={theme}>
+      <div className={cn("grid h-screen grid-rows-[auto_1fr] overflow-hidden") }>
+        {/* 1행: 어드민 헤더 (고정) */}
+        <div className="px-6 py-3">
+          <AdminHeader
+            title={pageTitle}
+            theme={theme}
+            onThemeChange={(next) => setTheme(next)}
+            className="rounded-xl"
+          />
         </div>
 
-        {/* 컨텐츠 (스크롤 영역) */}
-        <main className="min-h-0 overflow-y-auto">
-          <div className="mx-auto max-w-6xl">{children}</div>
-        </main>
+        {/* 2행: 사이드바 + 컨텐츠 (컨텐츠만 스크롤) */}
+        <div className="grid min-h-0 grid-cols-[256px_1fr] gap-6 px-6 pb-6">
+          {/* 사이드바 (고정) */}
+          <div>
+            <AdminSidebar items={items} theme={theme} />
+          </div>
+
+          {/* 컨텐츠 (스크롤 영역) */}
+          <main className="min-h-0 overflow-y-auto">
+            <div className="mx-auto max-w-6xl">{children}</div>
+          </main>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }

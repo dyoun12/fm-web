@@ -3,6 +3,7 @@
 import { cn } from "@/lib/classnames";
 import { ComponentPropsWithoutRef } from "react";
 import { Button } from "../../atoms/button/button";
+import { useAppTheme } from "@/lib/theme-context";
 
 export type PaginationProps = {
   page: number;
@@ -12,7 +13,8 @@ export type PaginationProps = {
   onChange?: (page: number) => void;
 } & ComponentPropsWithoutRef<"nav">;
 
-export function Pagination({ page, pageSize, total, onChange, theme = "light", className, ...rest }: PaginationProps) {
+export function Pagination({ page, pageSize, total, onChange, theme: themeProp, className, ...rest }: PaginationProps) {
+  const theme = themeProp ?? useAppTheme();
   const isDark = theme === "dark";
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, pageSize)));
   const canPrev = page > 1;
