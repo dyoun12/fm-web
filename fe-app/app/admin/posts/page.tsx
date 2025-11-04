@@ -16,7 +16,7 @@ export default function AdminPostsPage() {
   return (
     <div className="grid gap-4">
       <FilterBar>
-        <Select options={[{ label: "전체", value: "all" }, { label: "IR", value: "ir" }, { label: "공지", value: "notice" }]} aria-label="카테고리" />
+        <Select size="sm" options={[{ label: "전체", value: "all" }, { label: "IR", value: "ir" }, { label: "공지", value: "notice" }]} aria-label="카테고리" />
         <SearchInput placeholder="제목 검색" />
       </FilterBar>
       <div className="grid gap-3">
@@ -32,4 +32,3 @@ export default function AdminPostsPage() {
     </div>
   );
 }
-

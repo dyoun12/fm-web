@@ -16,7 +16,7 @@ export default function AdminUsersPage() {
     <div className="grid gap-4">
       <FilterBar>
         <SearchInput placeholder="사용자 검색" />
-        <Select options={[{ label: "전체", value: "all" }, { label: "admin", value: "admin" }, { label: "editor", value: "editor" }, { label: "viewer", value: "viewer" }]} aria-label="역할" />
+        <Select size="sm" options={[{ label: "전체", value: "all" }, { label: "admin", value: "admin" }, { label: "editor", value: "editor" }, { label: "viewer", value: "viewer" }]} aria-label="역할" />
       </FilterBar>
       {rows.length === 0 ? (
         <EmptyState title="사용자가 없습니다" description="'사용자 초대' 버튼으로 추가하세요" />
@@ -26,4 +26,3 @@ export default function AdminUsersPage() {
     </div>
   );
 }
-

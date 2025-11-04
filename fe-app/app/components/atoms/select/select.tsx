@@ -19,13 +19,14 @@ export type SelectOption = {
 };
 
 export type SelectProps = {
-  label: string;
+  label?: string;
   options: SelectOption[];
   placeholder?: string;
   helperText?: string;
   errorMessage?: string;
   state?: SelectState;
   description?: string;
+  size?: "sm" | "md" | "lg";
 } & ComponentPropsWithoutRef<"select">;
 
 const STATE_CLASSES: Record<SelectState, string> = {
@@ -51,6 +52,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       className,
       required,
       disabled,
+      size = "md",
       ...rest
     },
     ref,
@@ -112,29 +114,49 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       setOpen(false);
     };
 
+    const sizeTriggerClass = useMemo(() => {
+      if (size === "sm") return "h-8 px-2 pr-8 text-sm";
+      if (size === "lg") return "h-12 px-4 pr-12 text-base";
+      return "h-11 px-3 pr-10 text-sm"; // md
+    }, [size]);
+
+    const sizeOptionPadding = useMemo(() => {
+      if (size === "sm") return "py-1.5";
+      if (size === "lg") return "py-2.5";
+      return "py-2"; // md
+    }, [size]);
+
+    const iconSizeClass = useMemo(() => {
+      if (size === "sm") return "right-2 text-sm";
+      if (size === "lg") return "right-3 text-lg";
+      return "right-3 text-base"; // md
+    }, [size]);
+
     return (
       <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-1">
-          <label
-            className={cn(
-              "text-sm font-medium text-zinc-700",
-              disabled && "text-zinc-400",
+        {label && (
+          <div className="flex flex-col gap-1">
+            <label
+              className={cn(
+                "text-sm font-medium text-zinc-700",
+                disabled && "text-zinc-400",
+              )}
+              htmlFor={selectId}
+            >
+              {label}
+              {required && (
+                <span className="ml-1 text-red-500" aria-hidden="true">
+                  *
+                </span>
+              )}
+            </label>
+            {description && (
+              <p id={descriptionId} className="text-xs text-zinc-500">
+                {description}
+              </p>
             )}
-            htmlFor={selectId}
-          >
-            {label}
-            {required && (
-              <span className="ml-1 text-red-500" aria-hidden="true">
-                *
-              </span>
-            )}
-          </label>
-          {description && (
-            <p id={descriptionId} className="text-xs text-zinc-500">
-              {description}
-            </p>
-          )}
-        </div>
+          </div>
+        )}
         <div className="relative">
           {/* 숨김 native select: 폼 호환/테스트 호환, change로 내부 상태 동기화 */}
           <select
@@ -178,7 +200,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             disabled={disabled}
             onClick={() => !disabled && setOpen((v) => !v)}
             className={cn(
-              "h-11 w-full rounded-lg border bg-white px-3 pr-10 text-left text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100",
+              "w-full rounded-lg border bg-white text-left text-zinc-900 outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100",
+              sizeTriggerClass,
               STATE_CLASSES[state],
               className,
             )}
@@ -189,7 +212,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             <i
               aria-hidden="true"
               className={cn(
-                "ri-arrow-down-s-line pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base",
+                "ri-arrow-down-s-line pointer-events-none absolute top-1/2 -translate-y-1/2",
+                iconSizeClass,
                 disabled ? "text-zinc-400" : "text-zinc-500",
               )}
             />
@@ -216,7 +240,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                     tabIndex={-1}
                     onClick={() => commitValue(option.value)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-between rounded px-2 py-2 text-sm",
+                      "flex cursor-pointer items-center justify-between rounded px-2 text-sm",
+                      sizeOptionPadding,
                       selected
                         ? "bg-blue-50 text-blue-700"
                         : "text-zinc-800 hover:bg-zinc-50",
