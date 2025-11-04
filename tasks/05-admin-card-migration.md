@@ -57,8 +57,8 @@
   - [x] "불러오는 중..." 단일 셀 → 각 열에 맞춘 스켈레톤 행 렌더(열 폭 상속), 스크린리더용 `aria-live` 유지
   - [x] 빈 상태는 기존 `EmptyState` 사용 유지 — `fe-app/app/components/molecules/data-table/data-table.tsx:134`
 - [ ] Pagination: 페이지 이동 버튼을 `Button` 아톰으로 교체
-  - [ ] `<button>` → `<Button variant="ghost" size="sm" color="neutral">`로 치환, 비활성 시 `disabled` 처리
-  - [ ] 전/후 이동 버튼에 `aria-label` 유지, 포커스 표시 일관화 — `fe-app/app/components/molecules/pagination/pagination.tsx:20`
+  - [x] `<button>` → `<Button variant="ghost" size="sm" color="neutral">`로 치환, 비활성 시 `disabled` 처리
+  - [x] 전/후 이동 버튼에 `aria-label` 유지, 포커스 표시 일관화 — `fe-app/app/components/molecules/pagination/pagination.tsx:20`
 - [ ] DashboardOverview: 지표(trend) 표시를 `Badge` 아톰으로 통일
   - [ ] up=success, down=warning, flat=default 맵핑, 화살표 아이콘은 `children`로 포함 — `fe-app/app/components/organisms/admin-dashboard-overview/admin-dashboard-overview.tsx:30`
 
