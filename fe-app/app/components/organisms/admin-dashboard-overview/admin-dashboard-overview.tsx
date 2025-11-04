@@ -89,7 +89,14 @@ export function AdminDashboardOverview({
           </ul>
         </Card>
 
-        <section className={cn("rounded-2xl p-6", isDark ? "border border-amber-900 bg-amber-950 text-amber-300" : "border border-amber-200 bg-amber-50 text-amber-800") }>
+        <Card
+          variant="soft"
+          padding="md"
+          theme={theme}
+          className={cn(
+            isDark ? "border-amber-900 bg-amber-950 text-amber-300" : "border-amber-200 bg-amber-50 text-amber-800",
+          )}
+        >
           <h3 className="text-lg font-semibold">알림 및 경고</h3>
           {alerts.length === 0 ? (
             <p className={cn("mt-4 text-sm", isDark ? "text-amber-300/80" : "text-amber-700") }>
@@ -102,7 +109,7 @@ export function AdminDashboardOverview({
               ))}
             </ul>
           )}
-        </section>
+        </Card>
       </div>
     </section>
   );
