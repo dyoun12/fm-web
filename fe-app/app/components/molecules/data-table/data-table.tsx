@@ -5,6 +5,7 @@ import { ComponentPropsWithoutRef, ReactNode, useMemo, useState } from "react";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Pagination } from "../pagination/pagination";
 import { Select } from "../../atoms/select/select";
+import { Card } from "../../atoms/card/card";
 
 export type DataTableColumn = {
   key: string;
@@ -59,7 +60,7 @@ export function DataTable({ columns, rows, loading = false, caption, theme = "li
     onSortChange?.(nextKey, nextOrder);
   };
   return (
-    <div className={cn("relative overflow-x-auto rounded-2xl border", isDark ? "border-zinc-700" : "border-zinc-200", className)} {...rest}>
+    <Card padding="none" theme={theme} className={cn("relative overflow-x-auto", className)} {...rest}>
       <table className={cn("w-full text-sm", isDark ? "text-zinc-200" : "text-zinc-800") }>
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead className={cn(isDark ? "bg-zinc-800" : "bg-zinc-200") }>
@@ -177,6 +178,6 @@ export function DataTable({ columns, rows, loading = false, caption, theme = "li
           />
         </div>
       )}
-    </div>
+    </Card>
   );
 }
