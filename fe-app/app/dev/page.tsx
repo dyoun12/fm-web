@@ -1320,8 +1320,30 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
           theme={theme}
         />
       );
-    case "AdminHeader":
-      return <AdminHeader title="대시보드" theme={theme} />;
+    case "AdminHeader": {
+      const Demo = () => {
+        const [hdrTheme, setHdrTheme] = React.useState(theme);
+        return (
+          <AdminHeader
+            title="대시보드"
+            theme={hdrTheme}
+            onThemeChange={(next) => setHdrTheme(next)}
+            onLogout={() => alert("로그아웃")}
+          >
+            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+              <i className="ri-settings-3-line" aria-hidden="true" /> 환경설정
+            </button>
+            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+              <i className="ri-share-forward-line" aria-hidden="true" /> 내보내기
+            </button>
+            <button className="w-full rounded px-2 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-white/5 flex items-center justify-start gap-2">
+              <i className="ri-question-line" aria-hidden="true" /> 도움말
+            </button>
+          </AdminHeader>
+        );
+      };
+      return <Demo />;
+    }
     case "CategoryFilterPanel":
       return (
         <CategoryFilterPanel
