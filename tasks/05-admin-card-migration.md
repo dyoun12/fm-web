@@ -45,8 +45,8 @@
 - [ ] AdminHeader: 구분선 `Divider` 아톰 사용
   - [x] 드롭다운 내부 임시 구분선(`div.my-1.h-px`) → `Divider`로 교체, 다크 모드 대비 보정 — `fe-app/app/components/organisms/admin-header/admin-header.tsx:96`
 - [ ] AdminHeader: 메뉴 항목 `Button` 아톰으로 교체
-  - [ ] 현재 `button` + 유틸 클래스 → `<Button variant="ghost" size="sm" theme={theme}>`로 치환(아이콘은 children로 유지)
-  - [ ] 접근성 속성(`role="menuitem"`) 유지, 포커스 링 확인
+  - [x] 현재 `button` + 유틸 클래스 → `<Button variant="ghost" size="sm" theme={theme}>`로 치환(아이콘은 children로 유지)
+  - [x] 접근성 속성(`role="menuitem"`) 유지, 포커스 링 확인
 - [ ] AdminSidebar: 네비게이션 항목을 `Button asChild + <Link>`로 마이그레이션
   - [ ] 현재 `Link` + 유틸 클래스 → `<Button asChild variant="ghost" color={item.active ? 'primary' : 'neutral'} size="sm"><Link .../></Button>`
   - [ ] 중첩 앵커 금지 규칙 준수, 활성/호버 상태를 Button 팔레트로 일원화 — `fe-app/app/components/organisms/admin-sidebar/admin-sidebar.tsx:17`
