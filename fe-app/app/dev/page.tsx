@@ -28,6 +28,8 @@ import { ContactForm } from "../components/molecules/contact-form/contact-form";
 import type { ContactFormField } from "../components/molecules/contact-form/contact-form";
 import { NewsTicker } from "../components/molecules/news-ticker/news-ticker";
 import { CtaSection } from "../components/molecules/cta-section/cta-section";
+import { LogoDescription } from "../components/molecules/logo-description/logo-description";
+import { BrandColorPalette } from "../components/molecules/brand-color-palette/brand-color-palette";
 import { TimelineItem } from "../components/molecules/timeline-item/timeline-item";
 import { TeamMemberCard } from "../components/molecules/team-member-card/team-member-card";
 import { StatCard } from "../components/molecules/stat-card/stat-card";
@@ -375,6 +377,20 @@ const molecules: ComponentItem[] = [
     description: "콜투액션 섹션",
     interactions: ["버튼 클릭, 포커스 처리"],
     guidelines: ["CTA는 2개 이하"],
+  },
+  {
+    name: "LogoDescription",
+    priority: "B",
+    description: "좌측 설명, 우측 로고 이미지를 배치하는 소개 컴포넌트",
+    interactions: ["이미지 대체텍스트 제공"],
+    guidelines: ["이미지는 왜곡 금지, 모서리 16px"],
+  },
+  {
+    name: "BrandColorPalette",
+    priority: "A",
+    description: "좌측 팔레트 스와치, 우측 설명으로 브랜드 컬러를 안내",
+    interactions: ["스와치 Hover 시 그림자 강조"],
+    guidelines: ["WCAG 대비 준수"],
   },
 ];
 
@@ -993,6 +1009,31 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
           description="전문 컨설턴트가 2영업일 내에 연락드립니다."
           primaryAction={{ label: "상담 예약", href: "#" }}
           secondaryAction={{ label: "자료 요청", href: "#" }}
+        />
+      );
+    case "LogoDescription":
+      return (
+        <LogoDescription
+          title="브랜드 로고 소개"
+          description="신뢰와 유연성을 상징하는 로고. 최소 여백과 금지 규칙을 준수합니다."
+          imageUrl="https://picsum.photos/800/480"
+          imageAlt="브랜드 로고"
+          bullets={["최소 16px 여백 유지", "그라디언트 변형 금지", "비율 고정"]}
+          theme={theme}
+        />
+      );
+    case "BrandColorPalette":
+      return (
+        <BrandColorPalette
+          title="브랜드 컬러 팔레트"
+          description="일관된 색 사용을 위해 토큰 기준으로 활용합니다."
+          palette={[
+            { name: "Primary", hex: "#2563EB", token: "--color-primary" },
+            { name: "Secondary", hex: "#10B981", token: "--color-secondary" },
+            { name: "Accent", hex: "#F59E0B", token: "--color-accent" },
+            { name: "Neutral", hex: "#1F2937", token: "--color-neutral" },
+          ]}
+          theme={theme}
         />
       );
     case "TimelineItem":
