@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
-import { Button } from "../../atoms/button/button";
+import { MenuItem } from "../../atoms/menu-item/menu-item";
 
 export type AdminSidebarItem = { label: string; href: string; icon?: string; active?: boolean };
 
@@ -19,20 +19,18 @@ export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
       <Card padding="md" theme={theme}>
         <nav className="flex flex-col gap-1 text-sm">
         {items.map((item) => (
-          <Button
+          <MenuItem
             key={`${item.href}-${item.label}`}
             asChild
-            variant="ghost"
-            size="sm"
-            color={item.active ? "primary" : "neutral"}
             theme={theme}
-            className="justify-start"
+            tone={item.active ? "primary" : "neutral"}
+            role={undefined}
           >
-            <Link href={item.href}>
+            <Link href={item.href} className="flex w-full items-center gap-2">
               {item.icon && <span aria-hidden>{item.icon}</span>}
               {item.label}
             </Link>
-          </Button>
+          </MenuItem>
         ))}
         </nav>
       </Card>
