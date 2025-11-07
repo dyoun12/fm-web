@@ -33,6 +33,34 @@
 6) Merge(병합)
    - 커밋/PR 템플릿 및 스크린샷/로그 첨부, 리뷰어 지정
 
+## 응답/로그 규칙(출력 포맷)
+- 실시간 진행 출력(중간 응답)
+  - Active Agents: `<agent_id> — <status> — <step>` (예: `agents.ui — in_progress — scaffold-stories-tests`)
+  - Agent Responses: `<agent_id> — <summary>` (예: `agents.api — mocks added: fe-app/api/posts.ts`)
+- 완료/핸드오프 요약(최종 응답)
+  - Decisions by Agent: `<agent_id> — <decision> — <reason>`
+  - Changes by Agent: `<agent_id> — files: <paths> — tests: <result>`
+  - Next Actions: `<agent_id> — <action>`
+- 표기 규칙
+  - 파일/경로/명령은 백틱으로 감싸고, 섹션 제목은 명시적으로 표기
+  - 불필요한 장문 서술 지양, 한 줄 1요지
+
+예시(요약)
+Active Agents
+- agents.ui — completed — update-dev-preview
+- agents.api — completed — implement-error-scenarios
+
+Agent Responses
+- agents.ui — updated `fe-app/app/dev/page.tsx`, added stories/tests
+- agents.api — added `fe-app/api/posts.ts`, MSW handlers updated
+
+Decisions by Agent
+- agents.ui — variant via atoms — Spec/Design 일치, 상위 스타일 제거
+- agents.api — error-first branching — 400/404/500 명세 반영
+
+Next Actions
+- agents.qa — add boundary test for file upload errors
+
 ## 공통 DoD(Definition of Done)
 - 문서 동기화: `/docs`와 구현/스토리/Dev Preview가 일치
 - 테스트: 단위 테스트 추가/갱신, 네트워크는 MSW 모킹, 커버리지 80% 유지(미달 시 사유 기록)

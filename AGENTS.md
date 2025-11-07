@@ -48,6 +48,18 @@
 - 추적성: 모든 작업은 `tasks/`에 체크리스트와 파일 경로 링크로 기록한다.
 - 품질 게이트: `npm run lint` 경고도 실패로 간주, 테스트 통과 전 머지 금지.
 
+### 오케스트레이션 응답/로그 규칙
+- 실시간 진행 출력에 다음을 포함한다.
+  - Active Agents: 현재 활동 중인 서브 에이전트 목록과 상태(`pending|in_progress|completed`), 현재 단계(step)
+  - Agent Responses: 각 서브 에이전트의 최신 응답/산출물 요약(파일 경로/명령/테스트 결과 등)
+- 요약 응답(핸드오프/완료)에는 다음을 포함한다.
+  - Decisions by Agent: 에이전트별 의사결정 근거(참조 문서/대안/선택 사유)와 최종 선택
+  - Changes by Agent: 수정 파일/생성 산출물/검증 결과 링크
+  - Next Actions: 남은 리스크/후속 작업 제안(필요 시 담당 에이전트 지정)
+- 포맷 가이드(텍스트):
+  - 섹션: "Active Agents", "Agent Responses", "Decisions by Agent", "Next Actions"
+  - 각 항목은 한 줄 1요지 원칙, 파일/명령은 백틱으로 표기
+
 ### 매니페스트 인식 규칙(필수)
 - 모든 Codex 요청 시작 시, 계획 수립 전에 다음 매니페스트를 우선 조회한다.
   - 프로젝트: `manifests/project.yaml`
