@@ -1,0 +1,38 @@
+id: agents.icons
+title: "Icons & Accessibility"
+purpose: "Remix Icon 사용 표준화와 a11y 속성 검증"
+scope:
+  - icons
+principles:
+  - accessibility-first
+  - token-first
+  - consistency
+  - reuse-via-atoms
+inputs:
+  - AGENTS.md
+  - agents/Agents.icons.md
+  - docs/icons-remix.md
+  - docs/design-guide.md
+outputs:
+  - fe-app/app/layout.tsx (icon CDN link)
+  - fe-app/.storybook/preview-head.html (icon CDN link)
+  - fe-app/app/components/atoms/** (icon wrappers if any)
+  - agents/Agents.icons.md
+workflows:
+  - name: default
+    trigger: icon-or-a11y-change
+    steps:
+      - verify-cdn-loading
+      - enforce-aria-patterns
+      - atomize-repeated-icons
+    verify:
+      - lint
+      - docs-links
+dod:
+  - aria-patterns-documented
+  - usage-examples-added
+  - tokens-applied
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

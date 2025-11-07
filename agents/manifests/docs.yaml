@@ -1,0 +1,40 @@
+id: agents.docs
+title: "Docs & Consistency"
+purpose: "PRD/Spec/Design과 구현 산출물의 일관성 유지 및 변경 기록"
+scope:
+  - docs
+principles:
+  - single-source-of-truth
+  - cross-reference
+  - minimal-duplication
+  - traceability
+inputs:
+  - AGENTS.md
+  - agents/Agents.docs.md
+  - docs/prd.md
+  - docs/spec.md
+  - docs/design-guide.md
+  - docs/icons-remix.md
+outputs:
+  - docs/*.md
+  - tasks/**/*.md
+  - agents/Agents.docs.md
+workflows:
+  - name: default
+    trigger: feature-or-spec-change
+    steps:
+      - review-prd-spec-design
+      - compare-with-impl
+      - update-source-doc
+      - add-links-and-logs
+    verify:
+      - docs-links
+      - terminology-consistency
+dod:
+  - source-updated
+  - diffs-logged
+  - links-valid
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

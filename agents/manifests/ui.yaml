@@ -1,0 +1,47 @@
+id: agents.ui
+title: "UI Components"
+purpose: "Atomic Design 기반 UI 컴포넌트 설계·구현·문서화"
+scope:
+  - ui
+principles:
+  - document-first
+  - atoms-first
+  - test-and-story-first
+  - accessibility-first
+  - minimal-change
+inputs:
+  - AGENTS.md
+  - agents/Agents.ui.md
+  - docs/design-guide.md
+  - docs/foundation.md
+  - docs/icons-remix.md
+outputs:
+  - fe-app/app/components/{atoms,molecules,organisms}/
+  - fe-app/app/components/**/[a-z0-9-]*/[a-z0-9-]*.stories.tsx
+  - fe-app/app/components/**/[a-z0-9-]*/[a-z0-9-]*.test.tsx
+  - fe-app/app/components/**/[a-z0-9-]*/[A-Z]*.tsx
+  - fe-app/app/dev/page.tsx
+  - agents/Agents.ui.md
+workflows:
+  - name: default
+    trigger: feature-request
+    steps:
+      - plan-from-docs
+      - scaffold-stories-tests
+      - implement-component
+      - update-dev-preview
+      - link-docs
+    verify:
+      - lint
+      - unit-tests
+      - a11y-checks
+dod:
+  - stories-added
+  - tests-added
+  - dev-preview-updated
+  - lint-passed
+  - docs-links-updated
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

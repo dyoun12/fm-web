@@ -1,7 +1,7 @@
 # Backend Infrastructure Architecture (Lambda + Terraform)
 
 ## 1. 문서 목적
-이 문서는 가족법인 홈페이지의 백엔드 인프라를 AWS Lambda 기반으로 설계하고,  
+이 문서는 홈페이지의 백엔드 인프라를 AWS Lambda 기반으로 설계하고,  
 **Terraform을 통한 자동화된 배포 파이프라인**을 정의하기 위한 기술 명세이다.
 
 Codex 문서화 철학에 따라,
@@ -42,17 +42,16 @@ graph TD
 ## 3. 디렉토리 구조
 
 ```bash
-infra/
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── lambda.tf
-│   ├── iam.tf
-│   ├── ecr.tf
-│   ├── apigateway.tf
-│   ├── dynamodb.tf
-│   └── s3.tf
+terraform/
+├── main.tf
+├── variables.tf
+├── outputs.tf
+├── lambda.tf
+├── iam.tf
+├── ecr.tf
+├── apigateway.tf
+├── dynamodb.tf
+└── s3.tf
 ```
 
 ---
@@ -159,8 +158,8 @@ jobs:
           terraform_version: 1.9.8
       - name: Terraform Init & Apply
         run: |
-          terraform -chdir=infra/terraform init
-          terraform -chdir=infra/terraform apply -auto-approve
+          terraform -chdir=terraform init
+          terraform -chdir=terraform apply -auto-approve
 ```
 
 ---
@@ -181,3 +180,24 @@ jobs:
 **작성자:** GPT-5 (Codex Agent)  
 **문서 버전:** v1.0  
 **참조 문서:** `spec.md`, `prd_full.md`
+
+---
+
+## 8. 환경/보안/관찰가능성 가이드(요약)
+
+### 8.1 환경(Environments)
+- Dev/Stage/Prod 3계층을 기본으로 하며, 동일 파이프라인(Prod parity) 원칙을 따른다.
+- 리소스 네이밍/태깅 표준: `familycorp-<env>-<service>`
+- 구성 차이는 변수/워크스페이스로만 제어(IaC에서 선언)
+
+### 8.2 네트워크/보안(Security)
+- HTTPS 의무, CORS는 회사 도메인만 허용
+- OIDC + 2FA, 토큰은 HttpOnly 쿠키에 저장, 만료(Access 15m/Refresh 30d)
+- S3 업로드는 presigned URL만 허용, 서버에서 파일 크기/MIME 검증
+- 최소 권한 IAM, 시크릿은 Parameter Store/Secrets Manager 관리
+
+### 8.3 관찰가능성(Observability)
+- 구조화 로깅(JSON), 상관관계 ID(요청/트랜잭션) 포함
+- 주요 지표: 요청 지연/오류율, Lambda 콜드스타트, DynamoDB 지연/프로비저닝
+- 경보: 오류율/지연 임계 초과, 배포 실패, 권한 오류
+- 대시보드: API Gateway/Lambda/DynamoDB/S3/CloudWatch Logs 핵심 지표 묶음

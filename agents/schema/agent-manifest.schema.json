@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "purpose", "scope", "principles", "inputs", "outputs", "workflows", "dod", "links"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^agents\\.[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "scope": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "principles": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "inputs": { "type": "array", "items": { "type": "string" } },
+    "outputs": { "type": "array", "items": { "type": "string" } },
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "trigger", "steps", "verify"],
+        "properties": {
+          "name": { "type": "string" },
+          "trigger": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "verify": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dod": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "links": {
+      "type": "object",
+      "required": ["agents", "main"],
+      "properties": {
+        "agents": { "type": "string" },
+        "main": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}
+

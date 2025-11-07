@@ -1,0 +1,37 @@
+id: agents.qa
+title: "Quality & Tests"
+purpose: "테스트 전략 운영, 커버리지 관리, 품질 게이트 유지"
+scope:
+  - qa
+principles:
+  - risk-based-testing
+  - fail-first-cases
+  - network-isolation
+  - coverage-target-80
+  - automation-first
+inputs:
+  - AGENTS.md
+  - agents/Agents.qa.md
+outputs:
+  - fe-app/tests/**/*.test.ts*
+  - fe-app/tests/e2e/**
+  - agents/Agents.qa.md
+workflows:
+  - name: default
+    trigger: any-change
+    steps:
+      - add-or-update-tests
+      - ensure-msw-for-network
+      - run-tests-and-collect-coverage
+    verify:
+      - unit-tests
+      - e2e-tests
+      - coverage
+dod:
+  - tests-green
+  - coverage-meets-threshold
+  - msw-applied
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

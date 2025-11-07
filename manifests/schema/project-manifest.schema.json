@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "modules",
+    "stack",
+    "apps",
+    "conventions",
+    "security",
+    "documentation",
+    "workflows",
+    "quality_gates"
+  ],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" },
+          "type": { "type": "string" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "stack": {
+      "type": "object",
+      "required": ["frontend"],
+      "properties": {
+        "frontend": { "type": "string" },
+        "backend": { "type": ["string", "null"] },
+        "database": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "apps": {
+      "type": "object",
+      "required": ["frontend", "backend"],
+      "properties": {
+        "frontend": {
+          "type": "object",
+          "required": ["path", "directories", "commands", "testing"],
+          "properties": {
+            "path": { "type": "string" },
+            "directories": {
+              "type": "object",
+              "properties": {
+                "app_pages": { "type": "string" },
+                "components": { "type": "string" },
+                "api_layer": { "type": "string" },
+                "store": { "type": "string" },
+                "tests": { "type": "string" },
+                "dev_preview": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "commands": {
+              "type": "object",
+              "properties": {
+                "install": { "type": "string" },
+                "dev": { "type": "string" },
+                "lint": { "type": "string" },
+                "test": { "type": "string" },
+                "build": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "testing": {
+              "type": "object",
+              "properties": {
+                "unit": { "type": "string" },
+                "e2e": { "type": "string" },
+                "coverage": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "backend": {
+          "type": "object",
+          "required": ["path", "directories", "commands", "testing"],
+          "properties": {
+            "path": { "type": "string" },
+            "directories": {
+              "type": "object",
+              "properties": {
+                "source_main": { "type": "string" },
+                "source_test": { "type": "string" }
+              },
+              "additionalProperties": true
+            },
+            "commands": {
+              "type": "object",
+              "properties": {
+                "install": { "type": "string" },
+                "dev": { "type": "string" },
+                "lint": { "type": "string" },
+                "test": { "type": "string" },
+                "build": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "testing": {
+              "type": "object",
+              "properties": {
+                "unit": { "type": "string" },
+                "e2e": { "type": ["string", "null"] },
+                "coverage": { "type": ["string", "null"] }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "conventions": {
+      "type": "object",
+      "properties": {
+        "naming": { "type": "string" },
+        "commits": { "type": "string" },
+        "styling": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "env": { "type": "string" },
+        "auth": { "type": "string" },
+        "upload": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "documentation": {
+      "type": "object",
+      "properties": {
+        "prd": { "type": "string" },
+        "spec": { "type": "string" },
+        "design": { "type": "string" },
+        "icons": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "steps"],
+        "properties": {
+          "name": { "type": "string" },
+          "steps": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        }
+      }
+    },
+    "quality_gates": {
+      "type": "object",
+      "properties": {
+        "lint": { "type": "string" },
+        "tests": { "type": "string" },
+        "coverage": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

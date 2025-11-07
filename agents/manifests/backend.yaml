@@ -1,0 +1,43 @@
+id: agents.backend
+title: "Backend Services"
+purpose: "API 서버/인증/스토리지/업로드/에러 모델/관찰가능성"
+scope:
+  - backend
+principles:
+  - spec-first
+  - security-by-default
+  - backward-compatibility
+  - observability
+  - performance-resilience
+inputs:
+  - AGENTS.md
+  - agents/Agents.backend.md
+  - docs/spec.md
+  - docs/prd.md
+  - docs/backend_infra_architecture.md
+outputs:
+  - be-app/** (백엔드 코드/테스트)
+  - docs/spec.md (계약 동기화)
+  - fe-app/api/*.ts (프론트 목 동기 가이드)
+  - tasks/**/*.md (이행/마이그레이션 로그)
+workflows:
+  - name: default
+    trigger: api-backend-change
+    steps:
+      - confirm-contract
+      - implement-endpoints
+      - integrate-storage-and-upload
+      - add-observability
+      - sync-frontend-mocks-and-docs
+    verify:
+      - unit-tests
+      - contract-tests
+      - security-checklist
+dod:
+  - contract-updated
+  - error-model-documented
+  - security-controls-applied
+  - observability-instrumented
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md

@@ -1,0 +1,37 @@
+id: agents.__AGENT_SLUG__
+title: "__AGENT_TITLE__"
+purpose: "__AGENT_PURPOSE__"
+scope:
+  - __AGENT_SCOPE__
+principles:
+  - document-first
+  - declarative-manifest
+  - minimal-change
+  - test-first
+inputs:
+  - docs/prd.md
+  - docs/spec.md
+  - docs/design-guide.md
+outputs:
+  - agents/Agents.__AGENT_SLUG__.md
+  - agents/manifests/__AGENT_SLUG__.yaml
+workflows:
+  - name: default
+    trigger: manual
+    steps:
+      - plan-from-manifest
+      - scaffold-docs
+      - align-with-main-orchestration
+      - link-and-validate
+    verify:
+      - lint
+      - unit-tests
+      - docs-links
+dod:
+  - manifest-valid
+  - docs-updated
+  - tests-added-or-reviewed
+  - links-checked
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md

@@ -1,0 +1,41 @@
+id: agents.infra
+title: "Infrastructure & Platform"
+purpose: "IaC/CI-CD/시크릿/보안/관찰가능성/운영 자동화"
+scope:
+  - infra
+principles:
+  - least-privilege
+  - immutable-infra
+  - prod-parity
+  - security-scans
+  - traceability
+inputs:
+  - AGENTS.md
+  - agents/Agents.infra.md
+  - docs/backend_infra_architecture.md
+outputs:
+  - terraform/** (Terraform IaC 코드)
+  - scripts/** (배포/검증 스크립트)
+  - docs/backend_infra_architecture.md (운영 가이드 보강)
+  - tasks/** (체크리스트/런북 링크)
+workflows:
+  - name: default
+    trigger: platform-change
+    steps:
+      - define-environments
+      - scaffold-iac
+      - wire-cicd
+      - configure-secrets
+      - setup-observability
+    verify:
+      - security-scans
+      - pipeline-green
+      - runbook-updated
+dod:
+  - environments-declared
+  - pipelines-wired
+  - secrets-managed
+  - alerts-configured
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md

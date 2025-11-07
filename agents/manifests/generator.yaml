@@ -1,0 +1,39 @@
+id: agents.generator
+title: "Sub-Agent Generator"
+purpose: "서브 에이전트 스캐폴딩(문서/매니페스트) 자동화"
+scope:
+  - generator
+principles:
+  - declarative-manifest
+  - template-driven
+  - minimal-change
+  - traceability
+inputs:
+  - AGENTS.md
+  - agents/Agents.generator.md
+  - agents/templates/sub-agent-doc.template.md
+  - agents/templates/agent-manifest.template.yaml
+  - agents/schema/agent-manifest.schema.json
+outputs:
+  - agents/Agents.<slug>.md
+  - agents/manifests/<slug>.yaml
+  - scripts/create-sub-agent.sh
+workflows:
+  - name: default
+    trigger: manual
+    steps:
+      - plan-from-manifest
+      - scaffold-docs
+      - create-manifest
+      - link-and-validate
+    verify:
+      - schema-compat
+      - docs-links
+dod:
+  - files-generated
+  - schema-checked
+  - index-updated
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

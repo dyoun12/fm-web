@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=manifests/schema/project-manifest.schema.json
+name: FM-web
+description: "법인 홈페이지(Next.js) + Agents/Docs/Tasks로 구성된 FE 중심 모노리포"
+modules:
+  - id: fe-app
+    path: fe-app/
+    type: frontend
+    notes: "Next.js App Router, Atomic Design 컴포넌트, RTK 옵션"
+  - id: be-app
+    path: be-app/
+    type: backend
+    notes: "Spring Boot 백엔드 앱(계획), API/인증/스토리지"
+  - id: docs
+    path: docs/
+    type: documentation
+    notes: "PRD/Spec/Design/Icons 등 문서 단일 진실 원천"
+  - id: agents
+    path: agents/
+    type: process
+    notes: "에이전트 지침과 매니페스트, 생성기 포함"
+  - id: tasks
+    path: tasks/
+    type: tracking
+    notes: "스프린트/체크리스트/피드백 로그"
+  - id: infra
+    path: terraform/
+    type: infra
+    notes: "Terraform IaC 코드(루트 /terraform)"
+stack:
+  frontend: "Next.js + TypeScript + TailwindCSS + Vitest + Playwright"
+  backend: "Spring Boot (계획)"
+  database: "DynamoDB (계획)"
+apps:
+  frontend:
+    path: fe-app/
+    directories:
+      app_pages: fe-app/app
+      components: fe-app/app/components/{atoms|molecules|organisms}
+      api_layer: fe-app/api
+      store: fe-app/store
+      tests: fe-app/tests
+      dev_preview: fe-app/app/dev/page.tsx
+    commands:
+      install: "cd fe-app && npm install"
+      dev: "cd fe-app && npm run dev"
+      lint: "cd fe-app && npm run lint"
+      test: "cd fe-app && npm run test -- --run"
+      build: "cd fe-app && npm run build"
+    testing:
+      unit: "Vitest + Testing Library"
+      e2e: "Playwright (fe-app/tests/e2e)"
+      coverage: ">= 80% (미달 시 사유 PR 본문 기재)"
+  backend:
+    path: be-app/
+    directories:
+      source_main: be-app/src/main
+      source_test: be-app/src/test
+    commands:
+      install: "cd be-app && ./gradlew --no-daemon build || true  # 계획: Gradle Wrapper"
+      dev: "cd be-app && ./gradlew --no-daemon bootRun || true   # 계획: 로컬 서버"
+      lint: "cd be-app && ./gradlew --no-daemon check || true     # 계획: 정적 분석"
+      test: "cd be-app && ./gradlew --no-daemon test || true      # 계획: 단위 테스트"
+      build: "cd be-app && ./gradlew --no-daemon build || true     # 계획: 빌드"
+    testing:
+      unit: "JUnit (계획)"
+      e2e: null
+      coverage: null
+conventions:
+  naming: "Components: PascalCase, Hooks: camelCase, Files: kebab-case"
+  commits: "Conventional Commits(한국어, 스코프 미사용, 헤더 72자)"
+  styling: "Prettier(2-space, double quotes, semicolon), ESLint(nextjs-strict, typescript-clean)"
+security:
+documentation:
+  env: "Parameter Store 등 비밀 관리, .env.local 커밋 금지"
+  auth: "OIDC + 2FA, HttpOnly 쿠키, HTTPS"
+  upload: "S3 presigned URL, 서버단 파일 크기/MIME 검증"
+workflows:
+  prd: docs/prd.md
+  spec: docs/spec.md
+  design: docs/design-guide.md
+  icons: docs/icons-remix.md
+quality_gates:
+  - name: dev-loop
+    steps:
+      - install
+      - dev
+      - lint
+      - test
+  - name: ci-build
+    steps:
+      - lint
+      - test
+      - build
+lint: "경고도 실패 처리"
+tests: "단위 테스트 필수, 네트워크는 MSW로 차단"
+coverage: ">= 80% 유지"

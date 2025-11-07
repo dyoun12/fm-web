@@ -1,0 +1,42 @@
+id: agents.api
+title: "API Spec & Mock"
+purpose: "프론트엔드 API 계약 정의와 목(mock) 구현, 오류 케이스 우선 설계"
+scope:
+  - api
+principles:
+  - spec-first
+  - mock-first
+  - error-first
+  - minimal-change
+  - msw-for-tests
+inputs:
+  - AGENTS.md
+  - agents/Agents.api.md
+  - docs/spec.md
+  - docs/prd.md
+  - docs/backend_infra_architecture.md
+outputs:
+  - fe-app/api/*.ts
+  - fe-app/tests/**/api-*.test.ts
+  - agents/Agents.api.md
+workflows:
+  - name: default
+    trigger: api-change
+    steps:
+      - confirm-contract-from-spec
+      - add-types-and-mocks
+      - implement-error-scenarios
+      - sync-docs
+    verify:
+      - lint
+      - unit-tests
+      - msw-mocks
+dod:
+  - contract-documented
+  - mocks-cover-errors
+  - tests-green
+  - docs-updated
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

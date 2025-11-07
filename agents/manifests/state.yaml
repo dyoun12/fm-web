@@ -1,0 +1,41 @@
+id: agents.state
+title: "Redux Toolkit State"
+purpose: "RTK 스토어/슬라이스 구성과 타입/테스트 동반 유지"
+scope:
+  - state
+principles:
+  - decision-tree-global-vs-local
+  - container-injects-state
+  - typed-selectors
+  - test-first
+  - minimal-change
+inputs:
+  - AGENTS.md
+  - agents/Agents.state.md
+  - docs/state-redux-toolkit.md
+outputs:
+  - fe-app/store/index.ts
+  - fe-app/store/counter-slice.ts
+  - fe-app/store/provider.tsx
+  - fe-app/tests/store/*.test.ts
+  - agents/Agents.state.md
+workflows:
+  - name: default
+    trigger: state-change
+    steps:
+      - design-state-shape
+      - add-slice-and-typed-hooks
+      - connect-provider
+      - add-reducer-tests
+    verify:
+      - lint
+      - unit-tests
+dod:
+  - provider-wired
+  - reducers-tested
+  - typed-hooks-exposed
+  - docs-updated
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+

@@ -266,8 +266,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs,node,react,macos,windows,dotenv,visualstudiocode
 
-/codex/
-AGENTS.md
 *storybook.log
 storybook-static
 .storybook/

@@ -1,0 +1,44 @@
+id: agents.main
+title: "Main Orchestrator"
+purpose: "에이전트 간 오케스트레이션(인테이크→분류→할당→동기화→검수→머지)"
+scope:
+  - orchestration
+principles:
+  - document-first
+  - single-source-of-truth
+  - minimal-change
+  - traceability
+inputs:
+  - AGENTS.md
+  - agents/Agents.main.md
+  - agents/Agents.ui.md
+  - agents/Agents.api.md
+  - agents/Agents.state.md
+  - agents/Agents.docs.md
+  - agents/Agents.qa.md
+  - agents/Agents.icons.md
+outputs:
+  - tasks/**
+  - agents/Agents.main.md
+workflows:
+  - name: default
+    trigger: new-task
+    steps:
+      - intake
+      - triage
+      - dispatch
+      - sync
+      - validate
+      - merge
+    verify:
+      - lint
+      - tests
+      - docs-links
+dod:
+  - dod-criteria-met
+  - reviewers-assigned
+  - pr-template-complete
+links:
+  agents: AGENTS.md
+  main: agents/Agents.main.md
+
