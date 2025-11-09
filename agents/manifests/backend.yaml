@@ -9,15 +9,19 @@ principles:
   - backward-compatibility
   - observability
   - performance-resilience
+  - infra-separated
+  - lambda-agnostic-app
 inputs:
   - AGENTS.md
   - agents/Agents.backend.md
   - docs/spec.md
   - docs/prd.md
-  - docs/backend_infra_architecture.md
+  - docs/backend.md
 outputs:
   - be-app/** (백엔드 코드/테스트)
+  - be-app/opa/** (OPA 정책/번들)
   - docs/spec.md (계약 동기화)
+  - docs/opa.md (인가 정책/평가 규약)
   - fe-app/api/*.ts (프론트 목 동기 가이드)
   - tasks/**/*.md (이행/마이그레이션 로그)
 workflows:
@@ -25,7 +29,7 @@ workflows:
     trigger: api-backend-change
     steps:
       - confirm-contract
-      - implement-endpoints
+      - implement-endpoints-fastapi
       - integrate-storage-and-upload
       - add-observability
       - sync-frontend-mocks-and-docs

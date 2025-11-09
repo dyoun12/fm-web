@@ -28,8 +28,8 @@ modules:
     notes: "Terraform IaC 코드(루트 /terraform)"
 stack:
   frontend: "Next.js + TypeScript + TailwindCSS + Vitest + Playwright"
-  backend: "Spring Boot (계획)"
-  database: "DynamoDB (계획)"
+  backend: "FastAPI on AWS Lambda (AWS Lambda Web Adapter)"
+  database: "Aurora DSQL(기본) + DynamoDB(보조) + ElastiCache(캐시)"
 apps:
   frontend:
     path: fe-app/
@@ -53,16 +53,17 @@ apps:
   backend:
     path: be-app/
     directories:
-      source_main: be-app/src/main
-      source_test: be-app/src/test
+      source_main: be-app/app
+      source_test: be-app/tests
+      opa: be-app/opa
     commands:
-      install: "cd be-app && ./gradlew --no-daemon build || true  # 계획: Gradle Wrapper"
-      dev: "cd be-app && ./gradlew --no-daemon bootRun || true   # 계획: 로컬 서버"
-      lint: "cd be-app && ./gradlew --no-daemon check || true     # 계획: 정적 분석"
-      test: "cd be-app && ./gradlew --no-daemon test || true      # 계획: 단위 테스트"
-      build: "cd be-app && ./gradlew --no-daemon build || true     # 계획: 빌드"
+      install: "cd be-app && pip install -r requirements.txt || true  # 계획: Python deps"
+      dev: "cd be-app && uvicorn app.main:app --reload || true        # 계획: 로컬 개발 서버"
+      lint: "cd be-app && ruff check . || true                         # 계획: 정적 분석"
+      test: "cd be-app && pytest -q || true                            # 계획: 단위 테스트"
+      build: "cd be-app && echo 'build via container or zip (infra)' || true  # 계획: 패키징"
     testing:
-      unit: "JUnit (계획)"
+      unit: "Pytest (계획)"
       e2e: null
       coverage: null
 conventions:
