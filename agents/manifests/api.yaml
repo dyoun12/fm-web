@@ -14,7 +14,8 @@ inputs:
   - agents/Agents.api.md
   - docs/spec.md
   - docs/prd.md
-  - docs/backend_infra_architecture.md
+  - docs/backend.md
+  - docs/infra.md
 outputs:
   - fe-app/api/*.ts
   - fe-app/tests/**/api-*.test.ts
@@ -39,4 +40,3 @@ dod:
 links:
   agents: AGENTS.md
   main: agents/Agents.main.md
-

@@ -9,14 +9,18 @@ principles:
   - prod-parity
   - security-scans
   - traceability
+  - terraform-for-provisioning
+  - sam-for-serverless-deploy
 inputs:
   - AGENTS.md
   - agents/Agents.infra.md
-  - docs/backend_infra_architecture.md
+  - docs/infra.md
 outputs:
   - terraform/** (Terraform IaC 코드)
+  - sam/** (SAM 템플릿/매개변수)
+  - template.yaml (SAM 루트 템플릿)
   - scripts/** (배포/검증 스크립트)
-  - docs/backend_infra_architecture.md (운영 가이드 보강)
+  - docs/infra.md (운영 가이드 보강)
   - tasks/** (체크리스트/런북 링크)
 workflows:
   - name: default
@@ -25,11 +29,14 @@ workflows:
       - define-environments
       - scaffold-iac
       - wire-cicd
+      - sam-build-and-deploy
+      - post-deploy-smoke-test
       - configure-secrets
       - setup-observability
     verify:
       - security-scans
       - pipeline-green
+      - sam-smoke-tests-green
       - runbook-updated
 dod:
   - environments-declared

@@ -4,6 +4,10 @@
 이 문서는 `prd.md`를 기반으로 실제 개발을 위한 **기능별 상세 명세서**를 정의한다.  
 Codex를 통해 자동 생성되는 파일/코드 구조와, 수동 구현이 필요한 영역을 구분하여 명시한다.
 
+백엔드 런타임: FastAPI(ASGI)
+- 배포 환경은 AWS Lambda이며, API Gateway의 JSON 이벤트를 HTTP 요청으로 변환하는 AWS Lambda Web Adapter를 통해 FastAPI 앱으로 진입한다(앱 코드는 ASGI 순수성 유지).
+- 인프라/배포(컨테이너/ECR, 어댑터 주입, API GW 연결)는 `docs/infra.md`에 정의한다.
+
 ---
 
 ## 2. 프론트엔드 앱 구조 (Next.js)
@@ -185,6 +189,21 @@ fe-app/
 | `PUT` | `<presigned-url>` | 실제 파일 업로드 |
 
 ---
+
+### 3.5 데이터 저장소 전략(백엔드)
+
+- 기본 저장소: 관계형 DB — Aurora DSQL
+  - 연결: Lambda → RDS Proxy → Aurora DSQL (VPC 프라이빗)
+  - ORM/드라이버: SQLAlchemy(+ Alembic), 엔진에 맞는 async 드라이버 선택
+  - 주요 테이블: posts, categories, users, sessions 등 정합성 요구 데이터
+- 보조 저장소: DynamoDB
+  - 용도: 이벤트/로그성 데이터, 고스루풋 조회 패턴, 비정규/키-값 데이터
+  - 예: 조회 카운트, 비동기 작업 상태, 임시 토큰
+- 캐시: ElastiCache(Redis)
+  - 용도: 목록/상세 캐시, 세션/토큰 단기 저장(보안정책 부합 시), 레이트 리미팅
+  - 원칙: 캐시 미스 시 RDB/DynamoDB 소스 조회 → 캐시 채우기, 강제 무효화 훅 제공
+
+참고: 백엔드 앱은 FastAPI(ASGI)로 작성하며, Lambda에서는 API Gateway JSON 이벤트를 HTTP로 변환하는 AWS Lambda Web Adapter를 통해 앱에 진입한다.
 
 ## 4. 프론트엔드 상세
 

@@ -29,7 +29,7 @@
 - TODO 주석으로 실제 백엔드 연동 시 교체 포인트 명시
 
 ## 백엔드 연계 참고
-- 인프라/백엔드 구조: `docs/backend_infra_architecture.md`
+- 인프라/백엔드 구조: `docs/backend.md`, `docs/infra.md`
 - 업로드 정책(S3 presigned), 인증/보안 원칙: `AGENTS.md` 보안 섹션 준수
 
 ## 테스트
