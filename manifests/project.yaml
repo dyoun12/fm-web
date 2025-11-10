@@ -29,7 +29,7 @@ modules:
 stack:
   frontend: "Next.js + TypeScript + TailwindCSS + Vitest + Playwright"
   backend: "FastAPI on AWS Lambda (AWS Lambda Web Adapter)"
-  database: "Aurora DSQL(기본) + DynamoDB(보조) + ElastiCache(캐시)"
+  database: "Aurora Serverless v2(기본) + DynamoDB(보조) + ElastiCache(캐시)"
 apps:
   frontend:
     path: fe-app/

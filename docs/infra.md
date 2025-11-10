@@ -13,7 +13,7 @@ graph TD
     B --> E[AWS Lambda (FastAPI Container)]
     B --> F[API Gateway (HTTP API)]
     B --> G[CloudWatch Logs]
-    E --> H[Aurora DSQL (via RDS Proxy)]
+    E --> H[Aurora Serverless v2 (via RDS Proxy)]
     E --> I[DynamoDB]
     E --> J[ElastiCache (Redis)]
     E --> K[S3 Bucket (Presigned Upload)]
@@ -27,7 +27,7 @@ graph TD
 | Registry | Amazon ECR | 빌드된 Docker 이미지를 저장 |
 | IAM | Role & Policy | Lambda의 S3, DynamoDB, RDS Proxy 접근 권한 제어 |
 | API Gateway | HTTP API | 프론트엔드와의 통신 진입점 |
-| Database | Aurora DSQL | 관계형 데이터(기본) |
+| Database | Aurora Serverless v2 | 관계형 데이터(기본) |
 | NoSQL | DynamoDB | 보조 데이터/키-값/이벤트 |
 | Cache | ElastiCache | 캐싱/레이트 리미팅 |
 | Storage | S3 | 파일 업로드(Presigned) |
@@ -133,7 +133,7 @@ Lambda가 VPC 내부에서 AWS 리소스에 접근할 때 NAT 의존을 줄이�
 보안 그룹/서브넷에 맞춰 엔드포인트 정책을 최소권한으로 설정한다.
 ```
 
-### (8) Aurora DSQL + RDS Proxy
+### (8) Aurora Serverless v2 + RDS Proxy
 ```hcl
 resource "aws_db_subnet_group" "aurora_subnets" {
   name       = "familycorp-aurora-subnets"
@@ -330,7 +330,7 @@ jobs:
 | Lambda | 1GB, 30만 요청 | $3.00 |
 | API Gateway | 30만 요청 | $1.00 |
 | DynamoDB | PAY_PER_REQUEST | $0.50 |
-| Aurora DSQL | 서버리스/프로비저닝 | 가변 |
+| Aurora Serverless v2 | 서버리스/프로비저닝 | 가변 |
 | ElastiCache | t4g.small | 가변 |
 | S3 | 10GB 저장 | $0.25 |
 | CloudWatch | 로그 저장 | $0.50 |

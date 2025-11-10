@@ -5,7 +5,7 @@
 ## 역할
 - API 계약(Contract) 설계 및 구현(런타임: FastAPI)
 - 인증(OIDC + 2FA), 세션/토큰 보안 정책 적용
-- 데이터 계층: 관계형(Aurora DSQL, SQLAlchemy/알레믹 이행) 기본 + 필요 시 DynamoDB/ElastiCache 병행 적용, 파일 업로드(presigned URL)
+- 데이터 계층: 관계형(Aurora Serverless v2, SQLAlchemy/알레믹 이행) 기본 + 필요 시 DynamoDB/ElastiCache 병행 적용, 파일 업로드(presigned URL)
 - 에러 모델 표준화/로깅/모니터링/성능 최적화
  - 인가(Authorization): OPA(Rego) 정책 기반, WASM 번들을 Lambda Layer로 주입해 앱에서 평가
 

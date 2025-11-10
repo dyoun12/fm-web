@@ -7,14 +7,14 @@
 
 ## 목적
 - Codex와의 협업을 통한 스캐폴딩·문서화·리팩터링 워크플로 검증
-- AWS Serverless(Λ + API GW + Aurora DSQL + DynamoDB + ElastiCache + S3) 운영 경험 축적
+- AWS Serverless(Λ + API GW + Aurora Serverless v2 + DynamoDB + ElastiCache + S3) 운영 경험 축적
 - 백엔드 FastAPI + OPA(Policy as Code) 기반 접근 통제 적용
 - 사양(개발 문서) ↔ 구현(코드) ↔ 운영(Infra) 간 정합성 유지 프로세스 실험
 
 ## 선택 기술 스택
 - 프론트엔드: Next.js + TypeScript + TailwindCSS + Vitest + Playwright
 - 백엔드: FastAPI(ASGI) on AWS Lambda(Web Adapter), SQLAlchemy/SQLModel, Alembic, OPA(Rego/WASM)
-- 데이터: Aurora DSQL(기본), DynamoDB(보조), ElastiCache(Redis)
+- 데이터: Aurora Serverless v2(기본), DynamoDB(보조), ElastiCache(Redis)
 - 스토리지/연동: S3 Presigned, AWS SDK 우선(`boto3`/`aioboto3`)
 - 인프라: Terraform(프로비저닝), AWS SAM(서버리스 빌드/배포/로컬)
 - CI/CD: GitHub Actions(테라폼→SAM 배포→스모크 테스트)

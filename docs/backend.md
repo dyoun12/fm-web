@@ -21,9 +21,9 @@
 - 에러 모델 권장 예시: `{ success, data, error{ code, message, details, traceId } }` + 적절한 HTTP status.
 
 ## 4. 데이터 저장소 전략
-- 기본 저장소: 관계형 DB — Aurora DSQL
+- 기본 저장소: 관계형 DB — Aurora Serverless v2
   - 용도: 정합성과 트랜잭션이 필요한 핵심 데이터(posts, categories, users, sessions 등)
-  - 연결: Lambda → RDS Proxy → Aurora DSQL (VPC 프라이빗)
+  - 연결: Lambda → RDS Proxy → Aurora Serverless v2 (VPC 프라이빗)
   - 기술 스택: SQLAlchemy(또는 SQLModel) + Alembic 마이그레이션, 적합한 async 드라이버 선택
 - 보조 저장소: DynamoDB
   - 용도: 이벤트/로그성, 고스루풋 키-값, 비정규 데이터, 액세스 패턴 최적화(GSI 포함)
