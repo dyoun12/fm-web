@@ -13,7 +13,8 @@ graph TD
     B --> E[AWS Lambda (FastAPI Container)]
     B --> F[API Gateway (HTTP API)]
     B --> G[CloudWatch Logs]
-    E --> H[Aurora Serverless v2 (via RDS Proxy)]
+    %% Aurora excluded for now
+    %% E --> H[Aurora Serverless v2 (via RDS Proxy)]
     E --> I[DynamoDB]
     E --> J[ElastiCache (Redis)]
     E --> K[S3 Bucket (Presigned Upload)]
@@ -25,9 +26,9 @@ graph TD
 |------|----------|------|
 | Compute | AWS Lambda | FastAPI 컨테이너 이미지 실행 환경(Web Adapter) |
 | Registry | Amazon ECR | 빌드된 Docker 이미지를 저장 |
-| IAM | Role & Policy | Lambda의 S3, DynamoDB, RDS Proxy 접근 권한 제어 |
+| IAM | Role & Policy | Lambda의 S3, DynamoDB 접근 권한 제어 |
 | API Gateway | HTTP API | 프론트엔드와의 통신 진입점 |
-| Database | Aurora Serverless v2 | 관계형 데이터(기본) |
+| Database | DynamoDB | NoSQL(기본) |
 | NoSQL | DynamoDB | 보조 데이터/키-값/이벤트 |
 | Cache | ElastiCache | 캐싱/레이트 리미팅 |
 | Storage | S3 | 파일 업로드(Presigned) |
@@ -133,7 +134,8 @@ Lambda가 VPC 내부에서 AWS 리소스에 접근할 때 NAT 의존을 줄이�
 보안 그룹/서브넷에 맞춰 엔드포인트 정책을 최소권한으로 설정한다.
 ```
 
-### (8) Aurora Serverless v2 + RDS Proxy
+### (8) 관계형 DB(Aurora) — 현재 제외
+> 비용 이슈로 프로젝트 범위에서 제외되었습니다. 아래 내용은 참고용이며, 활성화 시 별도 태스크에서 재검토/적용합니다.
 ```hcl
 resource "aws_db_subnet_group" "aurora_subnets" {
   name       = "familycorp-aurora-subnets"
@@ -330,7 +332,7 @@ jobs:
 | Lambda | 1GB, 30만 요청 | $3.00 |
 | API Gateway | 30만 요청 | $1.00 |
 | DynamoDB | PAY_PER_REQUEST | $0.50 |
-| Aurora Serverless v2 | 서버리스/프로비저닝 | 가변 |
+| DynamoDB | 서버리스 | 고스루풋/저지연 |
 | ElastiCache | t4g.small | 가변 |
 | S3 | 10GB 저장 | $0.25 |
 | CloudWatch | 로그 저장 | $0.50 |
@@ -358,4 +360,4 @@ jobs:
 
 부록) 문서 경계
 - 백엔드 구현 지침은 `docs/backend.md`에서 관리한다.
-- 본 문서는 인프라/배포 세부(컨테이너/ECR, Web Adapter, API Gateway, VPC, Aurora/DynamoDB/ElastiCache, CI/CD)를 다룬다.
+- 본 문서는 인프라/배포 세부(컨테이너/ECR, Web Adapter, API Gateway, VPC, DynamoDB/ElastiCache, CI/CD)를 다룬다.

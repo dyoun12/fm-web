@@ -192,8 +192,8 @@ fe-app/
 
 ### 3.5 데이터 저장소 전략(백엔드)
 
-- 기본 저장소: 관계형 DB — Aurora Serverless v2
-  - 연결: Lambda → RDS Proxy → Aurora Serverless v2 (VPC 프라이빗)
+- 기본 저장소: NoSQL — DynamoDB
+  - 연결: Lambda → DynamoDB (AWS SDK, VPC 비의존)
   - ORM/드라이버: SQLAlchemy(+ Alembic), 엔진에 맞는 async 드라이버 선택
   - 주요 테이블: posts, categories, users, sessions 등 정합성 요구 데이터
 - 보조 저장소: DynamoDB

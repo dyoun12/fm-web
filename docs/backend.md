@@ -21,16 +21,16 @@
 - 에러 모델 권장 예시: `{ success, data, error{ code, message, details, traceId } }` + 적절한 HTTP status.
 
 ## 4. 데이터 저장소 전략
-- 기본 저장소: 관계형 DB — Aurora Serverless v2
+- 기본 저장소: NoSQL — DynamoDB
   - 용도: 정합성과 트랜잭션이 필요한 핵심 데이터(posts, categories, users, sessions 등)
-  - 연결: Lambda → RDS Proxy → Aurora Serverless v2 (VPC 프라이빗)
+  - 연결: Lambda → DynamoDB (AWS SDK, VPC 비의존)
   - 기술 스택: SQLAlchemy(또는 SQLModel) + Alembic 마이그레이션, 적합한 async 드라이버 선택
 - 보조 저장소: DynamoDB
   - 용도: 이벤트/로그성, 고스루풋 키-값, 비정규 데이터, 액세스 패턴 최적화(GSI 포함)
   - 예: 조회 카운트, 비동기 작업 상태, 임시 토큰/세션 스냅샷
 - 캐시: ElastiCache(Redis)
   - 용도: 목록/상세 캐시, 레이트 리미팅, 단기 세션 캐시(보안 정책 부합 시)
-  - 전략: 캐시 키 네이밍/TTL/무효화 규칙 정의, 소스-오브-트루스는 Aurora/DynamoDB
+  - 전략: 캐시 키 네이밍/TTL/무효화 규칙 정의, 소스-오브-트루스는 DynamoDB
 
 ## 5. 개발 가이드(요약)
 - 디렉터리: `be-app/app`(애플리케이션), `be-app/tests`(테스트)
@@ -78,4 +78,4 @@ def create_presigned_put(bucket: str, key: str, content_type: str, ttl: int = 30
 
 ## 6. 문서 경계
 - 본 문서는 백엔드 구현 지침에 집중한다.
-- 인프라/배포(컨테이너/ECR, Web Adapter 주입, API Gateway 연결, VPC, Aurora/RDS Proxy/DynamoDB/ElastiCache, CI/CD, OPA Layer)는 `docs/infra.md`를 참조한다.
+- 인프라/배포(컨테이너/ECR, Web Adapter 주입, API Gateway 연결, VPC, DynamoDB/ElastiCache, CI/CD, OPA Layer)는 `docs/infra.md`를 참조한다.
