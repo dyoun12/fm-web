@@ -78,4 +78,4 @@ def create_presigned_put(bucket: str, key: str, content_type: str, ttl: int = 30
 
 ## 6. 문서 경계
 - 본 문서는 백엔드 구현 지침에 집중한다.
-- 인프라/배포(컨테이너/ECR, Web Adapter 주입, API Gateway 연결, VPC, DynamoDB/ElastiCache, CI/CD, OPA Layer)는 `docs/infra.md`를 참조한다.
+- 인프라/배포: API Gateway/Lambda/DynamoDB는 SAM 템플릿으로 배포하고, 네트워크/VPC/공통 리소스는 Terraform으로 관리한다. 상세는 `docs/infra.md`를 참조한다.

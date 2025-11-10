@@ -198,6 +198,39 @@ dist
 .pnp.*
 
 ### Node Patch ###
+
+### Terraform ###
+# Local Terraform working directories
+.terraform/
+**/.terraform/*
+
+# State files
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Variable files (often contain secrets)
+terraform.tfvars
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Plans (optional, can be regenerated)
+*.tfplan
 # Serverless Webpack directories
 .webpack/
 

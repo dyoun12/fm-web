@@ -7,7 +7,7 @@
 
 ## 목적
 - Codex와의 협업을 통한 스캐폴딩·문서화·리팩터링 워크플로 검증
-- AWS Serverless(Λ + API GW + DynamoDB + ElastiCache + S3) 운영 경험 축적
+- AWS Serverless(Λ + API GW + DynamoDB + ElastiCache + S3) — 앱 리소스는 SAM으로 배포, 인프라는 Terraform으로 관리
 - 백엔드 FastAPI + OPA(Policy as Code) 기반 접근 통제 적용
 - 사양(개발 문서) ↔ 구현(코드) ↔ 운영(Infra) 간 정합성 유지 프로세스 실험
 

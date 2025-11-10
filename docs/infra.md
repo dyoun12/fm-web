@@ -1,7 +1,7 @@
 # Infrastructure Architecture (Terraform + SAM)
 
 ## 1. 문서 목적
-AWS 리소스는 Terraform으로 프로비저닝하고, 서버리스 애플리케이션(백엔드 FastAPI)은 AWS SAM으로 빌드/배포/테스트하는 기준을 정의한다. 기본 실행 패턴은 컨테이너 이미지 + AWS Lambda Web Adapter이다.
+Terraform은 VPC/서브넷/보안그룹/VPC 엔드포인트/공통 S3/ECR/IAM 등 인프라 중심 리소스를 담당한다. API Gateway, Lambda, DynamoDB 등 애플리케이션 리소스는 AWS SAM으로 빌드/배포/테스트한다. 기본 실행 패턴은 컨테이너 이미지 + AWS Lambda Web Adapter이다.
 
 ## 2. 전체 아키텍처 개요
 
@@ -9,15 +9,13 @@ AWS 리소스는 Terraform으로 프로비저닝하고, 서버리스 애플리�
 graph TD
     A[GitHub Actions] -->|Terraform Apply| B[AWS Provider]
     B --> C[ECR (Container Image Registry)]
-    B --> D[IAM Role & Policy]
-    B --> E[AWS Lambda (FastAPI Container)]
-    B --> F[API Gateway (HTTP API)]
+    B --> D[IAM (Shared Roles/Policies)]
     B --> G[CloudWatch Logs]
-    %% Aurora excluded for now
-    %% E --> H[Aurora Serverless v2 (via RDS Proxy)]
-    E --> I[DynamoDB]
+    B --> K[S3 Bucket (Shared/Public)]
+    A -->|SAM Deploy| E[AWS Lambda (FastAPI Container)]
+    A -->|SAM Deploy| F[API Gateway (HTTP API)]
+    A -->|SAM Deploy| I[DynamoDB]
     E --> J[ElastiCache (Redis)]
-    E --> K[S3 Bucket (Presigned Upload)]
     F --> E
 ```
 
@@ -26,9 +24,9 @@ graph TD
 |------|----------|------|
 | Compute | AWS Lambda | FastAPI 컨테이너 이미지 실행 환경(Web Adapter) |
 | Registry | Amazon ECR | 빌드된 Docker 이미지를 저장 |
-| IAM | Role & Policy | Lambda의 S3, DynamoDB 접근 권한 제어 |
+| IAM | Role & Policy | 공통/기반 권한(Terraform), 함수별 미세 권한은 SAM에서 부여 |
 | API Gateway | HTTP API | 프론트엔드와의 통신 진입점 |
-| Database | DynamoDB | NoSQL(기본) |
+| Database | DynamoDB | NoSQL(기본, SAM 배포) |
 | NoSQL | DynamoDB | 보조 데이터/키-값/이벤트 |
 | Cache | ElastiCache | 캐싱/레이트 리미팅 |
 | Storage | S3 | 파일 업로드(Presigned) |
@@ -41,24 +39,29 @@ graph TD
 
 ```bash
 terraform/
-├── main.tf
-├── variables.tf
-├── outputs.tf
-├── lambda.tf
-├── iam.tf
-├── ecr.tf
-├── apigateway.tf
-├── dynamodb.tf
-├── rds.tf
-├── vpc.tf
-└── s3.tf
+├── main.tf          # providers/backends/default tags
+├── variables.tf     # region/env 등
+├── vpc.tf           # (예정) VPC/서브넷/보안그룹
+├── endpoints.tf     # (예정) VPC 엔드포인트(S3/DynamoDB/CloudWatch 등)
+├── s3.tf            # (예정) 공통 S3 버킷
+├── ecr.tf           # (선택) ECR 리포지터리
+└── iam.tf           # (선택) 공통 IAM 리소스
 ```
 
 ---
 
-## 4. Terraform(리소스) 배포 순서
+## 4. 배포 책임 분리와 절차
 
-### (1) ECR 생성
+### (A) Terraform — 인프라(네트워크/공통)
+- VPC/서브넷/라우팅/보안그룹/VPC 엔드포인트 구성
+- 공통 S3, ECR, 공용 IAM 역할/정책(필요 시)
+- 실행: `terraform init && terraform apply -var-file=dev.tfvars`
+
+### (B) SAM — 애플리케이션(API GW/Lambda/DynamoDB)
+- SAM 템플릿에서 API Gateway, Lambda, DynamoDB(SimpleTable 또는 CFN 테이블)를 정의
+- 실행: `sam build && sam deploy --guided`
+
+### (1) ECR 생성(선택 — 컨테이너 이미지 사용 시)
 ```hcl
 resource "aws_ecr_repository" "backend_repo" {
   name = "familycorp-backend"
@@ -77,35 +80,14 @@ resource "aws_iam_role" "lambda_exec_role" {
 }
 ```
 
-### (3) Lambda Function (Container 기반)
-```hcl
-resource "aws_lambda_function" "backend_lambda" {
-  function_name = "familycorp-backend"
-  package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.backend_repo.repository_url}:latest"
-  role          = aws_iam_role.lambda_exec_role.arn
-  memory_size   = 1024
-  timeout       = 30
-}
-```
+### (3) Lambda Function (앱 리소스 — SAM 관리)
+이 항목은 SAM 템플릿에서 정의/배포합니다.
 
-### (4) API Gateway 연결
-```hcl
-resource "aws_apigatewayv2_api" "http_api" {
-  name          = "familycorp-http-api"
-  protocol_type = "HTTP"
-}
-```
+### (4) API Gateway 연결(앱 리소스 — SAM 관리)
+이 항목은 SAM 템플릿에서 정의/배포합니다.
 
-### (5) DynamoDB 테이블(예시)
-```hcl
-resource "aws_dynamodb_table" "posts_table" {
-  name         = "familycorp-posts"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "postId"
-  attribute { name = "postId" type = "S" }
-}
-```
+### (5) DynamoDB 테이블(앱 리소스 — SAM 관리)
+이 항목은 SAM 템플릿에서 정의/배포합니다(AWS::Serverless::SimpleTable 또는 CFN 리소스).
 
 ### (6) S3 버킷(업로드)
 ```hcl

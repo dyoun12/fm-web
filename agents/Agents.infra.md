@@ -4,8 +4,8 @@
 
 ## 역할
 - IaC(코드형 인프라) 설계/관리(Terraform)와 환경(dev/stage/prod) 정의
-- 데이터 인프라: DynamoDB(기본) + 선택적으로 ElastiCache 구성, 필요 시 향후 관계형(Aurora 등) 검토
-- 서버리스 앱 배포: AWS SAM으로 Lambda 기반 백엔드(FastAPI, Web Adapter) 빌드/배포/테스트 자동화
+- 인프라 중심: VPC/서브넷/보안그룹/VPC 엔드포인트/공통 S3/ECR/IAM 등 관리
+- 서버리스 앱 배포: AWS SAM으로 API Gateway/Lambda/DynamoDB 빌드/배포/테스트 자동화
 - CI/CD 파이프라인(빌드/테스트/배포) 설계 및 품질 게이트 연동
  - OPA 레이어: OPA WASM 번들을 SAM Layer로 구성해 `/opt/opa/bundle` 제공, 함수에 Layers 연결
 - 시크릿/구성 관리(예: Parameter Store), 네트워크/보안 정책(HTTPS, CORS) 수립
@@ -20,8 +20,8 @@
 
 ## 실행 순서(표준)
 1) 환경 정의: 네이밍/계정/리전/네트워크(서브넷/보안그룹) 정책 수립
-2) Terraform: VPC/서브넷/보안그룹, DynamoDB/S3/API Gateway/IAM 등 리소스 프로비저닝(관계형 DB는 현재 제외)
-3) SAM: FastAPI(Web Adapter) 빌드(`sam build`) → 배포(`sam deploy`) → 로컬 검증(`sam local start-api`)
+2) Terraform: VPC/서브넷/보안그룹, VPC 엔드포인트, 공통 S3/ECR/IAM 등 프로비저닝
+3) SAM: API Gateway/Lambda/DynamoDB 빌드(`sam build`) → 배포(`sam deploy`) → 로컬 검증(`sam local start-api`)
 4) CI/CD: 린트/테스트/보안 스캔 → SAM 배포 → 사후 스모크 테스트
 5) 시크릿/구성: Parameter Store/Secrets Manager, KMS 정책
 6) 관찰/경보: 로그/메트릭 대시보드, 임곗값/알림 채널 설정
