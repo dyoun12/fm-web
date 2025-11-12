@@ -1,0 +1,20 @@
+version = 0.1
+
+[default.build.parameters]
+cached = true
+parallel = true
+template = "sam/template.yaml"
+
+[default.deploy.parameters]
+stack_name = "fm-web-backend-dev"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
+region = "ap-northeast-2"
+parameter_overrides = [
+  "StageName=dev",
+  "PostsTableName=fm_posts",
+  "CategoriesTableName=fm_categories",
+  "UploadsBucketName=fm-web-uploads",
+  "AllowedOrigins=http://localhost:3000",
+  # No Web Adapter layer needed with Mangum
+]

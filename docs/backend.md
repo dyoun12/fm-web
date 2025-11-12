@@ -5,8 +5,12 @@
 
 ## 2. 런타임(ASGI)과 Lambda 연계
 - 런타임: FastAPI(ASGI)
-- Lambda 연계: API Gateway의 JSON 이벤트를 AWS Lambda Web Adapter가 HTTP 요청으로 변환하여 FastAPI 앱으로 전달한다.
-- 원칙: 애플리케이션 코드는 ASGI 순수성을 유지하며, 인프라 종속 로직(어댑터, 컨테이너, 템플릿)은 인프라 계층에서 처리한다.
+- Lambda 연계: API Gateway의 이벤트는 `Mangum` 어댑터가 HTTP 요청으로 변환하여 FastAPI 앱으로 전달한다.
+- 원칙: 애플리케이션 코드는 ASGI 순수성을 유지하며, 인프라 종속 로직은 SAM 템플릿에서 관리하고, 앱 코드에서는 `handler = Mangum(app)`로 최소한만 인지한다.
+
+### 2.2 환경별 구동 분리
+- 로컬 개발(Dev): `uvicorn app.main:app --reload`로 FastAPI를 직접 구동. `Mangum` 관련 코드는 실행되지 않는다.
+- Lambda 배포(Prod/Stage): `app.main:handler`가 Lambda 핸들러로 지정되며, `Mangum`이 API Gateway 이벤트를 HTTP로 변환해 FastAPI로 전달한다.
 
 ### 2.1 OPA 기반 접근 통제(Authorization)
 - 정책: Rego(OPA), 번들은 WASM(`policy.wasm` + 선택 `data.json`)

@@ -1,0 +1,161 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: FM-web backend — FastAPI on Lambda (SAM) with API Gateway, DynamoDB, and S3 uploads
+
+Parameters:
+  StageName:
+    Type: String
+    Default: dev
+  PostsTableName:
+    Type: String
+    Default: fm_posts
+  CategoriesTableName:
+    Type: String
+    Default: fm_categories
+  UploadsBucketName:
+    Type: String
+    Default: fm-web-uploads
+  AllowedOrigins:
+    Type: String
+    Default: http://localhost:3000
+  AllowedUploadMime:
+    Type: String
+    Default: image/jpeg,image/png,application/pdf,application/zip
+  # Note: Web Adapter is deprecated. Using Zip + Mangum; no adapter layer required.
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Timeout: 15
+    MemorySize: 512
+    Architectures: [arm64]
+    Tracing: Active
+    Environment:
+      Variables:
+        POSTS_TABLE: !Ref PostsTableName
+        CATEGORIES_TABLE: !Ref CategoriesTableName
+        UPLOADS_BUCKET: !Ref UploadsBucketName
+        UPLOADS_PREFIX: uploads/
+        CORS_ALLOW_ORIGINS: !Ref AllowedOrigins
+        ALLOWED_UPLOAD_MIME: !Ref AllowedUploadMime
+        USE_DYNAMO: '1'
+
+Resources:
+  ApiGateway:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref StageName
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref AllowedOrigins
+        AllowHeaders:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+
+  BackendFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub fm-web-backend-${StageName}
+      CodeUri: ../be-app
+      Handler: app.main:handler
+      Events:
+        ProxyAny:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ApiGateway
+            Path: /{proxy+}
+            Method: ANY
+        RootAny:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref ApiGateway
+            Path: /
+            Method: ANY
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PostsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CategoriesTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:GetObject
+              Resource: !Sub arn:aws:s3:::${UploadsBucket}/*
+      Environment:
+        Variables:
+          # App-specific configuration is injected here; no adapter variables required.
+
+  PostsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref PostsTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: postId
+          AttributeType: S
+        - AttributeName: category
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+      KeySchema:
+        - AttributeName: postId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: category_createdAt
+          KeySchema:
+            - AttributeName: category
+              KeyType: HASH
+            - AttributeName: createdAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+
+  CategoriesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref CategoriesTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: categoryId
+          AttributeType: S
+        - AttributeName: slug
+          AttributeType: S
+      KeySchema:
+        - AttributeName: categoryId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: slug_index
+          KeySchema:
+            - AttributeName: slug
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  UploadsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref UploadsBucketName
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins: [!Ref AllowedOrigins]
+            AllowedHeaders: ['*']
+            AllowedMethods: [PUT, GET]
+            MaxAge: 3000
+
+Outputs:
+  ApiEndpoint:
+    Description: HTTP API URL
+    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${StageName}
+  PostsTableOut:
+    Value: !Ref PostsTableName
+  CategoriesTableOut:
+    Value: !Ref CategoriesTableName
+  UploadsBucketOut:
+    Value: !Ref UploadsBucketName

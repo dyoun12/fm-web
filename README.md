@@ -13,7 +13,7 @@
 
 ## 선택 기술 스택
 - 프론트엔드: Next.js + TypeScript + TailwindCSS + Vitest + Playwright
-- 백엔드: FastAPI(ASGI) on AWS Lambda(Web Adapter), SQLAlchemy/SQLModel, Alembic, OPA(Rego/WASM)
+- 백엔드: FastAPI(ASGI) on AWS Lambda(Mangum), SQLAlchemy/SQLModel, Alembic, OPA(Rego/WASM)
 - 데이터: DynamoDB(기본), ElastiCache(Redis)
 - 스토리지/연동: S3 Presigned, AWS SDK 우선(`boto3`/`aioboto3`)
 - 인프라: Terraform(프로비저닝), AWS SAM(서버리스 빌드/배포/로컬)

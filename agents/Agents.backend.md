@@ -40,11 +40,9 @@
 7) 문서/계약 동기화: 스펙/프론트 API 목/상태 훅/테스트 갱신
 
 ### Lambda 엔트리(백엔드 측 최소 인지 사항)
-- Lambda 배포 시 API Gateway로부터 JSON 이벤트를 수신하고, 이를 HTTP 요청으로 변환해 FastAPI(ASGI) 앱에 전달한다.
-- 이 변환은 어댑터가 담당하며 두 가지 대표 옵션이 있다(백엔드 구현은 ASGI 순수성을 유지):
-  - 컨테이너 + AWS Lambda Web Adapter(인프라에서 주입/설정)
-  - 함수 핸들러 + `Mangum` 어댑터(Python 코드에서 `handler = Mangum(app)` 선언)
-- 어떤 방식이든 백엔드 구현 관점에서는 FastAPI 라우팅/의존성/예외 처리에만 집중한다.
+- Lambda 배포 시 API Gateway 이벤트를 `Mangum`이 HTTP 요청으로 변환해 FastAPI(ASGI) 앱에 전달한다.
+- 구현 방식: 함수 핸들러 + `Mangum` 어댑터(Python 코드에서 `handler = Mangum(app)` 선언). 컨테이너 + Web Adapter는 레거시로 유지.
+- 백엔드 구현 관점에서는 FastAPI 라우팅/의존성/예외 처리에만 집중한다.
 
 ### OPA(Authorization) 적용 지침
 - 정책 소스/번들 경로: 개발은 `be-app/opa/`(로컬), 배포는 `/opt/opa/bundle`(Lambda Layer)

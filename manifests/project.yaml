@@ -28,7 +28,7 @@ modules:
     notes: "Terraform IaC 코드(루트 /terraform)"
 stack:
   frontend: "Next.js + TypeScript + TailwindCSS + Vitest + Playwright"
-  backend: "FastAPI on AWS Lambda (AWS Lambda Web Adapter)"
+  backend: "FastAPI on AWS Lambda (Mangum)"
   database: "DynamoDB(기본) + ElastiCache(캐시)"
 apps:
   frontend:

@@ -1,7 +1,7 @@
 # Infrastructure Architecture (Terraform + SAM)
 
 ## 1. 문서 목적
-Terraform은 VPC/서브넷/보안그룹/VPC 엔드포인트/공통 S3/ECR/IAM 등 인프라 중심 리소스를 담당한다. API Gateway, Lambda, DynamoDB 등 애플리케이션 리소스는 AWS SAM으로 빌드/배포/테스트한다. 기본 실행 패턴은 컨테이너 이미지 + AWS Lambda Web Adapter이다.
+Terraform은 VPC/서브넷/보안그룹/VPC 엔드포인트/공통 S3/ECR/IAM 등 인프라 중심 리소스를 담당한다. API Gateway, Lambda, DynamoDB 등 애플리케이션 리소스는 AWS SAM으로 빌드/배포/테스트한다. 기본 실행 패턴은 Zip 패키지 + Mangum(함수 핸들러)이다.
 
 ## 2. 전체 아키텍처 개요
 
@@ -22,7 +22,7 @@ graph TD
 **핵심 구성요소**
 | 영역 | 서비스 | 설명 |
 |------|----------|------|
-| Compute | AWS Lambda | FastAPI 컨테이너 이미지 실행 환경(Web Adapter) |
+| Compute | AWS Lambda | FastAPI Zip 패키지 + Mangum(함수 핸들러) |
 | Registry | Amazon ECR | 빌드된 Docker 이미지를 저장 |
 | IAM | Role & Policy | 공통/기반 권한(Terraform), 함수별 미세 권한은 SAM에서 부여 |
 | API Gateway | HTTP API | 프론트엔드와의 통신 진입점 |
@@ -173,9 +173,9 @@ resource "aws_elasticache_replication_group" "redis" {
 
 ## 5. SAM(서버리스 앱) 템플릿/배포/테스트
 
-기본은 컨테이너 이미지 + AWS Lambda Web Adapter 방식이며, 대안으로 Zip + Mangum도 가능하다.
+기본은 Zip + Mangum 방식이며, 컨테이너 + Web Adapter는 레거시 참고용으로 유지한다.
 
-### 5.1 템플릿 — 컨테이너(Image) + Web Adapter(기본)
+### 5.1 템플릿 — 컨테이너(Image) + Web Adapter(레거시)
 `template.yaml`
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -215,7 +215,7 @@ Resources:
 
 참고: 컨테이너 내부에 AWS Lambda Web Adapter가 포함되어 있어야 하며, `CMD`로 `uvicorn app.main:app`이 실행된다.
 
-### 5.2 템플릿 — Zip + Mangum(대안)
+### 5.2 템플릿 — Zip + Mangum(기본)
 `template.yaml`
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -342,4 +342,4 @@ jobs:
 
 부록) 문서 경계
 - 백엔드 구현 지침은 `docs/backend.md`에서 관리한다.
-- 본 문서는 인프라/배포 세부(컨테이너/ECR, Web Adapter, API Gateway, VPC, DynamoDB/ElastiCache, CI/CD)를 다룬다.
+- 본 문서는 인프라/배포 세부(컨테이너/ECR, API Gateway, VPC, DynamoDB/ElastiCache, CI/CD)를 다룬다.

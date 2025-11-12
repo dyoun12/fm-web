@@ -5,8 +5,8 @@
 Codex를 통해 자동 생성되는 파일/코드 구조와, 수동 구현이 필요한 영역을 구분하여 명시한다.
 
 백엔드 런타임: FastAPI(ASGI)
-- 배포 환경은 AWS Lambda이며, API Gateway의 JSON 이벤트를 HTTP 요청으로 변환하는 AWS Lambda Web Adapter를 통해 FastAPI 앱으로 진입한다(앱 코드는 ASGI 순수성 유지).
-- 인프라/배포(컨테이너/ECR, 어댑터 주입, API GW 연결)는 `docs/infra.md`에 정의한다.
+- 배포 환경은 AWS Lambda이며, API Gateway의 이벤트는 `Mangum` 어댑터를 통해 HTTP 요청으로 변환되어 FastAPI 앱으로 전달된다(앱 코드는 ASGI 순수성 유지).
+- 인프라/배포(SAM, API GW 연결)는 `docs/infra.md`에 정의한다.
 
 ---
 
@@ -103,11 +103,11 @@ fe-app/
 
 | 메서드 | 엔드포인트 | 설명 |
 |--------|-------------|------|
-| `GET` | `/api/posts` | 게시물 목록 조회 |
-| `GET` | `/api/posts/{id}` | 특정 게시물 상세 조회 |
-| `POST` | `/api/posts` | 게시물 생성 (텍스트/이미지 포함) |
-| `PUT` | `/api/posts/{id}` | 게시물 수정 |
-| `DELETE` | `/api/posts/{id}` | 게시물 삭제 |
+| `GET` | `/v1/posts` | 게시물 목록 조회 |
+| `GET` | `/v1/posts/{id}` | 특정 게시물 상세 조회 |
+| `POST` | `/v1/posts` | 게시물 생성 (텍스트/이미지 포함) |
+| `PUT` | `/v1/posts/{id}` | 게시물 수정 |
+| `DELETE` | `/v1/posts/{id}` | 게시물 삭제 |
 
 #### 게시물 예시 스키마 (DynamoDB)
 ```json
@@ -155,10 +155,10 @@ fe-app/
 
 | 메서드 | 엔드포인트 | 설명 |
 |--------|-------------|------|
-| `GET` | `/api/categories` | 카테고리 목록 조회 |
-| `POST` | `/api/categories` | 카테고리 생성 |
-| `PUT` | `/api/categories/{id}` | 카테고리 수정 |
-| `DELETE` | `/api/categories/{id}` | 카테고리 삭제 |
+| `GET` | `/v1/categories` | 카테고리 목록 조회 |
+| `POST` | `/v1/categories` | 카테고리 생성 |
+| `PUT` | `/v1/categories/{id}` | 카테고리 수정 |
+| `DELETE` | `/v1/categories/{id}` | 카테고리 삭제 |
 
 카테고리 데이터는 정렬 순서와 slug 기반 라우팅을 지원한다.
 
@@ -185,7 +185,7 @@ fe-app/
 #### API
 | 메서드 | 엔드포인트 | 설명 |
 |--------|-------------|------|
-| `POST` | `/api/upload` | presigned URL 발급 요청 |
+| `POST` | `/v1/upload` | presigned URL 발급 요청 |
 | `PUT` | `<presigned-url>` | 실제 파일 업로드 |
 
 ---
@@ -203,7 +203,7 @@ fe-app/
   - 용도: 목록/상세 캐시, 세션/토큰 단기 저장(보안정책 부합 시), 레이트 리미팅
   - 원칙: 캐시 미스 시 RDB/DynamoDB 소스 조회 → 캐시 채우기, 강제 무효화 훅 제공
 
-참고: 백엔드 앱은 FastAPI(ASGI)로 작성하며, Lambda에서는 API Gateway JSON 이벤트를 HTTP로 변환하는 AWS Lambda Web Adapter를 통해 앱에 진입한다.
+참고: 백엔드 앱은 FastAPI(ASGI)로 작성하며, Lambda에서는 `Mangum`이 API Gateway 이벤트를 HTTP로 변환해 앱에 진입한다.
 
 ## 4. 프론트엔드 상세
 
