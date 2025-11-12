@@ -199,6 +199,12 @@ dist
 
 ### Node Patch ###
 
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
 ### Terraform ###
 # Local Terraform working directories
 .terraform/
