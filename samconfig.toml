@@ -1,0 +1,16 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "fm-web-dev"
+resolve_s3 = true
+s3_prefix = "fm-web-dev"
+region = "ap-northeast-2"
+profile = "fm-dev"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "StageName=\"dev\" PostsTableName=\"fm_posts\" CategoriesTableName=\"fm_categories\" UploadsBucketName=\"fm-web-uploads\" AllowedOrigins=\"http://localhost:3000\" AllowedUploadMime=\"image/jpeg,image/png,application/pdf,application/zip\""
+image_repositories = []
+
+[default.global.parameters]
+region = "ap-northeast-2"

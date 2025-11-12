@@ -83,3 +83,4 @@ def create_presigned_put(bucket: str, key: str, content_type: str, ttl: int = 30
 ## 6. 문서 경계
 - 본 문서는 백엔드 구현 지침에 집중한다.
 - 인프라/배포: API Gateway/Lambda/DynamoDB는 SAM 템플릿으로 배포하고, 네트워크/VPC/공통 리소스는 Terraform으로 관리한다. 상세는 `docs/infra.md`를 참조한다.
+- 프론트엔드가 Lambda@Edge(CloudFront)로 전환되어도 백엔드는 기존 API 게이트웨이 엔드포인트(`/v1/*`)를 유지하며, 필요 시 CloudFront의 오리진/비헤이비어로 백엔드 도메인을 라우팅할 수 있다.

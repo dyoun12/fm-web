@@ -171,11 +171,16 @@ resource "aws_elasticache_replication_group" "redis" {
 
 ---
 
-## 5. SAM(서버리스 앱) 템플릿/배포/테스트
+## 5. 프론트엔드 배포 옵션 및 SAM/CF 배포 체계
 
-기본은 Zip + Mangum 방식이며, 컨테이너 + Web Adapter는 레거시 참고용으로 유지한다.
+프론트엔드는 두 가지 방식 중 하나를 선택한다.
 
-### 5.1 템플릿 — 컨테이너(Image) + Web Adapter(레거시)
+- 정적 호스팅: S3 + CloudFront(OAC) — SSR 없음, SPA/CSR 또는 `next export` 방식. 템플릿: `sam/template.yaml`의 Frontend 섹션.
+- Lambda@Edge SSR: CloudFront + Lambda@Edge + S3 에셋 — SSR/이미지 최적화/API 라우트 지원. 템플릿: `sam/template.edge.yaml`(us-east-1 배포).
+
+참고: Lambda@Edge는 us-east-1 리전에만 배포할 수 있으므로, 백엔드(APIs) 인프라(ap-northeast-2)와 분리된 스택/리전을 사용한다.
+
+### 5.1 (백엔드) 템플릿 — 컨테이너(Image) + Web Adapter(레거시)
 `template.yaml`
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -215,7 +220,7 @@ Resources:
 
 참고: 컨테이너 내부에 AWS Lambda Web Adapter가 포함되어 있어야 하며, `CMD`로 `uvicorn app.main:app`이 실행된다.
 
-### 5.2 템플릿 — Zip + Mangum(기본)
+### 5.2 (백엔드) 템플릿 — Zip + Mangum(기본)
 `template.yaml`
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -343,3 +348,31 @@ jobs:
 부록) 문서 경계
 - 백엔드 구현 지침은 `docs/backend.md`에서 관리한다.
 - 본 문서는 인프라/배포 세부(컨테이너/ECR, API Gateway, VPC, DynamoDB/ElastiCache, CI/CD)를 다룬다.
+### 5.3 (프론트엔드) 템플릿 — S3 + CloudFront(OAC) 정적 호스팅
+`sam/template.yaml` 내 Frontend 섹션을 활성화하여 도메인/인증서가 주어지면 다음 리소스를 생성한다.
+
+- `FrontendBucket`(S3, OAC 전용), `FrontendDistribution`(CloudFront), Route53 A/AAAA 레코드, OAC, 버킷 정책
+- SPA 라우팅을 위해 403/404 → `/index.html` 커스텀 에러 응답
+
+### 5.4 (프론트엔드) 템플릿 — CloudFront + Lambda@Edge SSR
+`sam/template.edge.yaml`은 us-east-1에서 배포하며 다음을 포함한다.
+
+- 파라미터: `FrontendDomainName`, `DomainHostedZoneId`, `AcmCertificateArn`, `AssetsBucketName`, `EdgeCodeBucket`(미지정 시 자동 생성), `DefaultLambdaKey`, (옵션) `ImageLambdaKey`, `ApiLambdaKey`, `BackendApiDomainName`, `BackendApiStageName`
+- 리소스: `DefaultEdgeLambda`(+ Version), (옵션) 이미지/Api 람다(+ Version), `FrontendDistribution`(LambdaFunctionAssociations: origin-request), Route53 A/AAAA, OAC
+- Outputs: CloudFront 도메인/배포 ID
+
+배포 흐름(요약):
+1) Next.js 빌드(SSR): OpenNext(`npx open-next@latest build`)로 Lambda@Edge 패키지 생성 → `.open-next/handlers/*`를 zip → `default-handler.zip`(SSR), 선택: `image-handler.zip`, `api-handler.zip`
+2) us-east-1의 S3(`EdgeCodeBucket`)에 zip 업로드
+3) `aws cloudformation deploy --region us-east-1 -t sam/template.edge.yaml ...` 실행
+4) 정적 에셋(`public/`, `.next/static/`, `out/` 등)은 `AssetsBucketName`으로 동기화
+5) CloudFront 전체 무효화
+
+보안 주의:
+- Lambda@Edge는 글로벌 복제되며 삭제/업데이트 지연이 발생할 수 있음
+- 코드 버전은 `AWS::Lambda::Version`을 통해 고정되며, 함수 이름 변경 없이 새 버전 생성으로 롤아웃
+- 인증서 ARN은 us-east-1이어야 함(CloudFront 제약)
+
+백엔드 API 라우팅:
+- `v1/*` 경로는 API Gateway 오리진으로 라우팅(허용 메서드: GET/HEAD/OPTIONS/PUT/POST/PATCH/DELETE)
+- 헤더 전달: `Authorization`, `Content-Type`, CORS 프리플라이트 관련 헤더를 전달하도록 설정

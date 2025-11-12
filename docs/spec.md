@@ -123,6 +123,15 @@ fe-app/
 }
 ```
 
+배포 타깃
+- 개발/테스트: S3 + CloudFront(OAC) 정적(SPA/CSR) 또는 `next export`
+- 운영(SSR 필요): CloudFront + Lambda@Edge + S3 에셋(이미지/정적)
+
+SSR/캐싱 정책
+- 기본: `origin-request`에서 SSR 핸들러 실행, 사용자별 콘텐츠는 `Cache-Control: private, no-store` 또는 vary 헤더 적절히 설정
+- 정적 패스(`_next/static/*`, `static/*`): 장기 캐시(`max-age=31536000, immutable`)
+- 이미지 최적화(`_next/image*`): 이미지 핸들러(옵션) 연결, 원본 S3에서 변환/캐시
+
 ---
 
 ## 4. 정적 페이지 IA 및 라우팅

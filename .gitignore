@@ -316,3 +316,6 @@ __pycache__/
 
 # SAM
 .aws-sam/
+
+# NextJS
+.open-next/

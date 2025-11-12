@@ -13,8 +13,9 @@ from .api.routers import upload as upload_router
 
 
 def create_app() -> FastAPI:
+    base_path = os.getenv("API_BASE_PATH", "")
     setup_logging()
-    app = FastAPI(title="FM-web Backend", version="0.1.0")
+    app = FastAPI(title="FM-web Backend", version="0.1.0", root_path=base_path)
 
     # CORS
     app.add_middleware(
@@ -48,5 +49,8 @@ app = create_app()
 # Define Lambda handler only when running in AWS Lambda/SAM
 if os.getenv("AWS_LAMBDA_FUNCTION_NAME") or os.getenv("AWS_EXECUTION_ENV") or os.getenv("AWS_SAM_LOCAL"):
     from mangum import Mangum  # type: ignore
-
-    handler = Mangum(app)
+    base_path = os.getenv("API_BASE_PATH", "")
+    kwargs = {}
+    if base_path:
+        kwargs["api_gateway_base_path"] = base_path
+    handler = Mangum(app, **kwargs)
