@@ -9,6 +9,12 @@ vi.mock("@/api/posts", () => ({
   listPosts: vi.fn(async () => ({ items: [], count: 0 })),
   deletePost: vi.fn(async () => ({ deleted: true, postId: "x" })),
 }));
+vi.mock("@/api/categories", () => ({
+  listCategories: vi.fn(async () => ({ items: [
+    { categoryId: "c1", name: "IR", slug: "ir", createdAt: "", updatedAt: "" },
+    { categoryId: "c2", name: "공지", slug: "notice", createdAt: "", updatedAt: "" },
+  ] })),
+}));
 
 describe("AdminPostsPage", () => {
   it("renders empty state and navigates to edit on action", async () => {
@@ -19,4 +25,3 @@ describe("AdminPostsPage", () => {
     await waitFor(() => expect(push).toHaveBeenCalledWith("/admin/posts/edit"));
   });
 });
-

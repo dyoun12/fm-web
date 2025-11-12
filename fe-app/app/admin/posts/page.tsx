@@ -9,6 +9,7 @@ import { EmptyState } from "../../components/molecules/empty-state/empty-state";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { deletePost, listPosts, type Post } from "@/api/posts";
+import { listCategories, type Category } from "@/api/categories";
 
 export default function AdminPostsPage() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function AdminPostsPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [q, setQ] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[] | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -35,6 +37,25 @@ export default function AdminPostsPage() {
       alive = false;
     };
   }, [category, q]);
+
+  // 카테고리 로드
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await listCategories();
+        if (!alive) return;
+        setCategories(res.items);
+      } catch {
+        if (!alive) return;
+        // 실패 시 기본값 유지(하드코딩)
+        setCategories(null);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const columns = [
     { key: "title", header: "제목" },
@@ -79,8 +100,14 @@ export default function AdminPostsPage() {
           size="sm"
           options={[
             { label: "전체", value: "all" },
-            { label: "IR", value: "ir" },
-            { label: "공지", value: "notice" },
+            ...(
+              categories
+                ? categories.map((c) => ({ label: c.name, value: c.slug }))
+                : [
+                    { label: "IR", value: "ir" },
+                    { label: "공지", value: "notice" },
+                  ]
+            ),
           ]}
           aria-label="카테고리"
           onChange={(e) => setCategory((e.target as HTMLSelectElement).value)}

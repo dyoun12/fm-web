@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Card } from "../../../components/atoms/card/card";
 import { useEffect, useState } from "react";
 import { createPost, getPost, updatePost } from "@/api/posts";
+import { listCategories, type Category } from "@/api/categories";
 
 export default function AdminPostEditPage() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function AdminPostEditPage() {
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[] | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -41,6 +43,24 @@ export default function AdminPostEditPage() {
     };
   }, [postId]);
 
+  // 카테고리 로드
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await listCategories();
+        if (!alive) return;
+        setCategories(res.items);
+      } catch {
+        if (!alive) return;
+        setCategories(null);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div className="grid gap-6">
       <header className="flex items-center justify-between">
@@ -56,7 +76,7 @@ export default function AdminPostEditPage() {
           <Button variant="ghost" color="neutral" asChild>
             <Link href="/admin/posts">취소</Link>
           </Button>
-          <Button onClick={() => router.push("/admin/posts")}>저장</Button>
+          <Button type="submit" form="post-form">저장</Button>
         </div>
       </header>
 
@@ -67,6 +87,7 @@ export default function AdminPostEditPage() {
           </div>
         )}
         <form
+          id="post-form"
           className="grid grid-cols-1 gap-6"
           onSubmit={async (e) => {
             e.preventDefault();
@@ -91,10 +112,14 @@ export default function AdminPostEditPage() {
           <Select
             aria-label="카테고리"
             placeholder="카테고리 선택"
-            options={[
-              { label: "IR", value: "ir" },
-              { label: "공지", value: "notice" },
-            ]}
+            options={
+              categories
+                ? categories.map((c) => ({ label: c.name, value: c.slug }))
+                : [
+                    { label: "IR", value: "ir" },
+                    { label: "공지", value: "notice" },
+                  ]
+            }
             value={category}
             onChange={(e) => setCategory((e.target as HTMLSelectElement).value)}
           />

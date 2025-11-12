@@ -135,6 +135,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       return "right-3 text-base"; // md
     }, [size]);
 
+    // Extract aria-label from rest to forward to both hidden select and trigger
+    const ariaLabel: string | undefined = (rest as any)["aria-label"];
     return (
       <div className="flex flex-col gap-2">
         {label && (
@@ -171,6 +173,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             }}
             aria-describedby={cn(descriptionId, helperId, errorId)}
             aria-invalid={state === "error" ? true : undefined}
+            aria-label={ariaLabel}
             className="sr-only"
             required={required}
             disabled={disabled}

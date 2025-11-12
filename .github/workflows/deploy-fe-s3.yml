@@ -75,43 +75,17 @@ jobs:
           fi
           echo "Resolved build_dir=$(pwd) -> $(cat $GITHUB_OUTPUT)"
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::620944981242:role/gitacions-role-ahndesign-web
+          aws-region: ap-northeast-2
 
-      - name: Upload to S3 (export mode)
-        if: ${{ steps.resolve.outputs.mode == 'export' }}
-        env:
-          BUILD_DIR: ${{ steps.resolve.outputs.build_dir }}
+      - name: Upload to S3
         run: |
-          set -euo pipefail
-          DEST="s3://${S3_BUCKET}/${S3_PREFIX}"
-          echo "Syncing ${BUILD_DIR} -> ${DEST}"
-          # Default: short cache (HTML/JSON)
-          aws s3 sync "${BUILD_DIR}" "${DEST}" \
+          aws s3 sync ./app/dist s3://ahndesign-web \
             --delete \
-            --cache-control "no-cache, no-store, must-revalidate"
-          # Long cache for hashed assets
-          if [ -d "${BUILD_DIR}/_next/static" ]; then
-            aws s3 sync "${BUILD_DIR}/_next/static" "${DEST}/_next/static" \
-              --delete \
-              --cache-control "public, max-age=31536000, immutable"
-          fi
-
-      - name: Upload to S3 (next static only)
-        if: ${{ steps.resolve.outputs.mode == 'next-static' }}
-        env:
-          BUILD_DIR: ${{ steps.resolve.outputs.build_dir }}
-        run: |
-          set -euo pipefail
-          DEST="s3://${S3_BUCKET}/${S3_PREFIX}/_next/static"
-          echo "Syncing ${BUILD_DIR} -> ${DEST}"
-          aws s3 sync "${BUILD_DIR}" "${DEST}" \
-            --delete \
-            --cache-control "public, max-age=31536000, immutable"
+            --region ap-northeast-2
 
       - name: Create CloudFront invalidation (optional)
         if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.resolve.outputs.mode == 'export' }}
