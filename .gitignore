@@ -303,3 +303,10 @@ $RECYCLE.BIN/
 storybook-static
 .storybook/
 stories/
+
+# FastAPI
+__pycache__/
+.pytest_cache/
+
+# SAM
+.aws-sam/

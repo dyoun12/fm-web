@@ -14,6 +14,7 @@
 - [ ] 05A. 관리자 카드 아톰 마이그레이션 (`tasks/05-admin-card-migration.md`)
  - [x] 05B. 어드민 게시물 편집 페이지 스캐폴딩 (`tasks/admin-posts-edit.md`)
 - [ ] 06. 백엔드 서비스 (`tasks/06-backend-services.md`)
+- [ ] 06A. 게시판 백엔드 API 프리플랜 (`tasks/backend-board-endpoints.md`)
 - [ ] 07. 인프라 및 DevOps (`tasks/07-infra-devops.md`)
 - [ ] 08. 품질 보증 (`tasks/08-quality-assurance.md`)
 - [ ] 09. 문서화 및 운영 준비 (`tasks/09-documentation-ops.md`)

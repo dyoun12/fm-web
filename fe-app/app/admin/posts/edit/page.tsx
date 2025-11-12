@@ -7,11 +7,38 @@ import { TextArea } from "../../../components/atoms/text-area/text-area";
 import { Button } from "../../../components/atoms/button/button";
 import Link from "next/link";
 import { Card } from "../../../components/atoms/card/card";
+import { useEffect, useState } from "react";
+import { createPost, getPost, updatePost } from "@/api/posts";
 
 export default function AdminPostEditPage() {
   const router = useRouter();
   const params = useSearchParams();
   const postId = params.get("id");
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    if (!postId) return;
+    (async () => {
+      try {
+        const p = await getPost(postId);
+        if (!alive) return;
+        setTitle(p.title);
+        setCategory(p.category);
+        setContent(p.content);
+      } catch (e: any) {
+        if (!alive) return;
+        setError(e?.message || "게시물 로딩 실패");
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [postId]);
 
   return (
     <div className="grid gap-6">
@@ -33,8 +60,32 @@ export default function AdminPostEditPage() {
       </header>
 
       <Card padding="lg">
-        <form className="grid grid-cols-1 gap-6" onSubmit={(e) => e.preventDefault()}>
-          <Input label="제목" placeholder="제목을 입력하세요" required />
+        {error && (
+          <div role="alert" className="mb-2 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+        <form
+          className="grid grid-cols-1 gap-6"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setSaving(true);
+            setError(null);
+            try {
+              if (postId) {
+                await updatePost(postId, { title, category, content });
+              } else {
+                await createPost({ title, category, content });
+              }
+              router.push("/admin/posts");
+            } catch (e: any) {
+              setError(e?.message || "저장 실패");
+            } finally {
+              setSaving(false);
+            }
+          }}
+        >
+          <Input label="제목" placeholder="제목을 입력하세요" required value={title} onChange={(e) => setTitle((e.target as HTMLInputElement).value)} />
           <Select
             aria-label="카테고리"
             placeholder="카테고리 선택"
@@ -42,15 +93,17 @@ export default function AdminPostEditPage() {
               { label: "IR", value: "ir" },
               { label: "공지", value: "notice" },
             ]}
+            value={category}
+            onChange={(e) => setCategory((e.target as HTMLSelectElement).value)}
           />
-          <TextArea label="본문" placeholder="내용을 입력하세요" rows={12} required />
+          <TextArea label="본문" placeholder="내용을 입력하세요" rows={12} required value={content} onChange={(e) => setContent((e.target as HTMLTextAreaElement).value)} />
 
           <div className="mt-2 flex justify-end gap-2">
-            <Button variant="ghost" color="neutral" asChild>
+            <Button variant="ghost" color="neutral" asChild disabled={saving}>
               <Link href="/admin/posts">취소</Link>
             </Button>
-            <Button type="submit" onClick={() => router.push("/admin/posts")}>
-              저장
+            <Button type="submit" disabled={saving}>
+              {saving ? "저장 중..." : "저장"}
             </Button>
           </div>
         </form>
@@ -58,4 +111,3 @@ export default function AdminPostEditPage() {
     </div>
   );
 }
-
