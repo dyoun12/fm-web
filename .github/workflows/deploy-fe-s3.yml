@@ -1,0 +1,122 @@
+name: Deploy FE to S3
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'fe-app/**'
+      - '.github/workflows/deploy-fe-s3.yml'
+  workflow_dispatch:
+    inputs:
+      exportMode:
+        description: 'Try next export before upload (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: fe-app
+    env:
+      # Optional prefix under the bucket (e.g., app/, prod/fe/)
+      S3_PREFIX: ${{ secrets.S3_PREFIX }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+      # When true, attempt `next export` to produce `out/`
+      ENABLE_EXPORT: ${{ github.event.inputs.exportMode || 'false' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: fe-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test -- --run
+
+      - name: Build
+        run: npm run build
+
+      - name: Try static export (optional)
+        if: ${{ env.ENABLE_EXPORT == 'true' }}
+        run: |
+          npx --no-install next export || {
+            echo "[info] next export failed or not supported; will fall back to .next/static";
+          }
+
+      - name: Resolve build directory
+        id: resolve
+        run: |
+          set -euo pipefail
+          if [ -d "out" ]; then
+            echo "build_dir=$(pwd)/out" >> "$GITHUB_OUTPUT"
+            echo "mode=export" >> "$GITHUB_OUTPUT"
+          elif [ -d ".next/static" ]; then
+            echo "build_dir=$(pwd)/.next/static" >> "$GITHUB_OUTPUT"
+            echo "mode=next-static" >> "$GITHUB_OUTPUT"
+          else
+            echo "No export ('out') or .next/static found." >&2
+            exit 1
+          fi
+          echo "Resolved build_dir=$(pwd) -> $(cat $GITHUB_OUTPUT)"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload to S3 (export mode)
+        if: ${{ steps.resolve.outputs.mode == 'export' }}
+        env:
+          BUILD_DIR: ${{ steps.resolve.outputs.build_dir }}
+        run: |
+          set -euo pipefail
+          DEST="s3://${S3_BUCKET}/${S3_PREFIX}"
+          echo "Syncing ${BUILD_DIR} -> ${DEST}"
+          # Default: short cache (HTML/JSON)
+          aws s3 sync "${BUILD_DIR}" "${DEST}" \
+            --delete \
+            --cache-control "no-cache, no-store, must-revalidate"
+          # Long cache for hashed assets
+          if [ -d "${BUILD_DIR}/_next/static" ]; then
+            aws s3 sync "${BUILD_DIR}/_next/static" "${DEST}/_next/static" \
+              --delete \
+              --cache-control "public, max-age=31536000, immutable"
+          fi
+
+      - name: Upload to S3 (next static only)
+        if: ${{ steps.resolve.outputs.mode == 'next-static' }}
+        env:
+          BUILD_DIR: ${{ steps.resolve.outputs.build_dir }}
+        run: |
+          set -euo pipefail
+          DEST="s3://${S3_BUCKET}/${S3_PREFIX}/_next/static"
+          echo "Syncing ${BUILD_DIR} -> ${DEST}"
+          aws s3 sync "${BUILD_DIR}" "${DEST}" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Create CloudFront invalidation (optional)
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.resolve.outputs.mode == 'export' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+            --paths "/*"
+
