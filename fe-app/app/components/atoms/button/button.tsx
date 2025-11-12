@@ -127,9 +127,8 @@ export function Button({
         )}
       </>
     );
-    return cloneElement(child, {
+    return cloneElement(child as ReactElement<{ className?: string; children?: ReactNode }>, {
       className: cn((child.props as { className?: string }).className, commonClasses),
-      "aria-disabled": isDisabled || undefined,
       children: composed,
     });
   }

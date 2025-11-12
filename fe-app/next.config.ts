@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     // Ensure next/image works in static export
     unoptimized: true,
   },
+  // Force Webpack bundler to avoid Turbopack port-binding issues in sandboxed CI
+  webpack: (config) => {
+    return config;
+  },
 };
 
 export default nextConfig;

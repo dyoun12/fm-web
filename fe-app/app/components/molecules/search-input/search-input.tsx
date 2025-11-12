@@ -44,7 +44,6 @@ export function SearchInput({ theme: themeProp, className, onChange, value: valu
     if (onChange) {
       const target = inputRef.current ?? (document.createElement("input") as HTMLInputElement);
       target.value = "";
-      // @ts-expect-error minimal synthetic-like event for consumer
       onChange({ target } as React.ChangeEvent<HTMLInputElement>);
     }
     // Keep focus on input after clearing
@@ -54,11 +53,15 @@ export function SearchInput({ theme: themeProp, className, onChange, value: valu
   const showClear = currentValue.length > 0;
   const useIconForClear = useMemo(() => isEmojiOnly(currentValue), [currentValue]);
 
+  // Remove potentially conflicting intrinsic props before passing to custom Input
+  const { type: _t, prefix: _p, ...inputRest } = rest as { type?: unknown; prefix?: unknown } & typeof rest;
+  void _t; void _p;
+
   return (
     <Input
       ref={inputRef}
       type="search"
-      label={rest["aria-label"] ?? "검색"}
+      label={String(rest["aria-label"] ?? "검색")}
       hideLabel
       placeholder={rest.placeholder ?? "검색"}
       value={currentValue}
@@ -91,7 +94,7 @@ export function SearchInput({ theme: themeProp, className, onChange, value: valu
       }
       className={className}
       aria-label={rest["aria-label"] ?? "검색"}
-      {...rest}
+      {...inputRest}
     />
   );
 }

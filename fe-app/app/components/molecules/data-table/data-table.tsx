@@ -181,7 +181,7 @@ export function DataTable({ columns, rows, loading = false, caption, theme: them
             page={effectivePage}
             pageSize={effectivePageSize}
             total={totalCount}
-            onChange={(p) => {
+            onPageChange={(p: number) => {
               if (onPageChange) onPageChange(p);
               else setInternalPage(p);
             }}

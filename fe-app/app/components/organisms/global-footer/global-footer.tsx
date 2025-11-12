@@ -113,7 +113,7 @@ export function GlobalFooter({
                 <NewsletterForm
                   description={newsletter.description}
                   onSubmit={newsletter.onSubmit}
-                  theme={theme}
+                  theme={isContact ? "dark" : theme}
                 />
               </div>
             )}

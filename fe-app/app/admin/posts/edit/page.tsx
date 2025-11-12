@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "../../../components/atoms/input/input";
 import { Select } from "../../../components/atoms/select/select";
@@ -11,7 +12,7 @@ import { useEffect, useState } from "react";
 import { createPost, getPost, updatePost } from "@/api/posts";
 import { listCategories, type Category } from "@/api/categories";
 
-export default function AdminPostEditPage() {
+function AdminPostEditPageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const postId = params.get("id");
@@ -136,5 +137,13 @@ export default function AdminPostEditPage() {
         </form>
       </Card>
     </div>
+  );
+}
+
+export default function AdminPostEditPage() {
+  return (
+    <Suspense fallback={<div className="p-4 text-sm text-zinc-500">로딩 중...</div>}>
+      <AdminPostEditPageInner />
+    </Suspense>
   );
 }

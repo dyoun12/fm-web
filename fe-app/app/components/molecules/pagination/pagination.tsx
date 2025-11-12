@@ -10,10 +10,10 @@ export type PaginationProps = {
   pageSize: number;
   total: number;
   theme?: "light" | "dark";
-  onChange?: (page: number) => void;
+  onPageChange?: (page: number) => void;
 } & ComponentPropsWithoutRef<"nav">;
 
-export function Pagination({ page, pageSize, total, onChange, theme: themeProp, className, ...rest }: PaginationProps) {
+export function Pagination({ page, pageSize, total, onPageChange, theme: themeProp, className, ...rest }: PaginationProps) {
   const appTheme = useAppTheme();
   const theme = themeProp ?? appTheme;
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, pageSize)));
@@ -27,7 +27,7 @@ export function Pagination({ page, pageSize, total, onChange, theme: themeProp, 
         size="sm"
         color="neutral"
         disabled={!canPrev}
-        onClick={() => canPrev && onChange?.(page - 1)}
+        onClick={() => canPrev && onPageChange?.(page - 1)}
         aria-label="이전 페이지"
         theme={theme}
       >
@@ -41,7 +41,7 @@ export function Pagination({ page, pageSize, total, onChange, theme: themeProp, 
         size="sm"
         color="neutral"
         disabled={!canNext}
-        onClick={() => canNext && onChange?.(page + 1)}
+        onClick={() => canNext && onPageChange?.(page + 1)}
         aria-label="다음 페이지"
         theme={theme}
       >

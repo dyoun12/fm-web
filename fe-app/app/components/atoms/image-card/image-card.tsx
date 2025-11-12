@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, type ElementType } from "react";
 
 export type ImageCardProps = {
   backgroundImageUrl: string;
@@ -11,7 +11,7 @@ export type ImageCardProps = {
   rounded?: "xl" | "2xl" | "3xl";
   className?: string;
   theme?: "light" | "dark";
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
 } & Omit<ComponentPropsWithoutRef<"div">, "className">;
 
 const PADDING = {

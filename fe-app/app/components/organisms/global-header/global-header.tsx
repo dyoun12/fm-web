@@ -157,7 +157,7 @@ export function GlobalHeader({
 
         <div className="hidden items-center gap-3 lg:flex">
           {cta && (
-            <Button asChild theme={theme}>
+            <Button asChild theme={isContact ? "dark" : theme}>
               <Link href={cta.href}>{cta.label}</Link>
             </Button>
           )}
@@ -296,7 +296,7 @@ export function GlobalHeader({
           </div>
           {cta && (
             <div className="mt-6">
-              <Button asChild fullWidth theme={theme}>
+              <Button asChild fullWidth theme={isContact ? "dark" : theme}>
                 <Link href={cta.href}>{cta.label}</Link>
               </Button>
             </div>

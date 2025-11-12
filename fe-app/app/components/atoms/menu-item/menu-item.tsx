@@ -40,12 +40,16 @@ export function MenuItem({
   );
 
   if (asChild && isValidElement(children)) {
-    const child = children as ReactElement;
-    return cloneElement(child, {
-      className: cn((child.props as { className?: string }).className, base),
-      role,
-      ...rest,
-    });
+    // Relax typing to allow cloning arbitrary React elements that accept className/role
+    const child = children as ReactElement<Record<string, unknown>>;
+    return cloneElement(
+      child,
+      {
+        className: cn((child.props as { className?: string }).className, base),
+        role,
+        ...rest,
+      } as unknown as Partial<Record<string, unknown>>,
+    );
   }
 
   return (

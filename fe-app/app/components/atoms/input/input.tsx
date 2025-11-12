@@ -26,7 +26,7 @@ export type InputProps = {
    * (e.g., collapse gaps when label is hidden)
    */
   wrapperClassName?: string;
-} & Omit<ComponentPropsWithoutRef<"input">, "type"> & {
+} & Omit<ComponentPropsWithoutRef<"input">, "type" | "prefix"> & {
   type?: Extract<
     InputType,
     | "text"

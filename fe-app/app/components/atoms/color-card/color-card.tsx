@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, type ElementType } from "react";
 
 type Tone = "solid" | "gradient" | "tint";
 
@@ -15,7 +15,7 @@ export type ColorCardProps = {
   textOnColor?: "light" | "dark";
   className?: string;
   theme?: "light" | "dark";
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
 } & Omit<ComponentPropsWithoutRef<"div">, "className">;
 
 const PADDING = {
