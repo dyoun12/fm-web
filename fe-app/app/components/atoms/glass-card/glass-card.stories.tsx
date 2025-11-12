@@ -16,7 +16,6 @@ const ScrollBackdrop = (Story: any) => (
             <h2 className="text-2xl font-bold text-zinc-800">회사 소식과 인사이트</h2>
             <p className="mt-2 text-zinc-600">백드롭 블러가 적용되면 이 텍스트가 유리 뒤에서 흐려집니다.</p>
             <div className="mt-4 grid grid-cols-3 gap-3 opacity-90">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://picsum.photos/seed/1/200/120" alt="bg1" className="h-24 w-full rounded object-cover" />
               <img src="https://picsum.photos/seed/2/200/120" alt="bg2" className="h-24 w-full rounded object-cover" />
               <img src="https://picsum.photos/seed/3/200/120" alt="bg3" className="h-24 w-full rounded object-cover" />

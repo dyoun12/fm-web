@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { MenuItem } from "./menu-item";
 import React from "react";
 
@@ -43,4 +43,3 @@ export const Danger: Story = {
   ),
   args: { theme: "light" },
 };
-

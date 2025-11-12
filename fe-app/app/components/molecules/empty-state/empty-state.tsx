@@ -25,7 +25,8 @@ export type EmptyStateProps = {
 } & ComponentPropsWithoutRef<"div">;
 
 export function EmptyState({ icon = "inbox", title, description, actionLabel, onAction, theme: themeProp, className, ...rest }: EmptyStateProps) {
-  const theme = themeProp ?? useAppTheme();
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   const isDark = theme === "dark";
   return (
     <Card padding="lg" theme={theme} className={cn("grid place-items-center text-center", className)} {...rest}>

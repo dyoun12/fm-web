@@ -33,14 +33,12 @@ export type GlassCardProps = {
 export function GlassCard({
   blur = "md",
   padding = "md",
-  theme = "light",
   reflect = true,
   prism = true,
   className,
   children,
   ...rest
 }: GlassCardProps) {
-  const isDark = theme === "dark";
   // 지정된 색(투명 백)·보더 값은 요구안의 rgba를 그대로 사용
   // 가장자리 대비를 더 낮춤(이전 대비 1/2 수준)
   const tint = "bg-[rgba(255,255,255,0.2)] border-[rgba(255,255,255,0.1)] border";

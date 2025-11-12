@@ -14,8 +14,8 @@ export type PaginationProps = {
 } & ComponentPropsWithoutRef<"nav">;
 
 export function Pagination({ page, pageSize, total, onChange, theme: themeProp, className, ...rest }: PaginationProps) {
-  const theme = themeProp ?? useAppTheme();
-  const isDark = theme === "dark";
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, pageSize)));
   const canPrev = page > 1;
   const canNext = page < totalPages;

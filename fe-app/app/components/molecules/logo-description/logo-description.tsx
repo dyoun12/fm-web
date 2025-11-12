@@ -1,6 +1,7 @@
 "use client";
 
 import { ComponentPropsWithoutRef } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/classnames";
 
 export type LogoDescriptionProps = {
@@ -44,15 +45,13 @@ export function LogoDescription({
           </ul>
         )}
       </div>
-      <div className="md:order-2">
-        {/* 단순 img 사용: Storybook/Vitest 호환 */}
-        <img
-          src={imageUrl}
-          alt={imageAlt}
-          className="h-auto w-full rounded-2xl border border-zinc-200 object-cover shadow-sm"
-        />
+      <div className="md:order-2 relative">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-sm">
+          <div className="relative aspect-[16/9]">
+            <Image src={imageUrl} alt={imageAlt} fill className="object-cover" />
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-

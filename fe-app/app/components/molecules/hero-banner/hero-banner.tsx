@@ -27,11 +27,7 @@ export type HeroBannerProps = {
   className?: string;
 };
 
-const BACKGROUND_CLASSES: Record<BackgroundType, string> = {
-  solid: "bg-blue-700 text-white",
-  gradient: "bg-gradient-to-br from-blue-600 to-emerald-500 text-white",
-  image: "text-white",
-};
+// background classes are defined within respective components (ColorCard/ImageCard)
 
 export function HeroBanner({
   title,
@@ -44,31 +40,7 @@ export function HeroBanner({
   media,
   className,
 }: HeroBannerProps) {
-  const Wrapper = ({ children }: { children: React.ReactNode }) => {
-    if (backgroundType === "image" && backgroundImageUrl) {
-      return (
-        <ImageCard backgroundImageUrl={backgroundImageUrl} padding="lg" className={className}>
-          {children}
-        </ImageCard>
-      );
-    }
-    if (backgroundType === "gradient") {
-      return (
-        <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg" className={className}>
-          {children}
-        </ColorCard>
-      );
-    }
-    // solid
-    return (
-      <ColorCard tone="solid" color="blue" padding="lg" className={className}>
-        {children}
-      </ColorCard>
-    );
-  };
-
-  return (
-    <Wrapper>
+  const content = (
       <div
         className={cn(
           "mx-auto flex w-full max-w-6xl flex-col gap-8 px-8 py-16 lg:flex-row lg:items-center lg:justify-between",
@@ -123,6 +95,25 @@ export function HeroBanner({
           </div>
         )}
       </div>
-    </Wrapper>
+  );
+
+  if (backgroundType === "image" && backgroundImageUrl) {
+    return (
+      <ImageCard backgroundImageUrl={backgroundImageUrl} padding="lg" className={className}>
+        {content}
+      </ImageCard>
+    );
+  }
+  if (backgroundType === "gradient") {
+    return (
+      <ColorCard tone="gradient" gradientFrom="from-blue-600" gradientTo="to-emerald-500" padding="lg" className={className}>
+        {content}
+      </ColorCard>
+    );
+  }
+  return (
+    <ColorCard tone="solid" color="blue" padding="lg" className={className}>
+      {content}
+    </ColorCard>
   );
 }

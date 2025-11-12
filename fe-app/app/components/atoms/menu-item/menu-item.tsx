@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/classnames";
-import { ComponentPropsWithoutRef, ReactElement, ReactNode, cloneElement, isValidElement } from "react";
+import { ComponentPropsWithoutRef, ReactElement, cloneElement, isValidElement } from "react";
 
 type MenuTone = "neutral" | "primary" | "danger";
 
@@ -54,4 +54,3 @@ export function MenuItem({
     </button>
   );
 }
-

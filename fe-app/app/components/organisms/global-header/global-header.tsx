@@ -29,7 +29,7 @@ export type GlobalHeaderProps = {
 
 export function GlobalHeader({
   logo,
-  brandName = "FM Corp",
+  // brandName reserved for future use
   navigation,
   cta,
   isSticky = true,

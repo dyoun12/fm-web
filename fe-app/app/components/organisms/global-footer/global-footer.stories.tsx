@@ -90,7 +90,6 @@ export const WithAllData = {
       onSubmit: async (email: string) => {
         // mock submit
         await new Promise((r) => setTimeout(r, 300));
-        // eslint-disable-next-line no-console
         console.log("Subscribed:", email);
       },
     },

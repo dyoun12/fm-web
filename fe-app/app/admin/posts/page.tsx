@@ -24,9 +24,10 @@ export default function AdminPostsPage() {
         const res = await listPosts({ category: category && category !== "all" ? category : undefined, q: q || undefined });
         if (!alive) return;
         setItems(res.items);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!alive) return;
-        setError(e?.message || "불러오기에 실패했습니다");
+        const message = e instanceof Error ? e.message : "불러오기에 실패했습니다";
+        setError(message);
         setItems([]);
       }
     })();

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { AboutOverview } from "../components/organisms/about-overview/about-overview";
 import { Location } from "../components/organisms/location/location";
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 import { TimelineItem } from "../components/molecules/timeline-item/timeline-item";
-import { TeamMemberCard } from "../components/molecules/team-member-card/team-member-card";
 
 export const metadata: Metadata = {
   title: "회사 소개",

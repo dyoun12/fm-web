@@ -71,7 +71,7 @@ export function ColorCard({
   textOnColor,
   className,
   children,
-  theme = "light",
+  // theme reserved for future contrast logic
   as: Tag = "section",
   ...rest
 }: ColorCardProps) {
@@ -84,4 +84,3 @@ export function ColorCard({
     </Tag>
   );
 }
-

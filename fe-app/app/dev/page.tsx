@@ -841,8 +841,8 @@ function renderAtomPreview(name: string, theme: "light" | "dark") {
                 <h3 className="text-xl font-semibold text-zinc-800">배경 컨텐츠</h3>
                 <p className="mt-1 text-sm text-zinc-600">프리즘 하이라이트가 배경 텍스트/이미지 위에서 곡선 형태로 반사됩니다.</p>
                 <div className="mt-4 grid grid-cols-6 gap-2 opacity-90">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   {Array.from({ length: 12 }).map((_, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={`https://picsum.photos/seed/${i + 1}/120/80`}

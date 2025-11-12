@@ -39,7 +39,6 @@ export type BadgeProps = {
 } & ComponentPropsWithoutRef<"span">;
 
 export function Badge({
-  variant = "default",
   color = "default",
   theme = "light",
   className,

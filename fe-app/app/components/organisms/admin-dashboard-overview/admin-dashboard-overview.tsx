@@ -35,7 +35,8 @@ export function AdminDashboardOverview({
   alerts = [],
   theme: themeProp,
 }: AdminDashboardOverviewProps) {
-  const theme = themeProp ?? useAppTheme();
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   const isDark = theme === "dark";
   return (
     <section className="flex flex-col gap-8">

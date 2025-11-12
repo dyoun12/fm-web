@@ -7,7 +7,6 @@ import { Avatar } from "../../atoms/avatar/avatar";
 import { IconButton } from "../../atoms/icon-button/icon-button";
 import { Card } from "../../atoms/card/card";
 import { Divider } from "../../atoms/divider/divider";
-import { Button } from "../../atoms/button/button";
 import { MenuItem } from "../../atoms/menu-item/menu-item";
 
 export type AdminHeaderProps = {

@@ -14,9 +14,28 @@ export type ListPostsResponse = { items: Post[]; count: number };
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // e.g., "" when same origin, or "https://api.example.com"
 const headers = { "Content-Type": "application/json" } as const;
 
-function unwrap<T>(res: any): T {
-  if (!res || res.success !== true) throw new Error(res?.error?.message || "API_ERROR");
-  return res.data as T;
+type ApiEnvelope<T> = {
+  success: boolean;
+  data: T;
+  error?: { message?: string } | null;
+};
+
+function isApiEnvelope<T>(res: unknown): res is ApiEnvelope<T> {
+  if (typeof res !== "object" || res === null) return false;
+  const r = res as { success?: unknown; data?: unknown };
+  return typeof r.success === "boolean" && ("data" in r || r.success === false);
+}
+
+function unwrap<T>(res: unknown): T {
+  if (!isApiEnvelope<T>(res) || res.success !== true) {
+    const err = isApiEnvelope<T>(res) ? res.error : null;
+    const msg =
+      err && typeof err === "object" && "message" in err
+        ? String((err as { message?: unknown }).message ?? "API_ERROR")
+        : "API_ERROR";
+    throw new Error(msg);
+  }
+  return res.data;
 }
 
 export async function listPosts(params: { category?: string; q?: string } = {}): Promise<ListPostsResponse> {
@@ -54,4 +73,3 @@ export async function deletePost(id: string): Promise<{ deleted: boolean; postId
   const r = await fetch(`${API_BASE}/v1/posts/${id}`, { method: "DELETE" });
   return unwrap<{ deleted: boolean; postId: string }>(await r.json());
 }
-

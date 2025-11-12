@@ -11,7 +11,8 @@ export type FilterBarProps = {
 } & ComponentPropsWithoutRef<"div">;
 
 export function FilterBar({ children, theme: themeProp, className, ...rest }: FilterBarProps) {
-  const theme = themeProp ?? useAppTheme();
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   return (
     <Card padding="sm" theme={theme} className={cn("flex flex-wrap items-center gap-2", className)} {...rest}>
       {children}

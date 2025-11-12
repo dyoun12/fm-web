@@ -34,7 +34,8 @@ export type DataTableProps = {
 } & ComponentPropsWithoutRef<"div">;
 
 export function DataTable({ columns, rows, loading = false, caption, theme: themeProp, onSort, onSortChange, defaultSortKey, defaultSortOrder, page, pageSize, total, onPageChange, onPageSizeChange, className, ...rest }: DataTableProps) {
-  const theme = themeProp ?? useAppTheme();
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   const isDark = theme === "dark";
   const [sortKey, setSortKey] = useState<string | null>(defaultSortKey ?? null);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | null>(defaultSortOrder ?? null);

@@ -13,7 +13,6 @@ export type AdminSidebarProps = {
 };
 
 export function AdminSidebar({ items, theme = "light" }: AdminSidebarProps) {
-  const isDark = theme === "dark";
   const toIconClass = (item: AdminSidebarItem) => {
     const k = (item.icon || item.label || "").trim();
     if (k.startsWith("ri-")) return k; // 이미 Remix 아이콘 클래스 전달 시

@@ -29,7 +29,7 @@ export function ImageCard({
   rounded = "3xl",
   className,
   children,
-  theme = "light",
+  // theme is reserved for future contrast adjustments
   as: Tag = "section",
   ...rest
 }: ImageCardProps) {
@@ -49,4 +49,3 @@ export function ImageCard({
     </Tag>
   );
 }
-

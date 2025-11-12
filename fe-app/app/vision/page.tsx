@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { VisionValues, VisionValuesContent } from "../components/organisms/vision-values/vision-values";
-import { ShapeInfo } from "../components/molecules/shape-info/shape-info";
 
 export const metadata: Metadata = {
   title: "비전",

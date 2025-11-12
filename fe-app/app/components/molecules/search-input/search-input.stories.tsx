@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { SearchInput } from "./search-input";
 
 const meta: Meta<typeof SearchInput> = {
@@ -12,4 +12,3 @@ type Story = StoryObj<typeof SearchInput>;
 export const Default: Story = {
   args: { placeholder: "검색어를 입력하세요" },
 };
-

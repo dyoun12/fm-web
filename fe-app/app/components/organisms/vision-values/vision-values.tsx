@@ -1,6 +1,6 @@
 "use client";
 
-import { Children, isValidElement, ReactElement, ReactNode, useMemo, useState } from "react";
+import { Children, isValidElement, type ReactElement, type ReactNode, useMemo, useState } from "react";
 import { cn } from "@/lib/classnames";
 import { Card } from "../../atoms/card/card";
 
@@ -38,9 +38,9 @@ export function VisionValues({ items, theme = "light", children }: VisionValuesP
     if (!children) return map;
     const arr = Children.toArray(children);
     for (const child of arr) {
-      if (isValidElement(child)) {
-        const el = child as ReactElement<any>;
-        const keyProp = (el.props && (el.props.tabKey as string)) || undefined;
+      if (isValidElement<VisionValuesContentProps>(child)) {
+        const el = child as ReactElement<VisionValuesContentProps>;
+        const keyProp = el.props?.tabKey ?? undefined;
         if (keyProp) {
           map.set(keyProp, el);
         }

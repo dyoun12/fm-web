@@ -22,7 +22,8 @@ const isEmojiOnly = (value: string) => {
 };
 
 export function SearchInput({ theme: themeProp, className, onChange, value: valueProp, defaultValue, ...rest }: SearchInputProps) {
-  const theme = themeProp ?? useAppTheme();
+  const appTheme = useAppTheme();
+  const theme = themeProp ?? appTheme;
   const isDark = theme === "dark";
   const controlled = valueProp != null;
   const [uncontrolledValue, setUncontrolledValue] = useState<string>(() => (defaultValue != null ? String(defaultValue) : ""));

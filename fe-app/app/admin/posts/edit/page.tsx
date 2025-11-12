@@ -30,9 +30,10 @@ export default function AdminPostEditPage() {
         setTitle(p.title);
         setCategory(p.category);
         setContent(p.content);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!alive) return;
-        setError(e?.message || "게시물 로딩 실패");
+        const message = e instanceof Error ? e.message : "게시물 로딩 실패";
+        setError(message);
       }
     })();
     return () => {
@@ -78,8 +79,9 @@ export default function AdminPostEditPage() {
                 await createPost({ title, category, content });
               }
               router.push("/admin/posts");
-            } catch (e: any) {
-              setError(e?.message || "저장 실패");
+            } catch (e: unknown) {
+              const message = e instanceof Error ? e.message : "저장 실패";
+              setError(message);
             } finally {
               setSaving(false);
             }

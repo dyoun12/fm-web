@@ -10,6 +10,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type MutableRefObject,
 } from "react";
 
 type SelectState = "default" | "error" | "success";
@@ -60,7 +61,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     },
     ref,
   ) {
-    const theme = themeProp ?? useAppTheme();
+    const appTheme = useAppTheme();
+    const theme = themeProp ?? appTheme;
     const isDark = theme === "dark";
     const generatedId = useId();
     const selectId = id ?? generatedId;
@@ -86,12 +88,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       return found?.label;
     }, [options, value]);
 
-    // 외부에서 select 값 변경 시 내부 표시 동기화
-    useEffect(() => {
-      if (isControlled) {
-        setInternalValue(rest.value as string | undefined);
-      }
-    }, [isControlled, rest.value]);
+    // Note: When controlled, render uses `rest.value` directly via `value`
+    // Uncontrolled mode manages `internalValue` and does not mirror props here
 
     useEffect(() => {
       const onClickOutside = (e: MouseEvent) => {
@@ -169,7 +167,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={(node) => {
               hiddenSelectRef.current = node;
               if (typeof ref === "function") ref(node);
-              else if (ref) (ref as any).current = node;
+              else if (ref) (ref as MutableRefObject<HTMLSelectElement | null>).current = node;
             }}
             aria-describedby={cn(descriptionId, helperId, errorId)}
             aria-invalid={state === "error" ? true : undefined}
@@ -181,7 +179,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               if (!isControlled) setInternalValue(e.target.value);
               rest.onChange?.(e);
             }}
-            name={(rest as any).name}
+            name={rest.name}
           >
             {placeholder && (
               <option value="" disabled hidden>

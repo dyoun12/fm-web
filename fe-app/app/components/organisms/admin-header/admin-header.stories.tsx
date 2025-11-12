@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { AdminHeader } from "./admin-header";
 import React from "react";
 import { MenuItem } from "../../atoms/menu-item/menu-item";
