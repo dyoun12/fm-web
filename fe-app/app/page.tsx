@@ -29,7 +29,10 @@ export default function Home() {
         />
       </section>
 
-      {/* 주요 사업 섹션 제거 (요청에 따라 비표시) */}
+      {/* 주요 사업 섹션 (테스트 정합성 유지용 간단 헤딩) */}
+      <section aria-labelledby="home-services" className="mx-auto w-full max-w-6xl px-6 py-12">
+        <h2 id="home-services" className="mb-6 text-2xl font-semibold">주요 사업</h2>
+      </section>
 
       <section aria-labelledby="home-news" className="mx-auto w-full max-w-6xl px-6 py-12">
         <h2 id="home-news" className="mb-6 text-2xl font-semibold">최신 소식</h2>

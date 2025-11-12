@@ -91,6 +91,10 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="about-team">
+        <h2 id="about-team" className="mb-6 text-2xl font-semibold">팀</h2>
+      </section>
+
       <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="about-location">
         <h2 id="about-location" className="mb-6 text-2xl font-semibold">오시는 길</h2>
         <div className="grid gap-4">

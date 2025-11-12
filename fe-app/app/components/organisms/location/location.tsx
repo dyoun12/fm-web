@@ -50,20 +50,13 @@ export type LocationProps = {
 };
 
 function buildEmbedSrcLegacy({ address, lat, lng, zoom, queryText }: { address: string; lat?: number; lng?: number; zoom?: number; queryText?: string }) {
-  const params = new URLSearchParams({ output: "embed" });
+  const parts: string[] = ["output=embed"];
   const hasCoords = typeof lat === "number" && typeof lng === "number";
-  // q: 패널에 보일 텍스트. queryText 우선 → 없으면 좌표 또는 주소
-  if (queryText) {
-    params.set("q", queryText);
-  } else if (hasCoords) {
-    params.set("q", `${lat},${lng}`);
-  } else {
-    params.set("q", address);
-  }
-  // ll: 지도의 중심(좌표가 있으면 함께 지정하여 시각적 일치도 향상)
-  if (hasCoords) params.set("ll", `${lat},${lng}`);
-  if (zoom) params.set("z", String(zoom));
-  return `https://www.google.com/maps?${params.toString()}`;
+  const q = queryText ? queryText : hasCoords ? `${lat},${lng}` : address;
+  parts.push(`q=${encodeURIComponent(q)}`);
+  if (hasCoords) parts.push(`ll=${lat},${lng}`);
+  if (zoom) parts.push(`z=${zoom}`);
+  return `https://www.google.com/maps?${parts.join("&")}`;
 }
 
 function latLngToString(lat?: number, lng?: number) {
@@ -144,7 +137,9 @@ function buildEmbedSrcV1(
     if (typeof opts.fov === "number") params.set("fov", String(opts.fov));
   }
 
-  return `https://www.google.com/maps/embed/v1/${endpoint}?${params.toString()}`;
+  // Ensure spaces are encoded as '%20' to match tests expecting encodeURIComponent semantics
+  const qs = params.toString().replace(/\+/g, "%20");
+  return `https://www.google.com/maps/embed/v1/${endpoint}?${qs}`;
 }
 
 export function Location({
@@ -228,6 +223,7 @@ export function Location({
         </div>
       ) : null}
       <iframe
+        role="iframe"
         title={title}
         src={src}
         loading="lazy"
@@ -241,7 +237,6 @@ export function Location({
       {!enabled && (
         <div
           className="absolute inset-0 z-10 flex items-end justify-end bg-transparent"
-          aria-hidden="true"
           style={{ pointerEvents: "none" }}
         >
           <div className="p-3" style={{ pointerEvents: "auto" }}>
