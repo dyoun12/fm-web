@@ -130,7 +130,7 @@ export default function AdminPostEditPage() {
               <Link href="/admin/posts">취소</Link>
             </Button>
             <Button type="submit" disabled={saving}>
-              {saving ? "저장 중..." : "저장"}
+              {saving ? "저장 중..." : "저장하기"}
             </Button>
           </div>
         </form>
