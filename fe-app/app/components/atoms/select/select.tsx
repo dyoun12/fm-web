@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
   type MutableRefObject,
+  type AriaAttributes,
 } from "react";
 
 type SelectState = "default" | "error" | "success";
@@ -136,7 +137,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     }, [size]);
 
     // Extract aria-label from rest to forward to both hidden select and trigger
-    const ariaLabel: string | undefined = (rest as any)["aria-label"];
+    const ariaLabel: string | undefined = (rest as AriaAttributes)["aria-label"] as
+      | string
+      | undefined;
     return (
       <div className="flex flex-col gap-2">
         {label && (

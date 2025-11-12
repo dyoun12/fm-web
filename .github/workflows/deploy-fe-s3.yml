@@ -22,12 +22,8 @@ jobs:
         working-directory: fe-app
     env:
       # Optional prefix under the bucket (e.g., app/, prod/fe/)
-      S3_PREFIX: ${{ secrets.S3_PREFIX }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
       # When true, attempt `next export` to produce `out/`
-      ENABLE_EXPORT: ${{ github.event.inputs.exportMode || 'false' }}
+      ENABLE_EXPORT: true
 
     steps:
       - name: Checkout
@@ -78,14 +74,14 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::620944981242:role/gitacions-role-ahndesign-web
+          role-to-assume: arn:aws:iam::394999826385:role/gitactions-role-fm-web
           aws-region: ap-northeast-2
 
       - name: Upload to S3
         run: |
-          aws s3 sync ./app/dist s3://ahndesign-web \
-            --delete \
-            --region ap-northeast-2
+          aws s3 sync "${BUILD_DIR}/" "s3://fm-web-frontend-s3" \ 
+          --delete \
+          --region "us-east-1"
 
       - name: Create CloudFront invalidation (optional)
         if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.resolve.outputs.mode == 'export' }}
@@ -93,4 +89,3 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
             --paths "/*"
-
