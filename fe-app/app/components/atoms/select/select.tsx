@@ -21,6 +21,8 @@ export type SelectOption = {
   value: string;
 };
 
+type NativeSelectProps = Omit<ComponentPropsWithoutRef<"select">, "size">;
+
 export type SelectProps = {
   label?: string;
   options: SelectOption[];
@@ -31,7 +33,7 @@ export type SelectProps = {
   description?: string;
   size?: "sm" | "md" | "lg";
   theme?: "light" | "dark";
-} & ComponentPropsWithoutRef<"select">;
+} & NativeSelectProps;
 
 const STATE_CLASSES: Record<SelectState, string> = {
   default:
