@@ -26,7 +26,7 @@ jobs:
         working-directory: fe-app
     env:
       # Optional prefix under the bucket (e.g., app/, prod/fe/)
-      # When true, attempt `next export` to produce `out/`
+      # Always use Next.js static export output directory `out/`
       ENABLE_EXPORT: true
 
     steps:
@@ -52,29 +52,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Try static export (optional)
-        if: ${{ env.ENABLE_EXPORT == 'true' }}
-        run: |
-          npx --no-install next export || {
-            echo "[info] next export failed or not supported; will fall back to .next/static";
-          }
-
-      - name: Resolve build directory
-        id: resolve
-        run: |
-          set -euo pipefail
-          if [ -d "out" ]; then
-            echo "build_dir=$(pwd)/out" >> "$GITHUB_OUTPUT"
-            echo "mode=export" >> "$GITHUB_OUTPUT"
-          elif [ -d ".next/static" ]; then
-            echo "build_dir=$(pwd)/.next/static" >> "$GITHUB_OUTPUT"
-            echo "mode=next-static" >> "$GITHUB_OUTPUT"
-          else
-            echo "No export ('out') or .next/static found." >&2
-            exit 1
-          fi
-          echo "Resolved build_dir=$(pwd) -> $(cat $GITHUB_OUTPUT)"
-
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -82,13 +59,14 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3
+        working-directory: ./fe-app
         run: |
-          aws s3 sync "${BUILD_DIR}/" "s3://fm-web-frontend-s3" \
+          aws s3 sync "out/" "s3://fm-web-frontend-s3" \
           --delete \
           --region "us-east-1"
 
       - name: Create CloudFront invalidation (optional)
-        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.resolve.outputs.mode == 'export' }}
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         run: |
           aws cloudfront create-invalidation \
             --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
