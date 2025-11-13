@@ -7,11 +7,11 @@
 - [x] 게시물 페이지 EmptyState에 `actionLabel`/`onAction` 활성화
 - [x] 라우트 추가: `/admin/posts/edit`
 - [x] 편집 폼 스캐폴딩(제목/카테고리/본문 + 취소/저장)
-- [ ] 목 API 연동 및 저장 로직(후속)
-- [ ] 단위 테스트 추가(후속)
+- [x] 목 API 연동 및 저장 로직(후속)
+- [x] 단위 테스트 추가(후속)
 
 ## 생성/변경 파일
-- 변경: `fe-app/app/admin/posts/page.tsx`
+- 변경: `fe-app/app/admin/posts/page.tsx`, `fe-app/api/posts.ts`, `fe-app/app/admin/posts/page.test.tsx`, `be-app/app/models/schemas.py`, `be-app/tests/test_posts.py`
 - 추가: `fe-app/app/admin/posts/edit/page.tsx`
 
 ## 참고
@@ -19,4 +19,3 @@
 - 내비게이션은 `Button asChild + <Link>` 패턴과 `useRouter.push` 조합 사용
 
 Refs: docs/prd.md, docs/spec.md, AGENTS.md
-

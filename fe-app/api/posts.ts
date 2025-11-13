@@ -52,7 +52,13 @@ export async function getPost(id: string): Promise<Post> {
   return unwrap<Post>(await r.json());
 }
 
-export async function createPost(payload: { category: string; title: string; content: string; thumbnailUrl?: string }): Promise<Post> {
+export async function createPost(payload: {
+  category: string;
+  title: string;
+  content: string;
+  thumbnailUrl?: string;
+  author?: string;
+}): Promise<Post> {
   const r = await fetch(`${API_BASE}/v1/posts`, {
     method: "POST",
     headers: mutateHeaders,
