@@ -41,6 +41,7 @@ import { Pagination } from "../components/molecules/pagination/pagination";
 import { SearchInput as SearchInputMolecule } from "../components/molecules/search-input/search-input";
 import { FilterBar } from "../components/molecules/filter-bar/filter-bar";
 import { ConfirmDialog } from "../components/molecules/confirm-dialog/confirm-dialog";
+import { EntityFormModal } from "../components/molecules/entity-form-modal/entity-form-modal";
 import { Toast } from "../components/molecules/toast/toast";
 import { EmptyState } from "../components/molecules/empty-state/empty-state";
 import { GlobalHeader } from "../components/organisms/global-header/global-header";
@@ -453,6 +454,19 @@ const molecules: ComponentItem[] = [
     description: "확인 모달",
     interactions: ["확인/취소"],
     guidelines: ["role=dialog, aria-modal"],
+  },
+  {
+    name: "EntityFormModal",
+    priority: "A",
+    description: "엔티티 생성·편집을 위한 폼 모달(읽기 전용 속성/삭제 액션 포함)",
+    interactions: [
+      "외부 클릭 또는 닫기 버튼으로 모달 닫기",
+      "편집 모드에서는 삭제 버튼 노출 및 확인 후 콜백 실행",
+    ],
+    guidelines: [
+      "읽기 전용 필드와 편집 가능한 필드를 구분해 시각적으로 강조",
+      "Submit 시 폼 이벤트를 제어하고 loading 상태를 함께 전달",
+    ],
   },
   {
     name: "Toast",
@@ -1181,6 +1195,49 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
               onConfirm={() => setOpen(false)}
               theme={theme}
             />
+          </>
+        );
+      };
+      return <Demo />;
+    }
+    case "EntityFormModal": {
+      const Demo = () => {
+        const [open, setOpen] = React.useState(false);
+        const [mode, setMode] = React.useState<"create" | "edit">("create");
+        return (
+          <>
+            <div className="flex gap-2">
+              <Button onClick={() => { setMode("create"); setOpen(true); }} theme={theme}>
+                생성 폼
+              </Button>
+              <Button variant="outline" onClick={() => { setMode("edit"); setOpen(true); }} theme={theme}>
+                편집 폼
+              </Button>
+            </div>
+            <EntityFormModal
+              open={open}
+              mode={mode}
+              title={mode === "edit" ? "엔티티 편집" : "엔티티 생성"}
+              description="모달 형식으로 엔티티를 생성/수정합니다."
+              readOnlyFields={
+                mode === "edit"
+                  ? [
+                      { label: "ID", value: "entity-001" },
+                      { label: "생성일", value: DEV_NOW_ISO },
+                    ]
+                  : undefined
+              }
+              onClose={() => setOpen(false)}
+              onSubmit={(event) => {
+                event.preventDefault();
+                setOpen(false);
+              }}
+              onDelete={mode === "edit" ? () => setOpen(false) : undefined}
+            >
+              <Input label="이름" placeholder="예: IR" required />
+              <Input label="슬러그" placeholder="예: ir" required />
+              <TextArea label="설명" rows={4} placeholder="엔티티 설명" />
+            </EntityFormModal>
           </>
         );
       };

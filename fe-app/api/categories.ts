@@ -61,3 +61,27 @@ export async function createCategory(payload: CreateCategoryInput): Promise<Cate
   });
   return unwrap<Category>(await r.json());
 }
+
+export type UpdateCategoryInput = {
+  name?: string;
+  slug?: string;
+  description?: string;
+  order?: number;
+};
+
+export async function updateCategory(categoryId: string, payload: UpdateCategoryInput): Promise<Category> {
+  const r = await fetch(`${API_BASE}/v1/categories/${categoryId}`, {
+    method: "PUT",
+    headers: mutateHeaders,
+    body: JSON.stringify(payload),
+  });
+  return unwrap<Category>(await r.json());
+}
+
+export async function deleteCategory(categoryId: string): Promise<{ deleted: boolean; categoryId: string }> {
+  const r = await fetch(`${API_BASE}/v1/categories/${categoryId}`, {
+    method: "DELETE",
+    headers: mutateHeaders,
+  });
+  return unwrap<{ deleted: boolean; categoryId: string }>(await r.json());
+}

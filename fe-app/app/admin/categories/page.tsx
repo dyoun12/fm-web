@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { FilterBar } from "../../components/molecules/filter-bar/filter-bar";
 import { SearchInput } from "../../components/molecules/search-input/search-input";
@@ -9,22 +9,34 @@ import { EmptyState } from "../../components/molecules/empty-state/empty-state";
 import { Input } from "../../components/atoms/input/input";
 import { TextArea } from "../../components/atoms/text-area/text-area";
 import { Button } from "../../components/atoms/button/button";
-import { createCategory, listCategories, type Category } from "@/api/categories";
+import { EntityFormModal } from "../../components/molecules/entity-form-modal/entity-form-modal";
+import {
+  createCategory,
+  deleteCategory,
+  listCategories,
+  updateCategory,
+  type Category,
+} from "@/api/categories";
 import { slugify } from "@/lib/slug";
+
+type ModalMode = "create" | "edit" | null;
 
 export default function AdminCategoriesPage() {
   const [items, setItems] = useState<Category[] | null>(null);
   const [q, setQ] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // form state
+  const [modalMode, setModalMode] = useState<ModalMode>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [order, setOrder] = useState("0");
   const [slugEdited, setSlugEdited] = useState(false);
-  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -33,9 +45,9 @@ export default function AdminCategoriesPage() {
         const res = await listCategories();
         if (!alive) return;
         setItems(res.items);
-      } catch (e: unknown) {
+      } catch (err: unknown) {
         if (!alive) return;
-        const message = e instanceof Error ? e.message : "카테고리 불러오기 실패";
+        const message = err instanceof Error ? err.message : "카테고리 불러오기 실패";
         setError(message);
         setItems([]);
       }
@@ -46,10 +58,92 @@ export default function AdminCategoriesPage() {
   }, []);
 
   useEffect(() => {
-    if (!slugEdited) {
+    if (modalMode === "create" && !slugEdited) {
       setSlug(slugify(name));
     }
-  }, [name, slugEdited]);
+  }, [modalMode, name, slugEdited]);
+
+  const resetForm = useCallback(() => {
+    setName("");
+    setSlug("");
+    setDescription("");
+    setOrder("0");
+    setSlugEdited(false);
+    setFormError(null);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModalMode(null);
+    setEditingCategory(null);
+    setFormError(null);
+    setSaving(false);
+    setDeleting(false);
+  }, []);
+
+  const handleOpenCreate = useCallback(() => {
+    resetForm();
+    setEditingCategory(null);
+    setModalMode("create");
+  }, [resetForm]);
+
+  const handleOpenEdit = useCallback((category: Category) => {
+    setEditingCategory(category);
+    setName(category.name);
+    setSlug(category.slug);
+    setDescription(category.description ?? "");
+    setOrder(String(category.order ?? 0));
+    setSlugEdited(true);
+    setFormError(null);
+    setModalMode("edit");
+  }, []);
+
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setSaving(true);
+      setFormError(null);
+      const payload = {
+        name,
+        slug: slug || slugify(name),
+        description: description || undefined,
+        order: Number.isNaN(Number(order)) ? 0 : Number(order),
+      };
+      try {
+        if (modalMode === "edit" && editingCategory) {
+          const updated = await updateCategory(editingCategory.categoryId, payload);
+          setItems((prev) => prev?.map((c) => (c.categoryId === updated.categoryId ? updated : c)) ?? [updated]);
+        } else {
+          const created = await createCategory(payload);
+          setItems((prev) => {
+            const next = [...(prev ?? []), created];
+            return next.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name));
+          });
+        }
+        resetForm();
+        closeModal();
+      } catch (err: unknown) {
+        setFormError(err instanceof Error ? err.message : "저장 실패");
+      } finally {
+        setSaving(false);
+      }
+    },
+    [closeModal, description, editingCategory, modalMode, name, order, resetForm, slug]
+  );
+
+  const handleDelete = useCallback(async () => {
+    if (!editingCategory) return;
+    if (!window.confirm("해당 카테고리를 삭제하시겠습니까?")) return;
+    try {
+      setDeleting(true);
+      await deleteCategory(editingCategory.categoryId);
+      setItems((prev) => prev?.filter((cat) => cat.categoryId !== editingCategory.categoryId) ?? null);
+      closeModal();
+    } catch (err: unknown) {
+      setFormError(err instanceof Error ? err.message : "삭제 실패");
+    } finally {
+      setDeleting(false);
+    }
+  }, [closeModal, editingCategory]);
 
   const filtered = useMemo(() => {
     if (!items) return [];
@@ -63,83 +157,44 @@ export default function AdminCategoriesPage() {
       name: cat.name,
       slug: cat.slug,
       order: cat.order ?? 0,
+      actions: (
+        <button className="text-sm text-blue-600 underline" onClick={() => handleOpenEdit(cat)}>
+          편집
+        </button>
+      ),
     }));
-  }, [filtered]);
-
-  const closeModal = useCallback(() => {
-    setModalOpen(false);
-    setFormError(null);
-    setSuccessMessage(null);
-  }, []);
-
-  const openModal = useCallback(() => {
-    setFormError(null);
-    setSuccessMessage(null);
-    setModalOpen(true);
-  }, []);
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setSaving(true);
-      setFormError(null);
-      setSuccessMessage(null);
-      try {
-        const payload = {
-          name,
-          slug: slug || slugify(name),
-          description: description || undefined,
-          order: Number.isNaN(Number(order)) ? 0 : Number(order),
-        };
-        const created = await createCategory(payload);
-        setItems((prev) => {
-          const next = [...(prev ?? []), created];
-          return next.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name));
-        });
-        setName("");
-        setSlug("");
-        setDescription("");
-        setOrder("0");
-        setSlugEdited(false);
-        setSuccessMessage("카테고리를 생성했습니다.");
-        closeModal();
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "저장 실패";
-        setFormError(message);
-      } finally {
-        setSaving(false);
-      }
-    },
-    [closeModal, description, name, order, setItems, slug]
-  );
+  }, [filtered, handleOpenEdit]);
 
   return (
     <>
       <div className="grid gap-4">
-        <FilterBar className="justify-between">
+        <FilterBar className="flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <SearchInput
-            className="flex-1 sm:max-w-xs"
+            className="w-full sm:max-w-xs"
             placeholder="카테고리 검색"
             value={q}
             onChange={(e) => setQ((e.target as HTMLInputElement).value)}
           />
-          <Button type="button" size="md" onClick={openModal}>
-            New
+          <Button type="button" onClick={handleOpenCreate}>
+            새 카테고리
           </Button>
         </FilterBar>
+
         {error && (
           <div role="alert" className="text-sm text-red-600">
             {error}
           </div>
         )}
+
         {!items || rows.length === 0 ? (
-          <EmptyState title="카테고리가 없습니다" description="‘새 카테고리’ 버튼으로 추가하세요" />
+          <EmptyState title="카테고리가 없습니다" description="‘새 카테고리’ 버튼으로 추가하세요." />
         ) : (
           <DataTable
             columns={[
               { key: "name", header: "이름" },
               { key: "slug", header: "슬러그" },
               { key: "order", header: "정렬" },
+              { key: "actions", header: "" },
             ]}
             rows={rows}
             caption="카테고리 목록"
@@ -147,70 +202,59 @@ export default function AdminCategoriesPage() {
         )}
       </div>
 
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              closeModal();
-            }
-          }}
-        >
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">새 카테고리</h2>
-                <p className="mt-1 text-sm text-zinc-500">게시물 분류용 카테고리를 생성합니다.</p>
-              </div>
-              <button className="text-sm text-zinc-500 hover:text-zinc-800" onClick={closeModal}>
-                닫기
-              </button>
-            </div>
-            {formError && (
-              <div role="alert" className="mt-3 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-                {formError}
-              </div>
-            )}
-            {successMessage && (
-              <div className="mt-3 rounded border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700">
-                {successMessage}
-              </div>
-            )}
-            <form className="mt-4 grid gap-4" onSubmit={handleSubmit}>
-              <Input label="이름" placeholder="예: IR" required value={name} onChange={(e) => setName((e.target as HTMLInputElement).value)} />
-              <Input
-                label="슬러그"
-                placeholder="예: ir"
-                required
-                value={slug}
-                onChange={(e) => {
-                  setSlug((e.target as HTMLInputElement).value);
-                  setSlugEdited(true);
-                }}
-                helperText="URL에 사용되는 식별자이며 소문자/하이픈 형태를 권장합니다."
-              />
-              <Input
-                label="정렬 순서"
-                type="number"
-                value={order}
-                onChange={(e) => setOrder((e.target as HTMLInputElement).value)}
-                helperText="숫자가 작을수록 앞에 배치됩니다."
-              />
-              <TextArea label="설명" rows={4} value={description} onChange={(e) => setDescription((e.target as HTMLTextAreaElement).value)} placeholder="카테고리 설명" />
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" color="neutral" onClick={closeModal}>
-                  취소
-                </Button>
-                <Button type="submit" disabled={saving}>
-                  {saving ? "생성 중..." : "카테고리 생성"}
-                </Button>
-              </div>
-            </form>
+      <EntityFormModal
+        open={modalMode !== null}
+        mode={modalMode ?? "create"}
+        title={modalMode === "edit" ? "카테고리 편집" : "새 카테고리"}
+        description={modalMode === "edit" ? "필요한 속성을 수정하고 저장하세요." : "게시물 분류용 카테고리를 생성합니다."}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+        saving={saving}
+        readOnlyFields={
+          modalMode === "edit" && editingCategory
+            ? [
+                { label: "ID", value: editingCategory.categoryId },
+                { label: "생성일", value: editingCategory.createdAt ?? "-" },
+                { label: "수정일", value: editingCategory.updatedAt ?? "-" },
+              ]
+            : undefined
+        }
+        onDelete={modalMode === "edit" ? handleDelete : undefined}
+        deleting={deleting}
+        submitLabel={modalMode === "edit" ? "변경 사항 저장" : "카테고리 생성"}
+      >
+        {formError && (
+          <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+            {formError}
           </div>
-        </div>
-      )}
+        )}
+        <Input label="이름" placeholder="예: IR" required value={name} onChange={(e) => setName((e.target as HTMLInputElement).value)} />
+        <Input
+          label="슬러그"
+          placeholder="예: ir"
+          required
+          value={slug}
+          onChange={(e) => {
+            setSlug((e.target as HTMLInputElement).value);
+            setSlugEdited(true);
+          }}
+          helperText="URL에 사용되는 식별자이며 소문자/하이픈 형태를 권장합니다."
+        />
+        <Input
+          label="정렬 순서"
+          type="number"
+          value={order}
+          onChange={(e) => setOrder((e.target as HTMLInputElement).value)}
+          helperText="숫자가 작을수록 앞에 배치됩니다."
+        />
+        <TextArea
+          label="설명"
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription((e.target as HTMLTextAreaElement).value)}
+          placeholder="카테고리 설명"
+        />
+      </EntityFormModal>
     </>
   );
 }
