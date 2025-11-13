@@ -8,9 +8,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - dynamodb_data:/home/dynamodblocal/data
+      - ./dynamodb-data:/home/dynamodblocal/data
     environment:
       - JVM_OPTS=-Xms512m -Xmx512m
-
-volumes:
-  dynamodb_data:

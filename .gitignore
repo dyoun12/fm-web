@@ -183,6 +183,9 @@ dist
 
 # DynamoDB Local files
 .dynamodb/
+.devserver/
+sam/local/dynamodb-data/*
+!sam/local/dynamodb-data/.gitkeep
 
 # TernJS port file
 .tern-port
