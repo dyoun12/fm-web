@@ -10,6 +10,7 @@ import { Input } from "../../components/atoms/input/input";
 import { TextArea } from "../../components/atoms/text-area/text-area";
 import { Button } from "../../components/atoms/button/button";
 import { EntityFormModal } from "../../components/molecules/entity-form-modal/entity-form-modal";
+import { EntityDeleteModal } from "../../components/molecules/entity-delete-modal/entity-delete-modal";
 import {
   createCategory,
   deleteCategory,
@@ -17,6 +18,7 @@ import {
   updateCategory,
   type Category,
 } from "@/api/categories";
+import { listPosts, type Post } from "@/api/posts";
 import { slugify } from "@/lib/slug";
 
 type ModalMode = "create" | "edit" | null;
@@ -37,6 +39,10 @@ export default function AdminCategoriesPage() {
   const [description, setDescription] = useState("");
   const [order, setOrder] = useState("0");
   const [slugEdited, setSlugEdited] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [checkingRelations, setCheckingRelations] = useState(false);
+  const [relatedPosts, setRelatedPosts] = useState<Post[] | null>(null);
+  const [deleteModalError, setDeleteModalError] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -78,6 +84,10 @@ export default function AdminCategoriesPage() {
     setFormError(null);
     setSaving(false);
     setDeleting(false);
+    setDeleteModalOpen(false);
+    setRelatedPosts(null);
+    setDeleteModalError(null);
+    setCheckingRelations(false);
   }, []);
 
   const handleOpenCreate = useCallback(() => {
@@ -102,12 +112,19 @@ export default function AdminCategoriesPage() {
       event.preventDefault();
       setSaving(true);
       setFormError(null);
-      const payload = {
+      const payload: {
+        name: string;
+        slug?: string;
+        description?: string;
+        order?: number;
+      } = {
         name,
-        slug: slug || slugify(name),
         description: description || undefined,
         order: Number.isNaN(Number(order)) ? 0 : Number(order),
       };
+      if (modalMode !== "edit") {
+        payload.slug = slug || slugify(name);
+      }
       try {
         if (modalMode === "edit" && editingCategory) {
           const updated = await updateCategory(editingCategory.categoryId, payload);
@@ -130,20 +147,45 @@ export default function AdminCategoriesPage() {
     [closeModal, description, editingCategory, modalMode, name, order, resetForm, slug]
   );
 
+  const handleRequestDelete = useCallback(async () => {
+    if (!editingCategory) return;
+    setDeleteModalOpen(true);
+    setDeleteModalError(null);
+    setRelatedPosts(null);
+    setCheckingRelations(true);
+    try {
+      const res = await listPosts({ category: editingCategory.slug });
+      setRelatedPosts(res.items);
+    } catch (err: unknown) {
+      setDeleteModalError(err instanceof Error ? err.message : "연결된 게시물을 불러오지 못했습니다.");
+      setRelatedPosts([]);
+    } finally {
+      setCheckingRelations(false);
+    }
+  }, [editingCategory]);
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeleteModalOpen(false);
+    setRelatedPosts(null);
+    setDeleteModalError(null);
+    setCheckingRelations(false);
+  }, []);
+
   const handleDelete = useCallback(async () => {
     if (!editingCategory) return;
-    if (!window.confirm("해당 카테고리를 삭제하시겠습니까?")) return;
     try {
       setDeleting(true);
       await deleteCategory(editingCategory.categoryId);
       setItems((prev) => prev?.filter((cat) => cat.categoryId !== editingCategory.categoryId) ?? null);
+      handleCloseDeleteModal();
       closeModal();
     } catch (err: unknown) {
       setFormError(err instanceof Error ? err.message : "삭제 실패");
+      setDeleteModalError(err instanceof Error ? err.message : "삭제 실패");
     } finally {
       setDeleting(false);
     }
-  }, [closeModal, editingCategory]);
+  }, [closeModal, editingCategory, handleCloseDeleteModal]);
 
   const filtered = useMemo(() => {
     if (!items) return [];
@@ -219,7 +261,7 @@ export default function AdminCategoriesPage() {
               ]
             : undefined
         }
-        onDelete={modalMode === "edit" ? handleDelete : undefined}
+        onDelete={modalMode === "edit" ? handleRequestDelete : undefined}
         deleting={deleting}
         submitLabel={modalMode === "edit" ? "변경 사항 저장" : "카테고리 생성"}
       >
@@ -238,6 +280,8 @@ export default function AdminCategoriesPage() {
             setSlug((e.target as HTMLInputElement).value);
             setSlugEdited(true);
           }}
+          disabled={modalMode === "edit"}
+          readOnly={modalMode === "edit"}
           helperText="URL에 사용되는 식별자이며 소문자/하이픈 형태를 권장합니다."
         />
         <Input
@@ -255,6 +299,22 @@ export default function AdminCategoriesPage() {
           placeholder="카테고리 설명"
         />
       </EntityFormModal>
+
+      <EntityDeleteModal
+        open={deleteModalOpen}
+        parentEntityDisplayName={editingCategory?.name ?? ""}
+        parentEntityName="카테고리"
+        parentEntityKeyLabel="슬러그"
+        parentEntityKeyValue={editingCategory?.slug ?? ""}
+        childEntityName="게시물"
+        childEntityKey="title"
+        relatedEntities={relatedPosts ?? []}
+        checking={checkingRelations}
+        errorMessage={deleteModalError ?? undefined}
+        onClose={handleCloseDeleteModal}
+        onConfirm={relatedPosts && relatedPosts.length === 0 && !deleteModalError ? handleDelete : undefined}
+        loading={deleting}
+      />
     </>
   );
 }

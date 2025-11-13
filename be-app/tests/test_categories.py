@@ -44,3 +44,46 @@ def test_categories_crud_happy_path():
     r = c.delete(f"/v1/categories/{cid}", headers={"Authorization": "Bearer x"})
     assert r.status_code == 200
     assert r.json()["data"]["deleted"] is True
+
+
+def test_category_delete_blocked_when_posts_exist():
+    c = _client()
+
+    r = c.post(
+        "/v1/categories",
+        json={"name": "공지", "slug": "notice"},
+        headers={"Authorization": "Bearer x"},
+    )
+    category = r.json()["data"]
+    category_id = category["categoryId"]
+
+    post_payload = {"category": "notice", "title": "공지 1", "content": "본문"}
+    r = c.post("/v1/posts", json=post_payload, headers={"Authorization": "Bearer x"})
+    assert r.status_code == 200
+    post_id = r.json()["data"]["postId"]
+
+    r = c.delete(f"/v1/categories/{category_id}", headers={"Authorization": "Bearer x"})
+    assert r.status_code == 409
+    assert r.json()["error"]["message"] == "category_has_posts"
+
+    c.delete(f"/v1/posts/{post_id}", headers={"Authorization": "Bearer x"})
+    r = c.delete(f"/v1/categories/{category_id}", headers={"Authorization": "Bearer x"})
+    assert r.status_code == 200
+
+
+def test_category_slug_cannot_change():
+    c = _client()
+    r = c.post(
+        "/v1/categories",
+        json={"name": "테스트", "slug": "original"},
+        headers={"Authorization": "Bearer x"},
+    )
+    cid = r.json()["data"]["categoryId"]
+
+    r = c.put(
+        f"/v1/categories/{cid}",
+        json={"slug": "changed"},
+        headers={"Authorization": "Bearer x"},
+    )
+    assert r.status_code == 400
+    assert r.json()["error"]["message"] == "slug_immutable"

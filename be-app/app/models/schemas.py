@@ -23,6 +23,7 @@ class PostUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     thumbnailUrl: Optional[str] = None
+    author: Optional[str] = None
 
 
 class Post(PostBase):
@@ -51,4 +52,3 @@ class CategoryUpdate(BaseModel):
 
 class Category(CategoryBase):
     categoryId: str
-
