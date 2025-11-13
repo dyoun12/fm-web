@@ -8,11 +8,28 @@
 - Lambda 연계: API Gateway의 이벤트는 `Mangum` 어댑터가 HTTP 요청으로 변환하여 FastAPI 앱으로 전달한다.
 - 원칙: 애플리케이션 코드는 ASGI 순수성을 유지하며, 인프라 종속 로직은 SAM 템플릿에서 관리하고, 앱 코드에서는 `handler = Mangum(app)`로 최소한만 인지한다.
 
-### 2.2 환경별 구동 분리
+### 2.1 환경별 구동 분리
 - 로컬 개발(Dev): `uvicorn app.main:app --reload`로 FastAPI를 직접 구동. `Mangum` 관련 코드는 실행되지 않는다.
 - Lambda 배포(Prod/Stage): `app.main:handler`가 Lambda 핸들러로 지정되며, `Mangum`이 API Gateway 이벤트를 HTTP로 변환해 FastAPI로 전달한다.
 
-### 2.1 OPA 기반 접근 통제(Authorization)
+### 2.2 로컬 DynamoDB + SAM 개발 루프
+1. DynamoDB Local 컨테이너 기동  
+   `docker compose -f sam/local/docker-compose.dynamodb.yml up -d`
+2. 테이블 프로비저닝(스키마 동일)  
+   `python3 scripts/dynamodb_local_bootstrap.py --endpoint http://localhost:8000`
+3. SAM Lambda(FastAPI in Lambda) 로컬 실행  
+   `sam local start-api --env-vars sam/local/env.local.json --parameter-overrides DynamoEndpointUrl=http://host.docker.internal:8000`
+4. FastAPI 직접 실행 시에도 동일 엔드포인트 사용  
+   ```bash
+   export USE_DYNAMO=1
+   export DYNAMODB_ENDPOINT=http://localhost:8000
+   export POSTS_TABLE=fm_posts_local
+   export CATEGORIES_TABLE=fm_categories_local
+   uvicorn app.main:app --reload
+   ```
+`sam/local/env.local.json`은 Lambda 컨테이너에 `USE_DYNAMO=1`, `DYNAMODB_ENDPOINT=http://host.docker.internal:8000` 등을 주입하며, template 파라미터 `DynamoEndpointUrl`로 동일 값을 넘기면 API가 DynamoDB Local에 실제 Insert를 수행할 수 있다.
+
+### 2.3 OPA 기반 접근 통제(Authorization)
 - 정책: Rego(OPA), 번들은 WASM(`policy.wasm` + 선택 `data.json`)
 - 경로: 개발=`be-app/opa/build`, 배포(Lambda Layer)=`/opt/opa/bundle`
 - 설정: 환경변수 `OPA_BUNDLE_PATH`로 경로 제어

@@ -15,6 +15,10 @@ Parameters:
   CategoriesTableName:
     Type: String
     Default: fm_categories
+  DynamoEndpointUrl:
+    Type: String
+    Default: ""
+    Description: Optional override (e.g., http://host.docker.internal:8000) for DynamoDB Local
   UploadsBucketName:
     Type: String
     Default: fm-web-uploads
@@ -43,6 +47,7 @@ Globals:
         USE_DYNAMO: '1'
         STAGE_NAME: !Ref StageName
         API_BASE_PATH: !If [IsDefaultStage, "", !Sub "/${StageName}"]
+        DYNAMODB_ENDPOINT: !Ref DynamoEndpointUrl
 
 Resources:
   ApiGateway:
