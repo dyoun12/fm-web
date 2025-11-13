@@ -9,6 +9,16 @@ from botocore.config import Config
 from .config import get_botocore_config
 
 
+def _resolve_endpoint(service: str) -> Optional[str]:
+    """Return an endpoint override for local emulators (e.g., DynamoDB Local)."""
+    # Allow both generic SERVICE_ENDPOINT and service-specific fallbacks.
+    service_key = f"{service.upper()}_ENDPOINT"
+    endpoint = os.getenv(service_key)
+    if service == "dynamodb":
+        endpoint = endpoint or os.getenv("DYNAMODB_ENDPOINT")
+    return endpoint or None
+
+
 def get_boto3_client(service: str, *, region_name: Optional[str] = None, config: Optional[Config] = None):
     """Return a configured boto3 client for the given service.
 
@@ -17,14 +27,22 @@ def get_boto3_client(service: str, *, region_name: Optional[str] = None, config:
     """
     region = region_name or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")
     cfg = config or get_botocore_config()
-    return boto3.client(service, region_name=region, config=cfg)
+    endpoint_override = _resolve_endpoint(service)
+    kwargs = {"region_name": region, "config": cfg}
+    if endpoint_override:
+        kwargs["endpoint_url"] = endpoint_override
+    return boto3.client(service, **kwargs)
 
 
 def get_boto3_resource(service: str, *, region_name: Optional[str] = None, config: Optional[Config] = None):
     """Return a configured boto3 resource for the given service."""
     region = region_name or os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION")
     cfg = config or get_botocore_config()
-    return boto3.resource(service, region_name=region, config=cfg)
+    endpoint_override = _resolve_endpoint(service)
+    kwargs = {"region_name": region, "config": cfg}
+    if endpoint_override:
+        kwargs["endpoint_url"] = endpoint_override
+    return boto3.resource(service, **kwargs)
 
 
 def get_aioboto3_client(service: str, *, region_name: Optional[str] = None, config: Optional[Config] = None):
@@ -43,4 +61,3 @@ def get_aioboto3_client(service: str, *, region_name: Optional[str] = None, conf
     cfg = config or get_botocore_config()
     session = aioboto3.Session(region_name=region)
     return session.client(service, config=cfg)
-

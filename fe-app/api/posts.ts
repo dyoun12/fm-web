@@ -11,8 +11,9 @@ export type Post = {
 
 export type ListPostsResponse = { items: Post[]; count: number };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // e.g., "" when same origin, or "https://api.example.com"
-const headers = { "Content-Type": "application/json" } as const;
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001"; // falls back to backend dev server
+const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN || "local-dev-token";
+const mutateHeaders = { "Content-Type": "application/json", Authorization: `Bearer ${ADMIN_TOKEN}` } as const;
 
 type ApiEnvelope<T> = {
   success: boolean;
@@ -54,7 +55,7 @@ export async function getPost(id: string): Promise<Post> {
 export async function createPost(payload: { category: string; title: string; content: string; thumbnailUrl?: string }): Promise<Post> {
   const r = await fetch(`${API_BASE}/v1/posts`, {
     method: "POST",
-    headers,
+    headers: mutateHeaders,
     body: JSON.stringify(payload),
   });
   return unwrap<Post>(await r.json());
@@ -63,13 +64,13 @@ export async function createPost(payload: { category: string; title: string; con
 export async function updatePost(id: string, payload: Partial<Omit<Post, "postId" | "createdAt" | "updatedAt">>): Promise<Post> {
   const r = await fetch(`${API_BASE}/v1/posts/${id}`, {
     method: "PUT",
-    headers,
+    headers: mutateHeaders,
     body: JSON.stringify(payload),
   });
   return unwrap<Post>(await r.json());
 }
 
 export async function deletePost(id: string): Promise<{ deleted: boolean; postId: string }> {
-  const r = await fetch(`${API_BASE}/v1/posts/${id}`, { method: "DELETE" });
+  const r = await fetch(`${API_BASE}/v1/posts/${id}`, { method: "DELETE", headers: mutateHeaders });
   return unwrap<{ deleted: boolean; postId: string }>(await r.json());
 }

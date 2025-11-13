@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
@@ -9,6 +9,18 @@ from ..aws import dynamo as dy
 
 
 _CATEGORIES: Dict[str, Dict[str, Any]] = {}
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def get_category(category_id: str) -> Optional[Dict[str, Any]]:
+    if config.USE_DYNAMO:
+        table = dy.get_table(config.CATEGORIES_TABLE)
+        resp = table.get_item(Key={"categoryId": category_id})
+        return resp.get("Item")
+    return _CATEGORIES.get(category_id)
 
 
 def list_categories() -> List[Dict[str, Any]]:
@@ -22,7 +34,14 @@ def list_categories() -> List[Dict[str, Any]]:
 
 def create_category(data: Dict[str, Any]) -> Dict[str, Any]:
     category_id = data.get("categoryId") or str(uuid4())
-    item = {**data, "categoryId": category_id}
+    timestamp = _now_iso()
+    item = {
+        **data,
+        "categoryId": category_id,
+        "order": data.get("order", 0),
+        "createdAt": timestamp,
+        "updatedAt": timestamp,
+    }
     if config.USE_DYNAMO:
         table = dy.get_table(config.CATEGORIES_TABLE)
         table.put_item(Item=item)
@@ -35,18 +54,19 @@ def update_category(category_id: str, data: Dict[str, Any]) -> Optional[Dict[str
     if config.USE_DYNAMO:
         table = dy.get_table(config.CATEGORIES_TABLE)
         # naive: fetch-then-update
-        resp = table.get_item(Key={"categoryId": category_id})
-        if "Item" not in resp:
+        item = get_category(category_id)
+        if not item:
             return None
-        item = resp["Item"]
         for k, v in data.items():
             if v is not None:
                 item[k] = v
+        item["updatedAt"] = _now_iso()
         table.put_item(Item=item)
         return item
     if category_id not in _CATEGORIES:
         return None
     _CATEGORIES[category_id].update({k: v for k, v in data.items() if v is not None})
+    _CATEGORIES[category_id]["updatedAt"] = _now_iso()
     return _CATEGORIES[category_id]
 
 
