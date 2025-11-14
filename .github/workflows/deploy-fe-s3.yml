@@ -1,73 +1,73 @@
-name: Deploy FE to S3
+# name: Deploy FE to S3
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'fe-app/**'
-      - '.github/workflows/deploy-fe-s3.yml'
-  workflow_dispatch:
-    inputs:
-      exportMode:
-        description: 'Try next export before upload (true/false)'
-        required: false
-        default: 'false'
+# on:
+#   push:
+#     branches: [ main ]
+#     paths:
+#       - 'fe-app/**'
+#       - '.github/workflows/deploy-fe-s3.yml'
+#   workflow_dispatch:
+#     inputs:
+#       exportMode:
+#         description: 'Try next export before upload (true/false)'
+#         required: false
+#         default: 'false'
 
-permissions:
-  id-token: write
-  contents: read
+# permissions:
+#   id-token: write
+#   contents: read
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: fe-app
-    env:
-      # Optional prefix under the bucket (e.g., app/, prod/fe/)
-      # Always use Next.js static export output directory `out/`
-      ENABLE_EXPORT: true
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         shell: bash
+#         working-directory: fe-app
+#     env:
+#       # Optional prefix under the bucket (e.g., app/, prod/fe/)
+#       # Always use Next.js static export output directory `out/`
+#       ENABLE_EXPORT: true
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: fe-app/package-lock.json
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 20
+#           cache: 'npm'
+#           cache-dependency-path: fe-app/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Lint
-        run: npm run lint
+#       - name: Lint
+#         run: npm run lint
 
-      - name: Unit tests
-        run: npm run test -- --run
+#       - name: Unit tests
+#         run: npm run test -- --run
 
-      - name: Build
-        run: npm run build
+#       - name: Build
+#         run: npm run build
 
-      - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::394999826385:role/gitactions-role-fm-web
-          aws-region: ap-northeast-2
+#       - name: Configure AWS credentials via OIDC
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: arn:aws:iam::394999826385:role/gitactions-role-fm-web
+#           aws-region: ap-northeast-2
 
-      - name: Upload to S3
-        working-directory: ./fe-app
-        run: |
-          aws s3 sync "out/" "s3://fm-web-frontend-s3" \
-          --delete \
-          --region "us-east-1"
+#       - name: Upload to S3
+#         working-directory: ./fe-app
+#         run: |
+#           aws s3 sync "out/" "s3://fm-web-frontend-s3" \
+#           --delete \
+#           --region "us-east-1"
 
-      - name: Create CloudFront invalidation (optional)
-        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
-            --paths "/*"
+#       - name: Create CloudFront invalidation (optional)
+#         if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+#         run: |
+#           aws cloudfront create-invalidation \
+#             --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+#             --paths "/*"
