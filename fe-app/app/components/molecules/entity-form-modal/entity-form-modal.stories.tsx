@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useState } from "react";
 import { EntityFormModal, type EntityFormModalProps } from "./entity-form-modal";
 import { Input } from "../../atoms/input/input";

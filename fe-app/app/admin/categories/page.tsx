@@ -122,15 +122,16 @@ export default function AdminCategoriesPage() {
         description: description || undefined,
         order: Number.isNaN(Number(order)) ? 0 : Number(order),
       };
-      if (modalMode !== "edit") {
-        payload.slug = slug || slugify(name);
-      }
+      
       try {
         if (modalMode === "edit" && editingCategory) {
           const updated = await updateCategory(editingCategory.categoryId, payload);
           setItems((prev) => prev?.map((c) => (c.categoryId === updated.categoryId ? updated : c)) ?? [updated]);
         } else {
-          const created = await createCategory(payload);
+          const created = await createCategory({
+            ...payload,
+            slug: payload.slug ?? slugify(name)
+          });
           setItems((prev) => {
             const next = [...(prev ?? []), created];
             return next.sort((a, b) => (a.order ?? 0) - (b.order ?? 0) || a.name.localeCompare(b.name));

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { EntityDeleteModal } from "./entity-delete-modal";
 
 const meta: Meta<typeof EntityDeleteModal> = {
