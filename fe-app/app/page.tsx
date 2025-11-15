@@ -5,7 +5,7 @@ import { PostList } from "@/app/components/organisms/post-list/post-list";
 import { listPosts } from "@/api/posts";
 
 export const metadata: Metadata = {
-  title: "홈",
+  title: "FM Corp",
   description: "FM Corp의 주요 사업과 최신 소식을 확인하세요.",
   alternates: { canonical: "/" },
   openGraph: {

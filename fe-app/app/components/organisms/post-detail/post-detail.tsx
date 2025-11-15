@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/classnames";
 import { Badge } from "../../atoms/badge/badge";
-import { Card } from "../../atoms/card/card";
+import { JSONContent } from "@tiptap/react";
+import { renderHtmlFromJson } from "@/lib/tiptap";
 
 export type PostDetailProps = {
   title: string;
@@ -10,7 +11,7 @@ export type PostDetailProps = {
   author: string;
   publishedAt: string;
   updatedAt?: string;
-  content: string;
+  content: JSONContent;
   thumbnailUrl?: string;
   theme?: "light" | "dark";
 };
@@ -27,7 +28,7 @@ export function PostDetail({
 }: PostDetailProps) {
   const isDark = theme === "dark";
   return (
-    <article className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+    <article className="mx-auto flex w-full flex-col gap-8">
       <header className="flex flex-col gap-4">
         <Badge color="info" theme={theme} className="self-start">{category}</Badge>
         <h1 className={cn("text-3xl font-semibold", isDark ? "text-zinc-100" : "text-zinc-900")}>
@@ -60,16 +61,14 @@ export function PostDetail({
           />
         </div>
       )}
-      <Card theme={theme} variant="soft">
-        <section
-          className={cn(
-            "prose max-w-none leading-7",
-            isDark ? "prose-invert" : "prose-zinc",
-            "[&_h2]:mt-10 [&_h2]:text-2xl",
-          )}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      </Card>
+      <section
+        className={cn(
+          "prose max-w-none leading-7",
+          isDark ? "prose-invert" : "prose-zinc",
+          "[&_h2]:mt-10 [&_h2]:text-2xl",
+        )}
+        dangerouslySetInnerHTML={{ __html: renderHtmlFromJson(content) }}
+      />
     </article>
   );
 }
