@@ -41,7 +41,7 @@ import { Pagination } from "../components/molecules/pagination/pagination";
 import { SearchInput as SearchInputMolecule } from "../components/molecules/search-input/search-input";
 import { FilterBar } from "../components/molecules/filter-bar/filter-bar";
 import { ConfirmDialog } from "../components/molecules/confirm-dialog/confirm-dialog";
-import { EntityFormModal } from "../components/molecules/entity-form-modal/entity-form-modal";
+import { EntityFormCard } from "../components/molecules/entity-form-card/entity-form-card";
 import { Toast } from "../components/molecules/toast/toast";
 import { EmptyState } from "../components/molecules/empty-state/empty-state";
 import { GlobalHeader } from "../components/organisms/global-header/global-header";
@@ -456,7 +456,7 @@ const molecules: ComponentItem[] = [
     guidelines: ["role=dialog, aria-modal"],
   },
   {
-    name: "EntityFormModal",
+    name: "EntityFormCard",
     priority: "A",
     description: "엔티티 생성·편집을 위한 폼 모달(읽기 전용 속성/삭제 액션 포함)",
     interactions: [
@@ -1200,7 +1200,7 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
       };
       return <Demo />;
     }
-    case "EntityFormModal": {
+    case "EntityFormCard": {
       const Demo = () => {
         const [open, setOpen] = React.useState(false);
         const [mode, setMode] = React.useState<"create" | "edit">("create");
@@ -1214,7 +1214,7 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
                 편집 폼
               </Button>
             </div>
-            <EntityFormModal
+            <EntityFormCard
               open={open}
               mode={mode}
               title={mode === "edit" ? "엔티티 편집" : "엔티티 생성"}
@@ -1237,7 +1237,7 @@ function renderMoleculePreview(name: string, theme: "light" | "dark") {
               <Input label="이름" placeholder="예: IR" required />
               <Input label="슬러그" placeholder="예: ir" required />
               <TextArea label="설명" rows={4} placeholder="엔티티 설명" />
-            </EntityFormModal>
+            </EntityFormCard>
           </>
         );
       };

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@remixicon/react": "^4.7.0",
+    "@tiptap/extension-placeholder": "^3.10.7",
+    "remixicon-react": "^1.0.0"
+  }
+}

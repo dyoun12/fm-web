@@ -91,3 +91,28 @@ input.search-input::-webkit-search-cancel-button {
   width: 0;
   margin: 0;
 }
+
+
+/* Post Editor */
+/* placeholder */
+.tiptap {
+  min-height: 100%;
+  cursor: text;
+  /* 박스 전체가 텍스트 입력 영역처럼 보임 */
+}
+
+/* 빈 영역 클릭 시 커서 들어가도록 */
+.tiptap:empty::before {
+  content: "";
+  display: block;
+  height: 1rem;
+}
+
+.tiptap .is-editor-empty p:first-child::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  /* gray-400 */
+  pointer-events: none;
+  float: left;
+  height: 0;
+}

@@ -62,7 +62,8 @@ export default function AdminLayout({ children }: Props) {
 
           {/* 컨텐츠 (스크롤 영역) */}
           <main className="min-h-0 overflow-y-auto">
-            <div className="mx-auto max-w-6xl">{children}</div>
+            {children}
+            {/* <div className="mx-auto max-w-6xl">{children}</div> */}
           </main>
         </div>
       </div>

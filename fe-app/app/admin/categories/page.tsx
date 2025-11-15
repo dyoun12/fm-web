@@ -9,7 +9,7 @@ import { EmptyState } from "../../components/molecules/empty-state/empty-state";
 import { Input } from "../../components/atoms/input/input";
 import { TextArea } from "../../components/atoms/text-area/text-area";
 import { Button } from "../../components/atoms/button/button";
-import { EntityFormModal } from "../../components/molecules/entity-form-modal/entity-form-modal";
+import { EntityFormCard } from "../../components/molecules/entity-form-card/entity-form-card";
 import { EntityDeleteModal } from "../../components/molecules/entity-delete-modal/entity-delete-modal";
 import {
   createCategory,
@@ -122,7 +122,7 @@ export default function AdminCategoriesPage() {
         description: description || undefined,
         order: Number.isNaN(Number(order)) ? 0 : Number(order),
       };
-      
+
       try {
         if (modalMode === "edit" && editingCategory) {
           const updated = await updateCategory(editingCategory.categoryId, payload);
@@ -245,7 +245,7 @@ export default function AdminCategoriesPage() {
         )}
       </div>
 
-      <EntityFormModal
+      <EntityFormCard
         open={modalMode !== null}
         mode={modalMode ?? "create"}
         title={modalMode === "edit" ? "카테고리 편집" : "새 카테고리"}
@@ -299,7 +299,7 @@ export default function AdminCategoriesPage() {
           onChange={(e) => setDescription((e.target as HTMLTextAreaElement).value)}
           placeholder="카테고리 설명"
         />
-      </EntityFormModal>
+      </EntityFormCard>
 
       <EntityDeleteModal
         open={deleteModalOpen}

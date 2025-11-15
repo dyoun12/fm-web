@@ -1,8 +1,10 @@
+import type { JSONContent } from "@tiptap/react";
+
 export type Post = {
   postId: string;
   category: string;
   title: string;
-  content: string;
+  content: JSONContent;
   thumbnailUrl?: string;
   author?: string;
   createdAt: string;
@@ -39,23 +41,64 @@ function unwrap<T>(res: unknown): T {
   return res.data;
 }
 
-export async function listPosts(params: { category?: string; q?: string } = {}): Promise<ListPostsResponse> {
+export async function listPosts(
+  params: { category?: string; q?: string } = {}
+): Promise<ListPostsResponse> {
   const qs = new URLSearchParams();
   if (params.category) qs.set("category", params.category);
   if (params.q) qs.set("q", params.q);
+
   const r = await fetch(`${API_BASE}/v1/posts?${qs.toString()}`);
-  return unwrap<ListPostsResponse>(await r.json());
+  const raw = unwrap<ListPostsResponse>(await r.json());
+
+  const items = raw.items.map((post) => {
+    let parsedContent: JSONContent;
+
+    try {
+      parsedContent =
+        typeof post.content === "string"
+          ? (JSON.parse(post.content) as JSONContent)
+          : post.content;
+    } catch {
+      parsedContent = { type: "doc", content: [] };
+    }
+
+    return {
+      ...post,
+      content: parsedContent,
+    };
+  });
+
+  return { ...raw, items };
 }
 
 export async function getPost(id: string): Promise<Post> {
   const r = await fetch(`${API_BASE}/v1/posts/${id}`);
-  return unwrap<Post>(await r.json());
+  const raw = unwrap<Post>(await r.json());
+
+  // content가 string이면 JSONContent로 변환, 이미 JSONContent면 그대로 사용
+  let parsedContent: JSONContent;
+
+  try {
+    parsedContent =
+      typeof raw.content === "string"
+        ? (JSON.parse(raw.content) as JSONContent)
+        : raw.content;
+  } catch {
+    // 혹시라도 잘못된 JSON이 들어오면 최소한의 fallback
+    parsedContent = { type: "doc", content: [] };
+  }
+
+  return {
+    ...raw,
+    content: parsedContent,
+  };
 }
 
 export async function createPost(payload: {
   category: string;
   title: string;
-  content: string;
+  content: JSONContent | undefined;
   thumbnailUrl?: string;
   author?: string;
 }): Promise<Post> {
@@ -71,7 +114,10 @@ export async function updatePost(id: string, payload: Partial<Omit<Post, "postId
   const r = await fetch(`${API_BASE}/v1/posts/${id}`, {
     method: "PUT",
     headers: mutateHeaders,
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      ...payload,
+      content: JSON.stringify(payload.content)
+    }),
   });
   return unwrap<Post>(await r.json());
 }

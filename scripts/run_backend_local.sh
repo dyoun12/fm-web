@@ -162,53 +162,76 @@ start_frontend() {
     log "Next.js already running (pid $(cat "$(pid_file frontend)") )."
     return
   fi
+
   ensure_node_modules
   log "Starting Next.js dev server on http://localhost:3000"
+
   local pf lf
   pf="$(pid_file frontend)"
   lf="$(log_file frontend)"
+
   (
     cd "$ROOT/fe-app"
+
     NEXT_PUBLIC_API_BASE_URL="$API_BASE_URL" \
     NEXT_PUBLIC_ADMIN_API_TOKEN="$ADMIN_TOKEN" \
     NEXT_USE_TURBOPACK=0 \
     NEXT_FORCE_TURBOPACK=0 \
     NEXT_RUNTIME=webpack \
-    nohup npx next dev --hostname 0.0.0.0 --port 3000 --webpack >"$lf" 2>&1 &
-    echo $! >"$pf"
+    nohup node node_modules/next/dist/bin/next dev \
+      --hostname 0.0.0.0 \
+      --port 3000 \
+      --webpack >"$lf" 2>&1 &
+
+    echo $! > "$pf"
   )
 }
+
+
 
 stop_service() {
   local name="$1"
   local pf
   pf="$(pid_file "$name")"
+
   if [[ ! -f "$pf" ]]; then
     return
   fi
+
   local pid
   pid="$(cat "$pf")"
+
   if ! ps -p "$pid" >/dev/null 2>&1; then
     rm -f "$pf"
     return
   fi
-  log "Stopping $name (pid $pid)"
-  if command -v pkill >/dev/null 2>&1; then
-    pkill -TERM -P "$pid" >/dev/null 2>&1 || true
-  fi
-  kill "$pid" >/dev/null 2>&1 || true
-  for _ in {1..20}; do
-    if ! ps -p "$pid" >/dev/null 2>&1; then
-      break
-    fi
-    sleep 0.3
+
+  log "Stopping $name including all child processes (macOS)"
+
+  # 1) 먼저 자식 프로세스들을 모두 종료
+  for child in $(pgrep -P "$pid"); do
+    log "Killing child process $child"
+    kill -TERM "$child" >/dev/null 2>&1 || true
   done
+
+  # 2) 부모 종료
+  kill -TERM "$pid" >/dev/null 2>&1 || true
+  sleep 1
+
+  # 3) 살아있으면 강제 kill
+  for child in $(pgrep -P "$pid"); do
+    kill -9 "$child" >/dev/null 2>&1 || true
+  done
+
   if ps -p "$pid" >/dev/null 2>&1; then
-    log "Force killing $name (pid $pid)"
     kill -9 "$pid" >/dev/null 2>&1 || true
   fi
+
   rm -f "$pf"
 }
+
+
+
 
 stop_backend() {
   stop_service backend
