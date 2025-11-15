@@ -111,7 +111,7 @@ export function PostList({
               </time>
             </div>
             <h3 className={cn("text-lg font-semibold", isDark ? "text-zinc-100" : "text-zinc-900") }>
-              <Link href={`/post/${item.postId}`} className="transition hover:text-blue-600">
+              <Link href={`/posts/${item.postId}`} className="transition hover:text-blue-600">
                 {item.title}
               </Link>
             </h3>
@@ -119,7 +119,7 @@ export function PostList({
               <p className={cn("text-sm line-clamp-3", isDark ? "text-zinc-400" : "text-zinc-600")}>{item.summary}</p>
             )}
             <Link
-              href={`/post/${item.postId}`}
+              href={`/posts/${item.postId}`}
               className="mt-auto inline-flex items-center gap-2 text-sm font-medium text-blue-600 transition hover:text-blue-500"
               aria-label={`${item.title} 상세 보기`}
             >
