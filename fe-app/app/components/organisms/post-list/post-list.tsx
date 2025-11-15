@@ -11,6 +11,7 @@ import { Post } from "@/api/posts";
 export type PostListProps = {
   items?: Omit<Post, "content">[];
   variant?: "grid" | "list";
+  label?: string;
   ctaLabel?: string;
   onLoadMore?: () => void;
   isLoading?: boolean;
@@ -23,6 +24,7 @@ export type PostListProps = {
 export function PostList({
   items = [],
   variant = "list",
+  label = "게시물",
   ctaLabel = "더보기",
   onLoadMore,
   isLoading = false,
@@ -80,6 +82,18 @@ export function PostList({
 
   return (
     <section className="flex flex-col gap-6">
+      <div className="flex justify-between place-items-center">
+        <h2 id="home-news" className="text-2xl font-semibold">
+          {label}
+          </h2>
+        <Link 
+          href="posts"
+          className="text-sm font-medium text-blue-600 transition hover:text-blue-500"
+          aria-label={ctaLabel}
+        >
+          {ctaLabel}
+        </Link>
+      </div>
       <div
         className={cn(
           "grid gap-4",

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { HeroBanner } from "./components/molecules/hero-banner/hero-banner";
 import { CtaSection } from "./components/molecules/cta-section/cta-section";
-import Link from "next/link";
 import { PostList } from "@/app/components/organisms/post-list/post-list";
 import { listPosts } from "@/api/posts";
 
@@ -33,19 +32,11 @@ export default async function Home() {
       </section>
 
       <section aria-labelledby="home-news" className="mx-auto w-full max-w-6xl px-6 py-12">
-        <div className="flex justify-between place-items-center mb-6">
-          <h2 id="home-news" className="text-2xl font-semibold">최신 소식</h2>
-          <Link 
-            href="posts"
-            className="text-sm font-medium text-blue-600 transition hover:text-blue-500"
-            aria-label="모두 보기"
-          >
-            모두보기
-          </Link>
-        </div>
         <PostList
           items={posts.items}
           variant="grid"
+          label="최신소식"
+          ctaLabel="모두보기"
         />
       </section>
 
