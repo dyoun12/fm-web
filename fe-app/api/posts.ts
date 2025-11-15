@@ -7,6 +7,7 @@ export type Post = {
   content: JSONContent;
   thumbnailUrl?: string;
   author?: string;
+  summary?: string;
   createdAt: string;
   updatedAt: string;
 };
