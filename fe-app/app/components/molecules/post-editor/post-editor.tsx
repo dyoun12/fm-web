@@ -1,10 +1,8 @@
 "use client";
 
 import { useEditor, EditorContent, JSONContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import Placeholder from "@tiptap/extension-placeholder";
 import { PostEditorHeader } from "@/app/components/molecules/post-editor-header/post-editor-header";
+import { COMMON_EXTENSIONS } from "@/lib/tiptap";
 
 export type PostEditorProps = {
   content: JSONContent | null;
@@ -14,20 +12,7 @@ export type PostEditorProps = {
 export function PostEditor({ content, onChange }: PostEditorProps) {
 
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2, 3],
-        },
-      }), 
-      Image,
-      Placeholder.configure({
-        placeholder: "내용을 입력해주세요...",
-        emptyEditorClass: "is-editor-empty",
-        showOnlyWhenEditable: true,
-        showOnlyCurrent: false,
-      }),
-    ],
+    extensions: COMMON_EXTENSIONS,
     content: content ?? null,
     onUpdate({ editor }) {
       const json = editor.getJSON();
