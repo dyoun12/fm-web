@@ -7,12 +7,9 @@ import { Select } from "@/app/components/atoms/select/select"
 import { getPost, createPost, updatePost, deletePost, type Post } from "@/api/posts";
 import { listCategories, type Category } from "@/api/categories";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { initializeEditor, setContent } from "@/store/editing-post-slice";
-import { RootState } from "@/store";
 import { JSONContent } from "@tiptap/react";
 import { Card } from "@/app/components/atoms/card/card";
-import { PostEditor } from "@/app/components/molecules/post-editor/post-editor";
+import { SimpleEditor } from "@/app/components/tiptap-templates/simple/simple-editor";
 
 export type SidebarClientProps = {
   postId: string
@@ -185,14 +182,12 @@ export function EditPostController({ postId }: SidebarClientProps) {
 
   return (
     
-    <div className="flex w-full h-full gap-6">
-      <Card className="w-full">
-        <PostEditor
-          key={content ? "loaded" : "empty"}
-          content={content}
-          onChange={setContent}
-        />
-      </Card>
+    <div className="flex h-full gap-6">
+      <SimpleEditor
+        key={content ? "loaded" : "empty"}
+        content={content}
+        onChange={(value) => setContent(value)}
+      />
 
       <EntityFormCard
         variant="sidebar"

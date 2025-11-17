@@ -1,5 +1,6 @@
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import { generateHTML } from "@tiptap/html";
 import { generateJSON, JSONContent } from "@tiptap/react";
@@ -9,6 +10,11 @@ export const COMMON_EXTENSIONS = [
     heading: {
       levels: [1, 2, 3],
     },
+  }),
+  Link.configure({
+    autolink: true,
+    linkOnPaste: true,
+    openOnClick: false,
   }),
   Image,
   Placeholder.configure({
