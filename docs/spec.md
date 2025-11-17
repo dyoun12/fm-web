@@ -61,6 +61,14 @@ fe-app/
 
 ```
 
+### 2.1 AWS Amplify 배포·Cognito 인증
+
+- 프론트엔드 전체는 AWS Amplify Hosting(`main` 브랜치 기준, Next.js App Router)에서 `npm run build`를 실행하여 빌드/배포되며, `amplify.yml`을 통해 `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_COGNITO_USER_POOL_ID`, `NEXT_PUBLIC_COGNITO_CLIENT_ID` 등 환경 변수를 주입한다.
+- Amplify는 Cognito User Pool과 연동되어 로그인/회원가입 흐름은 Cognito Hosted UI 또는 커스텀 페이지(`/auth/login`, `/auth/signup`)에서 ID/Access 토큰을 발급받아 HTTP-only 쿠키로 저장하고, 토큰 자동 갱신은 Amplify의 인증 클라이언트를 활용한다.
+- Cognito User Pool에는 `custom:role` 또는 그룹 중심 역할 할당을 적용하며, 백엔드(`docs/backend.md`)의 사용자 등록 API에서 Cognito Admin API/SDK를 호출하여 신규 사용자와 역할 메타를 동기화해야 한다.
+- Next.js `app/middleware.ts`의 `matcher`는 `/admin/:path*`, `/secure/:path*` 등을 포함하도록 구성하여 관리자 영역 접근 전에 Cognito JWT를 디코드하고 `roles`/`cognito:groups` 클레임을 확인하여 자격이 없는 경우 `/auth/forbidden` 또는 `/auth/login`으로 리디렉트한다.
+- 모든 API 요청은 Cognito JWT를 `Authorization: Bearer` 헤더나 HTTP-only 쿠키로 포함하고, FastAPI가 해당 토큰에서 역할 정보를 추출하여 OPA(`docs/opa.md`)에 `subject.roles`로 전달한 뒤 `allow` 여부를 판단하므로, 프론트/백엔드 모두 동일한 역할 정의를 참고해야 한다.
+
 ---
 
 ## 3. 기능 상세 명세
@@ -69,8 +77,8 @@ fe-app/
 
 | 구분 | 항목 | 설명 |
 |------|------|------|
-| 인증 방식 | OIDC | OpenID Connect (Authorization Code Flow) |
-| 인증 제공자 | TBD | Keycloak / Authentik / Google Identity Platform 중 택 1 |
+| 인증 방식 | OIDC (Cognito) | AWS Cognito User Pool의 Authorization Code Flow |
+| 인증 제공자 | AWS Cognito User Pool | Amplify Hosting에 연결된 User Pool, `custom:role`/groups 기반 역할 정보를 포함 |
 | MFA 방식 | Google Authenticator | OTP 6자리 검증 |
 | 세션 관리 | Access Token + Refresh Token | Access 15분, Refresh 30일 |
 
@@ -80,6 +88,16 @@ fe-app/
 3. 서버에서 Token 교환 후 JWT 저장  
 4. 2FA 활성화 계정의 경우, OTP 코드 추가 요청  
 5. 인증 성공 시 `/admin` 대시보드 진입
+
+#### 백엔드 Cognito 연계
+- 프론트는 `POST /v1/auth/signup`과 `POST /v1/auth/login`을 통해 Cognito User Pool과 연동하며, 백엔드가 Cognito Admin API/SDK를 호출하여 사용자 등록·역할 메타를 저장하고 토큰을 받아 HTTP-only 쿠키로 전달해야 한다(동일한 `custom:role` 값은 OPA 입력에도 그대로 전달됨).
+- 관리자 또는 내부 오퍼레이터는 `POST /v1/auth/users` 등 별도 엔드포인트에서 Cognito 사용자 생성·역할 할당 작업을 수행하며, 필요한 경우 `PATCH /v1/auth/users/{userId}/role`로 역할 변경을 반영하고 DynamoDB 혹은 별도 사용자 메타 테이블에 트래킹한다.
+- 백엔드는 Cognito JWT에서 `sub`, `email`, `roles`/`cognito:groups`를 추출하여 요청 컨텍스트에 주입하고, 이를 OPA(`docs/opa.md`)에 전달해 `subject.roles`를 평가하여 API 접근 허용 여부를 결정한다.
+
+#### Next.js 미들웨어/페이지 보호
+- `app/middleware.ts`는 `/admin/:path*`, `/secure/:path*`, `/api/admin/:path*` 같은 관리자 전용 경로에 대해 Cognito JWT 존재 여부와 `roles`/`cognito:groups` 클레임을 검증하고, 허용된 역할이 아닐 경우 `/auth/forbidden`이나 `/auth/login`으로 리디렉트하여 페이지가 렌더링되지 않도록 막는다.
+- 미들웨어는 Amplify가 주입한 환경 변수(Cognito Region/Pool ID/Client ID)와 Cognito JWKS를 사용해 토큰 서명을 확인하고, 필요한 경우 백엔드 `GET /v1/auth/me`를 통해 최신 역할 정보를 동기화한다.
+- 역할 검증 결과는 Next.js 미들웨어, 백엔드 OPA, Cognito 사용자 메타 모두 동일한 역할 사전을 참고해야 하며, 각 흐름은 `admin`, `editor`, `viewer` 같은 접두어를 공통으로 정의한다.
 
 #### 관련 API
 | 메서드 | 엔드포인트 | 설명 |
