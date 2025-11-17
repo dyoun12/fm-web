@@ -8,7 +8,6 @@ import { getPost, createPost, updatePost, deletePost, type Post } from "@/api/po
 import { listCategories, type Category } from "@/api/categories";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import { JSONContent } from "@tiptap/react";
-import { Card } from "@/app/components/atoms/card/card";
 import { SimpleEditor } from "@/app/components/tiptap-templates/simple/simple-editor";
 
 export type SidebarClientProps = {
