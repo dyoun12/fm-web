@@ -11,6 +11,7 @@ COMPOSE_FILE="$COMPOSE_DIR/docker-compose.dynamodb.yml"
 ENDPOINT_URL="${DYNAMODB_ENDPOINT:-http://localhost:8000}"
 POSTS_TABLE="${POSTS_TABLE:-fm_posts_local}"
 CATEGORIES_TABLE="${CATEGORIES_TABLE:-fm_categories_local}"
+CORP_META_TABLE="${CORP_META_TABLE:-fm_corp_meta_local}"
 ADMIN_TOKEN="${NEXT_PUBLIC_ADMIN_API_TOKEN:-local-dev-token}"
 API_BASE_URL="${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8001}"
 
@@ -66,14 +67,15 @@ compose_down() {
 }
 
 bootstrap_dynamo() {
-  log "Provisioning DynamoDB tables ($POSTS_TABLE, $CATEGORIES_TABLE)"
+  log "Provisioning DynamoDB tables ($POSTS_TABLE, $CATEGORIES_TABLE, $CORP_META_TABLE)"
   local attempt=1
   local max_attempts=5
   while true; do
     if python3 "$ROOT/scripts/dynamodb_local_bootstrap.py" \
       --endpoint "$ENDPOINT_URL" \
       --posts-table "$POSTS_TABLE" \
-      --categories-table "$CATEGORIES_TABLE"; then
+      --categories-table "$CATEGORIES_TABLE" \
+      --corp-table "$CORP_META_TABLE"; then
       break
     fi
     if (( attempt >= max_attempts )); then
@@ -135,6 +137,7 @@ start_backend() {
     DYNAMODB_ENDPOINT="$ENDPOINT_URL" \
     POSTS_TABLE="$POSTS_TABLE" \
     CATEGORIES_TABLE="$CATEGORIES_TABLE" \
+    CORP_META_TABLE="$CORP_META_TABLE" \
     CORS_ALLOW_ORIGINS="${CORS_ALLOW_ORIGINS:-http://localhost:3000}" \
     nohup python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8001 >"$lf" 2>&1 &
     echo $! >"$pf"

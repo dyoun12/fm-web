@@ -2,24 +2,36 @@
 
 import { usePathname } from "next/navigation";
 import { GlobalFooter } from "./components/organisms/global-footer/global-footer";
+import { useCorpMeta } from "@/app/hooks/use-corp-meta";
+
+const FALLBACK_COMPANY_INFO = {
+  address: "서울특별시 중구 세종대로 110",
+  businessNumber: "000-00-00000",
+  representative: "홍길동",
+  email: "contact@fm-corp.example",
+  phone: "02-000-0000",
+} as const;
 
 export default function SiteFooter() {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
   const isContact = pathname === "/contact";
+  const corpMeta = useCorpMeta();
 
   if (isAdmin) return null;
 
+  const companyInfo = {
+    name: "FM Corp",
+    address: corpMeta?.address ?? FALLBACK_COMPANY_INFO.address,
+    businessNumber: corpMeta ? corpMeta.corpNum : FALLBACK_COMPANY_INFO.businessNumber,
+    representative: corpMeta ? corpMeta.ceo : FALLBACK_COMPANY_INFO.representative,
+    email: corpMeta ? corpMeta.email : FALLBACK_COMPANY_INFO.email,
+    phone: corpMeta ? corpMeta.hp : FALLBACK_COMPANY_INFO.phone,
+  };
+
   return (
     <GlobalFooter
-      companyInfo={{
-        name: "FM Corp",
-        address: "서울특별시 중구 세종대로 110",
-        businessNumber: "000-00-00000",
-        representative: "홍길동",
-        email: "contact@fm-corp.example",
-        phone: "02-000-0000",
-      }}
+      companyInfo={companyInfo}
       navigationSections={[
         {
           title: "회사",

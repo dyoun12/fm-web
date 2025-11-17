@@ -12,7 +12,7 @@ Codex Agent가 사용하는 모든 도메인 엔티티(User, Category, Post, Ban
 
 | 구분 | 내용 | 참고 |
 | --- | --- | --- |
-| 현행 백엔드(SAM) | `PostsTable`, `CategoriesTable` 두 개의 테이블을 `PAY_PER_REQUEST` 모드로 운영 | `sam/template.be.yaml` |
+| 현행 백엔드(SAM) | `PostsTable`, `CategoriesTable`, `CorpMetaTable` 세 개의 테이블을 `PAY_PER_REQUEST` 모드로 운영 | `sam/template.be.yaml` |
 | API 접근 계층 | FastAPI Lambda → `be-app/app/aws/dynamo.py` 헬퍼로 DynamoDB 호출 | `be-app/app/aws/dynamo.py` |
 | 타깃 설계(본 문서) | 모든 엔티티를 `PK/SK` 조합 기반 단일 테이블(`FMWebAppTable`, 가칭)로 통합 | 본 문서 |
 

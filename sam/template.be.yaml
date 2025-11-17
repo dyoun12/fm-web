@@ -15,6 +15,9 @@ Parameters:
   CategoriesTableName:
     Type: String
     Default: fm_categories
+  CorpMetaTableName:
+    Type: String
+    Default: fm_corp_meta
   DynamoEndpointUrl:
     Type: String
     Default: ""
@@ -40,6 +43,7 @@ Globals:
       Variables:
         POSTS_TABLE: !Ref PostsTableName
         CATEGORIES_TABLE: !Ref CategoriesTableName
+        CORP_META_TABLE: !Ref CorpMetaTableName
         UPLOADS_BUCKET: !Ref UploadsBucketName
         UPLOADS_PREFIX: uploads/
         CORS_ALLOW_ORIGINS: !Ref AllowedOrigins
@@ -91,6 +95,8 @@ Resources:
             TableName: !Ref PostsTable
         - DynamoDBCrudPolicy:
             TableName: !Ref CategoriesTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CorpMetaTable
         - Statement:
             - Effect: Allow
               Action:
@@ -144,6 +150,18 @@ Resources:
           Projection:
             ProjectionType: ALL
 
+  CorpMetaTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref CorpMetaTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: corpMetaId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: corpMetaId
+          KeyType: HASH
+
   UploadsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -166,5 +184,7 @@ Outputs:
     Value: !Ref PostsTableName
   CategoriesTableOut:
     Value: !Ref CategoriesTableName
+  CorpMetaTableOut:
+    Value: !Ref CorpMetaTableName
   UploadsBucketOut:
     Value: !Ref UploadsBucketName

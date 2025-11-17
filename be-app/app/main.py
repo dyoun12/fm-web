@@ -10,6 +10,7 @@ from .core.logging import setup_logging, RequestLoggingMiddleware
 from .api.routers import posts as posts_router
 from .api.routers import categories as categories_router
 from .api.routers import upload as upload_router
+from .api.routers import corp_meta as corp_meta_router
 
 
 def create_app() -> FastAPI:
@@ -40,6 +41,7 @@ def create_app() -> FastAPI:
     app.include_router(posts_router.router, prefix="/v1")
     app.include_router(categories_router.router, prefix="/v1")
     app.include_router(upload_router.router, prefix="/v1")
+    app.include_router(corp_meta_router.router, prefix="/v1")
 
     return app
 

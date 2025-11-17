@@ -12,7 +12,7 @@ resolve_s3 = true
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 region = "ap-northeast-2"
 template_file = ".aws-sam/build/template.yaml"
-parameter_overrides = "StageName=dev PostsTableName=fm_posts CategoriesTableName=fm_categories UploadsBucketName=fm-web-uploads AllowedOrigins=http://localhost:3000"
+parameter_overrides = "StageName=dev PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=http://localhost:3000"
 
 [default.global.parameters]
 region = "ap-northeast-2"
@@ -30,7 +30,7 @@ resolve_s3 = true
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 region = "ap-northeast-2"
 template_file = ".aws-sam/build/template.yaml"
-parameter_overrides = "StageName=$default PostsTableName=fm_posts CategoriesTableName=fm_categories UploadsBucketName=fm-web-uploads AllowedOrigins=https://your-prod-domain"
+parameter_overrides = "StageName=$default PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=https://your-prod-domain"
 
 [prod.global.parameters]
 region = "ap-northeast-2"

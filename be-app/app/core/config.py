@@ -10,6 +10,7 @@ def env(key: str, default: str | None = None) -> str | None:
 # DynamoDB Tables
 POSTS_TABLE = env("POSTS_TABLE", "posts")
 CATEGORIES_TABLE = env("CATEGORIES_TABLE", "categories")
+CORP_META_TABLE = env("CORP_META_TABLE", "corp_meta")
 
 # S3 Uploads
 UPLOADS_BUCKET = env("UPLOADS_BUCKET", "example-uploads-bucket")

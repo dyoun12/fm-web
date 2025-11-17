@@ -52,3 +52,29 @@ class CategoryUpdate(BaseModel):
 
 class Category(CategoryBase):
     categoryId: str
+
+
+class CorpMetaBase(BaseModel):
+    address: Optional[str] = None
+    corpNum: Optional[str] = None
+    ceo: Optional[str] = None
+    email: Optional[str] = None
+    hp: Optional[str] = None
+
+
+class CorpMetaCreate(CorpMetaBase):
+    pass
+
+
+class CorpMetaUpdate(BaseModel):
+    address: Optional[str] = None
+    corpNum: Optional[str] = None
+    ceo: Optional[str] = None
+    email: Optional[str] = None
+    hp: Optional[str] = None
+
+
+class CorpMeta(CorpMetaBase):
+    corpMetaId: str
+    createdAt: datetime
+    updatedAt: datetime

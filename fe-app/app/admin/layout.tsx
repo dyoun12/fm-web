@@ -25,6 +25,7 @@ export default function AdminLayout({ children }: Props) {
     { label: "대시보드", href: "/admin", icon: "📊", active: pathname === "/admin" },
     { label: "게시물", href: "/admin/posts", icon: "📰", active: pathname?.startsWith("/admin/posts") },
     { label: "카테고리", href: "/admin/categories", icon: "🏷️", active: pathname?.startsWith("/admin/categories") },
+    { label: "회사 정보", href: "/admin/corp", icon: "🏢", active: pathname?.startsWith("/admin/corp") },
     { label: "사용자", href: "/admin/users", icon: "👤", active: pathname?.startsWith("/admin/users") },
   ];
 
@@ -35,9 +36,11 @@ export default function AdminLayout({ children }: Props) {
         ? "게시물"
         : pathname?.startsWith("/admin/categories")
           ? "카테고리"
-          : pathname?.startsWith("/admin/users")
-            ? "사용자"
-            : "관리자";
+          : pathname?.startsWith("/admin/corp")
+            ? "회사 정보"
+            : pathname?.startsWith("/admin/users")
+              ? "사용자"
+              : "관리자";
 
   return (
     // 전체 화면을 고정하고, 스크롤은 컨텐츠 영역에서만 발생

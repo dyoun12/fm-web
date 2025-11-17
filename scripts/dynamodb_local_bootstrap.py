@@ -6,14 +6,13 @@ Usage:
   python scripts/dynamodb_local_bootstrap.py \
     --endpoint http://localhost:8000 \
     --posts-table fm_posts_local \
-    --categories-table fm_categories_local
+    --categories-table fm_categories_local \
+    --corp-table fm_corp_meta_local
 """
 
 from __future__ import annotations
 
 import argparse
-from typing import Any, Dict
-
 import boto3
 from botocore.exceptions import ClientError
 
@@ -88,12 +87,35 @@ def ensure_categories_table(dynamodb, table_name: str) -> None:
     wait_table(table)
 
 
+def ensure_corp_table(dynamodb, table_name: str) -> None:
+    try:
+        table = dynamodb.Table(table_name)
+        table.load()
+        print(f"[skip] {table_name} already exists")
+        return
+    except ClientError as exc:
+        error = exc.response.get("Error", {})
+        if error.get("Code") != "ResourceNotFoundException":
+            raise
+    print(f"[create] {table_name} (corp meta)")
+    table = dynamodb.create_table(
+        TableName=table_name,
+        KeySchema=[{"AttributeName": "corpMetaId", "KeyType": "HASH"}],
+        AttributeDefinitions=[
+            {"AttributeName": "corpMetaId", "AttributeType": "S"},
+        ],
+        BillingMode="PAY_PER_REQUEST",
+    )
+    wait_table(table)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Provision DynamoDB Local tables for development.")
     parser.add_argument("--endpoint", default="http://localhost:8000", help="DynamoDB endpoint (default: http://localhost:8000)")
     parser.add_argument("--region", default="ap-northeast-2", help="AWS region name (default: ap-northeast-2)")
     parser.add_argument("--posts-table", default="fm_posts_local", help="Posts table name")
     parser.add_argument("--categories-table", default="fm_categories_local", help="Categories table name")
+    parser.add_argument("--corp-table", default="fm_corp_meta_local", help="Corp meta table name")
     return parser.parse_args()
 
 
@@ -102,6 +124,7 @@ def main() -> None:
     session = boto3.resource("dynamodb", region_name=args.region, endpoint_url=args.endpoint)
     ensure_posts_table(session, args.posts_table)
     ensure_categories_table(session, args.categories_table)
+    ensure_corp_table(session, args.corp_table)
     print("[done] DynamoDB Local tables ready")
 
 
