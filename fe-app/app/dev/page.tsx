@@ -57,6 +57,7 @@ import { AdminSidebar } from "../components/organisms/admin-sidebar/admin-sideba
 import { BusinessExplorer } from "../components/organisms/business-explorer/business-explorer";
 import { Location as LocationMap } from "../components/organisms/location/location";
 import { AdminHeader } from "../components/organisms/admin-header/admin-header";
+import { EMPTY_DOC } from "@/lib/tiptap";
 
 // SSR/CSR 일관성을 위한 고정 시각 스냅샷(Dev 카탈로그에서만 사용)
 const DEV_NOW_ISO = "2025-01-01T00:00:00.000Z";
@@ -1334,7 +1335,7 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
             category="IR"
             author="FM Corporation"
             publishedAt="2025-10-01T00:00:00.000Z"
-            content="<p>4분기 주요 실적과 향후 계획을 공유드립니다.</p>"
+            content={EMPTY_DOC}
             thumbnailUrl="https://picsum.photos/1200/600"
             theme={theme}
           />
@@ -1343,8 +1344,8 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
             category="공지"
             author="FM Corporation"
             publishedAt="2025-09-20T00:00:00.000Z"
-            content="<p>텍스트만 포함된 공지입니다.</p>"
-            theme={theme}
+            theme={theme} 
+            content={EMPTY_DOC}          
           />
         </div>
       );

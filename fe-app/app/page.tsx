@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import type { Metadata } from "next";
 import { HeroBanner } from "./components/molecules/hero-banner/hero-banner";
 import { CtaSection } from "./components/molecules/cta-section/cta-section";
@@ -17,6 +19,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const posts = await listPosts();
+
   return (
     <div className="w-full">
       <section aria-labelledby="home-hero" className="mt-6 md:mt-10">

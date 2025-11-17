@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../../components/atoms/button/button";
-import { DataTable } from "../../components/molecules/data-table/data-table";
+import { DataTable, DataTableColumn } from "../../components/molecules/data-table/data-table";
 import { EmptyState } from "../../components/molecules/empty-state/empty-state";
 import { EntityFormCard } from "../../components/molecules/entity-form-card/entity-form-card";
 import { EntityDeleteModal } from "../../components/molecules/entity-delete-modal/entity-delete-modal";
@@ -154,7 +154,7 @@ export default function AdminCorpMetaPage() {
     }
   }, [deleteTarget, handleCloseDeleteModal]);
 
-  const columns = useMemo(
+  const columns = useMemo<DataTableColumn[]>(
     () => [
       { key: "address", header: "주소" },
       { key: "corpNum", header: "사업자등록번호" },
@@ -164,7 +164,7 @@ export default function AdminCorpMetaPage() {
     ],
     [],
   );
-
+ 
   const rows = useMemo(() => {
     if (!items || items.length === 0) return [];
     return items.map((item) => ({

@@ -2,7 +2,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { generateHTML } from "@tiptap/html";
-import { JSONContent } from "@tiptap/react";
+import { generateJSON, JSONContent } from "@tiptap/react";
 
 export const COMMON_EXTENSIONS = [
   StarterKit.configure({
@@ -19,6 +19,20 @@ export const COMMON_EXTENSIONS = [
   })
 ]
 
-export function renderHtmlFromJson(json: JSONContent) {
+export const EMPTY_DOC: JSONContent = {
+  type: "doc",
+  content: [
+    {
+      type: "paragraph",
+      content: [],
+    },
+  ],
+};
+
+export function generateHtml(json: JSONContent) {
   return generateHTML(json, COMMON_EXTENSIONS);
+}
+
+export function generateJson(str: string) {
+  return generateJSON(str, COMMON_EXTENSIONS);
 }

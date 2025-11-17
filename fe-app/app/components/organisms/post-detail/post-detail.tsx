@@ -3,7 +3,7 @@
 import { cn } from "@/lib/classnames";
 import { Badge } from "../../atoms/badge/badge";
 import { JSONContent } from "@tiptap/react";
-import { renderHtmlFromJson } from "@/lib/tiptap";
+import { generateHtml } from "@/lib/tiptap";
 
 export type PostDetailProps = {
   title: string;
@@ -67,7 +67,7 @@ export function PostDetail({
           isDark ? "prose-invert" : "prose-zinc",
           "[&_h2]:mt-10 [&_h2]:text-2xl",
         )}
-        dangerouslySetInnerHTML={{ __html: renderHtmlFromJson(content) }}
+        dangerouslySetInnerHTML={{ __html: generateHtml(content) }}
       />
     </article>
   );
