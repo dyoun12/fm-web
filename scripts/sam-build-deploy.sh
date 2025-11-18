@@ -17,7 +17,7 @@ else
   STACK_NAME="fm-web-backend-dev"
 fi
 
-echo "[sam] building (container) env=$SAMENV profile=$PROFILE ..."
+echo "[sam] building (container) env=$SAMENV..."
 sam build \
   --config-file "$SAMCONFIG" \
   --config-env "$SAMENV" \
@@ -28,7 +28,7 @@ if [ -z "${LWA_LAYER_ARN:-}" ]; then
   : # No-op: Web Adapter not used with Mangum
 fi
 
-echo "[sam] deploying env=$SAMENV profile=$PROFILE ..."
+echo "[sam] deploying env=$SAMENV..."
 sam deploy \
   --config-file "$SAMCONFIG" \
   --config-env "$SAMENV" \
