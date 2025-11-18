@@ -12,4 +12,4 @@ resolve_s3 = true
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 region = "ap-northeast-2"
 template_file = ".aws-sam/build/template.yaml"
-parameter_overrides = "StageName=prod PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=https://fmcorp.kr"
+parameter_overrides = "StageName=prod PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=https://www.fmcorp.kr"
