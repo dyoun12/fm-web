@@ -10,7 +10,7 @@ SAMCONFIG_REL="sam/samconfig.be.toml"
 SAMCONFIG="${ROOT}/${SAMCONFIG_REL}"
 # Environment selection: default (dev) or prod
 SAMENV="${ENV:-${1:-default}}"
-PROFILE="${AWS_PROFILE:-${AWS_PROFILE_NAME:-fm-dev}}"
+
 if [ "$SAMENV" = "prod" ]; then
   STACK_NAME="fm-web-backend-prod"
 else
@@ -21,7 +21,6 @@ echo "[sam] building (container) env=$SAMENV profile=$PROFILE ..."
 sam build \
   --config-file "$SAMCONFIG" \
   --config-env "$SAMENV" \
-  --profile "$PROFILE" \
   --use-container \
   -t "$TEMPLATE"
 
@@ -33,7 +32,6 @@ echo "[sam] deploying env=$SAMENV profile=$PROFILE ..."
 sam deploy \
   --config-file "$SAMCONFIG" \
   --config-env "$SAMENV" \
-  --profile "$PROFILE" \
   --stack-name "$STACK_NAME" \
   --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
   --resolve-s3 \
