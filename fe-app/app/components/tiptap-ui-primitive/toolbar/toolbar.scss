@@ -95,4 +95,22 @@
       box-shadow: none;
     }
   }
+
+  .tiptap-toolbar-more {
+    display: flex;
+    align-items: center;
+  }
+
+  .tiptap-toolbar-more-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.25rem;
+    transition: transform 0.2s ease;
+    display: inline-flex;
+  }
+
+  .tiptap-toolbar-more [data-open="true"] .tiptap-toolbar-more-icon {
+    transform: rotate(-180deg);
+  }
+
 }

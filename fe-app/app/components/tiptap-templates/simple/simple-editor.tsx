@@ -1,6 +1,16 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+import type { RefObject, ReactNode } from "react"
 import type { JSONContent } from "@tiptap/react"
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
 
@@ -44,6 +54,7 @@ import { UndoRedoButton } from "@/app/components/tiptap-ui/undo-redo-button"
 
 // --- Icons ---
 import { ArrowLeftIcon } from "@/app/components/tiptap-icons/arrow-left-icon"
+import { DotsHorizontalIcon } from "@/app/components/tiptap-icons/dots-horizontal-icon"
 import { HighlighterIcon } from "@/app/components/tiptap-icons/highlighter-icon"
 import { LinkIcon } from "@/app/components/tiptap-icons/link-icon"
 
@@ -66,73 +77,226 @@ type SimpleEditorProps = {
   onChange?: (value: JSONContent) => void
 }
 
-const MainToolbarContent = ({
-  onHighlighterClick,
-  onLinkClick,
-  isMobile,
+type ToolbarSegment = {
+  id: string
+  priority: number
+  render: () => ReactNode
+}
+
+const useToolbarOverflow = ({
+  toolbarRef,
+  containerRef,
+  segments,
 }: {
-  onHighlighterClick: () => void
-  onLinkClick: () => void
-  isMobile: boolean
+  toolbarRef: RefObject<HTMLDivElement | null>
+  containerRef: RefObject<HTMLDivElement | null>
+  segments: ToolbarSegment[]
 }) => {
+  const overflowPanelId = useId()
+  const [hiddenSegmentIds, setHiddenSegmentIds] = useState<string[]>([])
+  const [isOverflowPanelRawOpen, setOverflowPanelRawOpen] = useState(false)
+  const hiddenSegmentIdsRef = useRef<string[]>([])
+  const containerWidthRef = useRef(0)
+
+  const updateHiddenSegmentIds = useCallback(
+    (updater: (prev: string[]) => string[]) => {
+      setHiddenSegmentIds((prev) => {
+        const next = updater(prev)
+        hiddenSegmentIdsRef.current = next
+        return next
+      })
+    },
+    []
+  )
+
+  useEffect(() => {
+    updateHiddenSegmentIds((prev) => {
+      const filtered = prev.filter((id) =>
+        segments.some((segment) => segment.id === id)
+      )
+      return filtered.length === prev.length ? prev : filtered
+    })
+  }, [segments, updateHiddenSegmentIds])
+
+  const adjustSegments = useCallback(() => {
+    const toolbar = toolbarRef.current
+    const container = containerRef.current
+    if (!toolbar || !container) return
+
+    const containerWidth = container.clientWidth
+    if (containerWidth === 0) return
+
+    const currentHidden = hiddenSegmentIdsRef.current
+    const visibleCandidates = segments.filter(
+      (segment) => !currentHidden.includes(segment.id)
+    )
+    const hiddenCandidates = segments.filter((segment) =>
+      currentHidden.includes(segment.id)
+    )
+
+    const didContainerGrow = containerWidth > containerWidthRef.current
+    containerWidthRef.current = containerWidth
+
+    if (toolbar.scrollWidth > containerWidth && visibleCandidates.length > 0) {
+      const toHide = visibleCandidates.reduce<ToolbarSegment | null>(
+        (candidate, segment) => {
+          if (!candidate) return segment
+          return segment.priority > candidate.priority ? segment : candidate
+        },
+        null
+      )
+      if (toHide) {
+        updateHiddenSegmentIds((prev) => [...prev, toHide.id])
+      }
+      return
+    }
+
+    if (
+      toolbar.scrollWidth <= containerWidth &&
+      hiddenCandidates.length > 0 &&
+      didContainerGrow
+    ) {
+      const toRestore = hiddenCandidates.reduce<ToolbarSegment | null>(
+        (candidate, segment) => {
+          if (!candidate) return segment
+          return segment.priority < candidate.priority ? segment : candidate
+        },
+        null
+      )
+      if (toRestore) {
+        updateHiddenSegmentIds((prev) =>
+          prev.filter((id) => id !== toRestore.id)
+        )
+      }
+    }
+  }, [containerRef, segments, toolbarRef])
+  useLayoutEffect(() => {
+    adjustSegments()
+  }, [adjustSegments])
+
+  useEffect(() => {
+    const toolbarEl = toolbarRef.current
+    const containerEl = containerRef.current
+    if (!toolbarEl || !containerEl || typeof ResizeObserver === "undefined") {
+      return
+    }
+
+    const observer = new ResizeObserver(() => {
+      adjustSegments()
+    })
+
+    observer.observe(toolbarEl)
+    observer.observe(containerEl)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [adjustSegments, containerRef, toolbarRef])
+
+  useEffect(() => {
+    // no-op: derived open state from hiddenSegmentIds
+  }, [hiddenSegmentIds])
+
+  const toggleOverflowPanel = useCallback(() => {
+    setOverflowPanelRawOpen((prev) => !prev)
+  }, [])
+
+  const closeOverflowPanel = useCallback(() => {
+    setOverflowPanelRawOpen(false)
+  }, [])
+
+  const isOverflowPanelOpen = hiddenSegmentIds.length > 0 && isOverflowPanelRawOpen
+
+  useEffect(() => {
+    if (!isOverflowPanelOpen) return
+
+    const handleOutsideClick = (event: PointerEvent) => {
+      if (toolbarRef.current?.contains(event.target as Node)) {
+        return
+      }
+      closeOverflowPanel()
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeOverflowPanel()
+      }
+    }
+
+    document.addEventListener("pointerdown", handleOutsideClick)
+    window.addEventListener("keydown", handleEscape)
+
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsideClick)
+      window.removeEventListener("keydown", handleEscape)
+    }
+  }, [closeOverflowPanel, isOverflowPanelOpen, toolbarRef])
+
+  const visibleSegments = useMemo(
+    () => segments.filter((segment) => !hiddenSegmentIds.includes(segment.id)),
+    [segments, hiddenSegmentIds]
+  )
+
+  const hiddenSegments = useMemo(
+    () => segments.filter((segment) => hiddenSegmentIds.includes(segment.id)),
+    [segments, hiddenSegmentIds]
+  )
+
+  return {
+    visibleSegments,
+    hiddenSegments,
+    isOverflowPanelOpen,
+    overflowPanelId,
+    toggleOverflowPanel,
+  }
+}
+
+type MainToolbarContentProps = {
+  visibleSegments: ToolbarSegment[]
+  hasHiddenSegments: boolean
+  isOverflowPanelOpen: boolean
+  overflowPanelId: string
+  toggleOverflowPanel: () => void
+  isMobile: boolean
+}
+
+const MainToolbarContent = ({
+  visibleSegments,
+  hasHiddenSegments,
+  isOverflowPanelOpen,
+  overflowPanelId,
+  toggleOverflowPanel,
+  isMobile,
+}: MainToolbarContentProps) => {
   return (
     <>
       <Spacer />
 
-      <ToolbarGroup>
-        <UndoRedoButton action="undo" />
-        <UndoRedoButton action="redo" />
-      </ToolbarGroup>
+      {visibleSegments.map((segment, index) => (
+        <Fragment key={segment.id}>
+          {index > 0 && <ToolbarSeparator />}
+          <ToolbarGroup>{segment.render()}</ToolbarGroup>
+        </Fragment>
+      ))}
 
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={isMobile} />
-        <ListDropdownMenu
-          types={["bulletList", "orderedList", "taskList"]}
-          portal={isMobile}
-        />
-        <BlockquoteButton />
-        <CodeBlockButton />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <MarkButton type="bold" />
-        <MarkButton type="italic" />
-        <MarkButton type="strike" />
-        <MarkButton type="code" />
-        <MarkButton type="underline" />
-        {!isMobile ? (
-          <ColorHighlightPopover />
-        ) : (
-          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
-        )}
-        {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <MarkButton type="superscript" />
-        <MarkButton type="subscript" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <TextAlignButton align="left" />
-        <TextAlignButton align="center" />
-        <TextAlignButton align="right" />
-        <TextAlignButton align="justify" />
-      </ToolbarGroup>
-
-      <ToolbarSeparator />
-
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
-      </ToolbarGroup>
+      {hasHiddenSegments && (
+        <>
+          {visibleSegments.length > 0 && <ToolbarSeparator />}
+          <ToolbarGroup className="tiptap-toolbar-more">
+            <Button
+              data-style="ghost"
+              data-open={isOverflowPanelOpen ? "true" : "false"}
+              onClick={toggleOverflowPanel}
+              aria-haspopup="menu"
+              aria-controls={overflowPanelId}
+              aria-expanded={isOverflowPanelOpen}
+              aria-label="추가 편집 도구 보기"
+            >
+              <DotsHorizontalIcon className="tiptap-toolbar-more-icon" />
+            </Button>
+          </ToolbarGroup>
+        </>
+      )}
 
       <Spacer />
 
@@ -204,8 +368,111 @@ export function SimpleEditor({
     content: initialContent,
   })
 
-  const toolbarRef = useRef<HTMLDivElement>(null);
-  const [overlayHeight, setOverlayHeight] = useState(0);
+  const toolbarRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const [overlayHeight, setOverlayHeight] = useState(0)
+
+  const handleHighlighterClick = useCallback(
+    () => setMobileView("highlighter"),
+    [setMobileView]
+  )
+  const handleLinkClick = useCallback(
+    () => setMobileView("link"),
+    [setMobileView]
+  )
+
+  const segments = useMemo<ToolbarSegment[]>(
+    () => [
+      {
+        id: "history",
+        priority: 1,
+        render: () => (
+          <>
+            <UndoRedoButton action="undo" />
+            <UndoRedoButton action="redo" />
+          </>
+        ),
+      },
+      {
+        id: "blocks",
+        priority: 2,
+        render: () => (
+          <>
+            <HeadingDropdownMenu levels={[1, 2, 3, 4]} portal={isMobile} />
+            <ListDropdownMenu
+              types={["bulletList", "orderedList", "taskList"]}
+              portal={isMobile}
+            />
+            <BlockquoteButton />
+            <CodeBlockButton />
+          </>
+        ),
+      },
+      {
+        id: "marks",
+        priority: 3,
+        render: () => (
+          <>
+            <MarkButton type="bold" />
+            <MarkButton type="italic" />
+            <MarkButton type="strike" />
+            <MarkButton type="code" />
+            <MarkButton type="underline" />
+            {!isMobile ? (
+              <ColorHighlightPopover />
+            ) : (
+              <ColorHighlightPopoverButton onClick={handleHighlighterClick} />
+            )}
+            {!isMobile ? (
+              <LinkPopover />
+            ) : (
+              <LinkButton onClick={handleLinkClick} />
+            )}
+          </>
+        ),
+      },
+      {
+        id: "super",
+        priority: 4,
+        render: () => (
+          <>
+            <MarkButton type="superscript" />
+            <MarkButton type="subscript" />
+          </>
+        ),
+      },
+      {
+        id: "align",
+        priority: 5,
+        render: () => (
+          <>
+            <TextAlignButton align="left" />
+            <TextAlignButton align="center" />
+            <TextAlignButton align="right" />
+            <TextAlignButton align="justify" />
+          </>
+        ),
+      },
+      {
+        id: "media",
+        priority: 6,
+        render: () => <ImageUploadButton text="Add" />,
+      },
+    ],
+    [handleHighlighterClick, handleLinkClick, isMobile]
+  )
+
+  const {
+    visibleSegments,
+    hiddenSegments,
+    isOverflowPanelOpen,
+    overflowPanelId,
+    toggleOverflowPanel,
+  } = useToolbarOverflow({
+    segments,
+    toolbarRef,
+    containerRef: wrapperRef,
+  })
 
   // DOM 측정은 반드시 useLayoutEffect에서 실행 (렌더 직후 DOM 확정 시점)
   useLayoutEffect(() => {
@@ -220,38 +487,60 @@ export function SimpleEditor({
     overlayHeight,
   });
 
-  useEffect(() => {
-    if (!isMobile && mobileView !== "main") {
-      setMobileView("main")
-    }
-  }, [isMobile, mobileView])
+  const isMobileDetailView = isMobile && mobileView !== "main"
 
   return (
-    <Card className="simple-editor-wrapper">
+    <Card ref={wrapperRef} className="simple-editor-wrapper" padding="none">
       <EditorContext.Provider value={{ editor }}>
-        <Toolbar
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
-          {mobileView === "main" ? (
-            <MainToolbarContent
-              onHighlighterClick={() => setMobileView("highlighter")}
-              onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile}
-            />
-          ) : (
-            <MobileToolbarContent
-              type={mobileView === "highlighter" ? "highlighter" : "link"}
-              onBack={() => setMobileView("main")}
-            />
+        <div className="simple-editor-toolbar">
+          <Toolbar
+            ref={toolbarRef}
+            style={{
+              ...(isMobile
+                ? {
+                    bottom: `calc(100% - ${height - rect.y}px)`,
+                  }
+                : {}),
+            }}
+          >
+            {isMobileDetailView ? (
+              <MobileToolbarContent
+                type={mobileView === "highlighter" ? "highlighter" : "link"}
+                onBack={() => setMobileView("main")}
+              />
+            ) : (
+              <MainToolbarContent
+                visibleSegments={visibleSegments}
+                hasHiddenSegments={hiddenSegments.length > 0}
+                isOverflowPanelOpen={isOverflowPanelOpen}
+                overflowPanelId={overflowPanelId}
+                toggleOverflowPanel={toggleOverflowPanel}
+                isMobile={isMobile}
+              />
+            )}
+          </Toolbar>
+
+          {!isMobileDetailView && hiddenSegments.length > 0 && (
+            <div
+              id={overflowPanelId}
+              className="tiptap-toolbar-overflow-panel"
+              role="menu"
+              aria-label="숨겨진 편집 도구"
+              aria-hidden={isOverflowPanelOpen ? "false" : "true"}
+              data-open={isOverflowPanelOpen ? "true" : "false"}
+            >
+              {hiddenSegments.map((segment) => (
+                <div
+                  key={`overflow-${segment.id}`}
+                  role="group"
+                  className="tiptap-toolbar-overflow-row"
+                >
+                  {segment.render()}
+                </div>
+              ))}
+            </div>
           )}
-        </Toolbar>
+        </div>
 
         <EditorContent
           editor={editor}
