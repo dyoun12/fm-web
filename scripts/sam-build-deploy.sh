@@ -10,7 +10,7 @@ SAMCONFIG_REL="sam/samconfig.be.toml"
 SAMCONFIG="${ROOT}/${SAMCONFIG_REL}"
 STACK_NAME="fm-web-backend-prod"
 
-echo "[sam] building (container) env=$SAMENV..."
+echo "[sam] building (container)"
 sam build \
   --config-file "$SAMCONFIG" \
   --use-container \
@@ -20,7 +20,7 @@ if [ -z "${LWA_LAYER_ARN:-}" ]; then
   : # No-op: Web Adapter not used with Mangum
 fi
 
-echo "[sam] deploying env=$SAMENV..."
+echo "[sam] deploying"
 sam deploy \
   --config-file "$SAMCONFIG" \
   --stack-name "$STACK_NAME" \
