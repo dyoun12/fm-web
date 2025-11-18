@@ -13,7 +13,6 @@ STACK_NAME="fm-web-backend-prod"
 echo "[sam] building (container) env=$SAMENV..."
 sam build \
   --config-file "$SAMCONFIG" \
-  --config-env "$SAMENV" \
   --use-container \
   -t "$TEMPLATE"
 
@@ -24,7 +23,6 @@ fi
 echo "[sam] deploying env=$SAMENV..."
 sam deploy \
   --config-file "$SAMCONFIG" \
-  --config-env "$SAMENV" \
   --stack-name "$STACK_NAME" \
   --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
   --resolve-s3 \
