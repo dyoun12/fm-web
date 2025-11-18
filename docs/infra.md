@@ -364,7 +364,8 @@ jobs:
 배포 흐름(요약):
 1) Next.js 빌드(SSR): OpenNext(`npx open-next@latest build`)로 Lambda@Edge 패키지 생성 → `.open-next/handlers/*`를 zip → `default-handler.zip`(SSR), 선택: `image-handler.zip`, `api-handler.zip`
 2) us-east-1의 S3(`EdgeCodeBucket`)에 zip 업로드
-3) `aws cloudformation deploy --region us-east-1 -t sam/template.edge.yaml ...` 실행
+3) `aws cloudformation deploy --region us-east-1 -t sam/template.edge.yaml ...` 실행  
+   - 프로덕션 환경에서는 `BackendApiDomainName=api.fmcorp.kr`(API Gateway 커스텀 도메인)과 `BackendApiStageName=v1` 등으로 설정해 백엔드 호출이 `https://api.fmcorp.kr`을 경유하도록 맞춘다.
 4) 정적 에셋(`public/`, `.next/static/`, `out/` 등)은 `AssetsBucketName`으로 동기화
 5) CloudFront 전체 무효화
 

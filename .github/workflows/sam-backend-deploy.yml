@@ -1,0 +1,64 @@
+name: SAM Backend Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "be-app/**"
+      - "sam/**"
+      - "scripts/sam-build-deploy.sh"
+      - ".github/workflows/sam-backend-deploy.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "SAM config env (default|prod)"
+        required: false
+        default: "default"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-2
+
+jobs:
+  sam-build-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r be-app/requirements.txt
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::394999826385:role/gitactions-role-fm-web
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      - name: SAM build and deploy
+        env:
+          ENV: ${{ github.event.inputs.environment || 'default' }}
+          AWS_PROFILE_NAME: "default"
+        run: |
+          bash scripts/sam-build-deploy.sh
+

@@ -32,6 +32,8 @@
 중지 시에는 `./scripts/run_backend_local.sh down`을 실행해 컨테이너·프로세스를 정리하고 포트 점유를 방지한다. 실행 상태는 `./scripts/run_backend_local.sh status`로 확인 가능하며 로그는 `./.devserver/logs/*.log`에서 확인할 수 있다.  
 `NEXT_PUBLIC_API_BASE_URL`을 비워 두더라도 프론트는 기본값으로 `http://localhost:8001`을 바라보므로 잘못된 3000번 루프백 호출을 피할 수 있다.
 
+프로덕션 배포 시 프론트엔드는 기본적으로 `https://api.fmcorp.kr`을 API 베이스 URL로 사용하며, 필요 시 `NEXT_PUBLIC_API_BASE_URL` 환경변수로 재정의할 수 있다.
+
 ### 2.3 OPA 기반 접근 통제(Authorization)
 - 정책: Rego(OPA), 번들은 WASM(`policy.wasm` + 선택 `data.json`)
 - 경로: 개발=`be-app/opa/build`, 배포(Lambda Layer)=`/opt/opa/bundle`
