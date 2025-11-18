@@ -37,7 +37,7 @@ Globals:
     Runtime: python3.11
     Timeout: 15
     MemorySize: 512
-    Architectures: [arm64]
+    Architectures: [x86_64]
     Tracing: Active
     Environment:
       Variables:
