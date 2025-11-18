@@ -19,6 +19,7 @@ export function EditPostController({ postId }: SidebarClientProps) {
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteTargetPost, setDeleteTargetPost] = useState<Post | null>(null);
 
@@ -31,9 +32,7 @@ export function EditPostController({ postId }: SidebarClientProps) {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [author, setAuthor] = useState("");
 
-  // ⭐ 핵심: content는 로컬 상태로만 관리
   const [content, setContent] = useState<JSONContent | null>(null);
-
   const [mode, setMode] = useState<"create" | "edit">("edit");
 
   // -----------------------
@@ -172,6 +171,10 @@ export function EditPostController({ postId }: SidebarClientProps) {
     ];
   }, [editingPost, mode]);
 
+  const handleSidebarOpen = useCallback(() => {
+    setSidebarOpen(!sidebarOpen);
+  }, [sidebarOpen]);
+
   const handleCloseDeleteModal = useCallback(() => {
     setDeleteModalOpen(false);
     setDeleteTargetPost(null);
@@ -186,51 +189,59 @@ export function EditPostController({ postId }: SidebarClientProps) {
         key={content ? "loaded" : "empty"}
         content={content}
         onChange={(value) => setContent(value)}
+        sidebarOpen={sidebarOpen}
+        sidebarOpenHandle={handleSidebarOpen}
       />
 
-      <EntityFormCard
-        variant="sidebar"
-        open={mode !== null}
-        mode={mode ?? "create"}
-        title={mode === "edit" ? "게시물 편집" : "새 게시물"}
-        description={mode === "edit" ? "필요한 내용을 수정하고 저장하세요." : "게시판에 노출될 새 게시물을 작성합니다."}
-        onSubmit={handleSubmit}
-        saving={saving}
-        submitLabel={mode === "edit" ? "변경 사항 저장" : "게시물 생성"}
-        readOnlyFields={modalReadOnlyFields}
-        onDelete={mode === "edit" ? handleRequestDelete : undefined}
-        deleting={deleting}
-      >
-        {formError && (
-          <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-            {formError}
-          </div>
-        )}
-        <Input label="제목" placeholder="제목을 입력하세요" required value={title} onChange={(e) => setTitle((e.target as HTMLInputElement).value)} />
-        <Select
-          label="카테고리"
-          placeholder="카테고리를 선택하세요"
-          options={
-            categories
-              ? categories.map((c) => ({ label: c.name, value: c.slug }))
-              : [
-                  { label: "IR", value: "ir" },
-                  { label: "공지", value: "notice" },
-                ]
-          }
-          required
-          value={formCategory}
-          onChange={(e) => setFormCategory((e.target as HTMLSelectElement).value)}
-        />
-        <Input
-          label="썸네일 URL"
-          type="url"
-          placeholder="https://example.com/image.png"
-          value={thumbnailUrl}
-          onChange={(e) => setThumbnailUrl((e.target as HTMLInputElement).value)}
-        />
-        <Input label="작성자" placeholder="작성자 이름" value={author} onChange={(e) => setAuthor((e.target as HTMLInputElement).value)} />
-      </EntityFormCard>
+      { 
+        sidebarOpen ? 
+          <EntityFormCard
+            variant="sidebar"
+            open={mode !== null}
+            mode={mode ?? "create"}
+            title={mode === "edit" ? "게시물 편집" : "새 게시물"}
+            description={mode === "edit" ? "필요한 내용을 수정하고 저장하세요." : "게시판에 노출될 새 게시물을 작성합니다."}
+            onSubmit={handleSubmit}
+            saving={saving}
+            submitLabel={mode === "edit" ? "변경 사항 저장" : "게시물 생성"}
+            readOnlyFields={modalReadOnlyFields}
+            onDelete={mode === "edit" ? handleRequestDelete : undefined}
+            deleting={deleting}
+          >
+            {formError && (
+              <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+                {formError}
+              </div>
+            )}
+            <Input label="제목" placeholder="제목을 입력하세요" required value={title} onChange={(e) => setTitle((e.target as HTMLInputElement).value)} />
+            <Select
+              label="카테고리"
+              placeholder="카테고리를 선택하세요"
+              options={
+                categories
+                  ? categories.map((c) => ({ label: c.name, value: c.slug }))
+                  : [
+                    { label: "IR", value: "ir" },
+                    { label: "공지", value: "notice" },
+                  ]
+              }
+              required
+              value={formCategory}
+              onChange={(e) => setFormCategory((e.target as HTMLSelectElement).value)}
+            />
+            <Input
+              label="썸네일 URL"
+              type="url"
+              placeholder="https://example.com/image.png"
+              value={thumbnailUrl}
+              onChange={(e) => setThumbnailUrl((e.target as HTMLInputElement).value)}
+            />
+            <Input label="작성자" placeholder="작성자 이름" value={author} onChange={(e) => setAuthor((e.target as HTMLInputElement).value)} />
+          </EntityFormCard>
+        : 
+          null
+      }
+      
 
       <EntityDeleteModal
         open={deleteModalOpen}

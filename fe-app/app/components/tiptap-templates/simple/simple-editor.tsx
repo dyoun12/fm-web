@@ -57,6 +57,7 @@ import { ArrowLeftIcon } from "@/app/components/tiptap-icons/arrow-left-icon"
 import { DotsHorizontalIcon } from "@/app/components/tiptap-icons/dots-horizontal-icon"
 import { HighlighterIcon } from "@/app/components/tiptap-icons/highlighter-icon"
 import { LinkIcon } from "@/app/components/tiptap-icons/link-icon"
+import { ListIcon } from "@/app/components/tiptap-icons/list-icon"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
@@ -75,6 +76,8 @@ const FALLBACK_CONTENT: JSONContent = defaultContent as JSONContent
 type SimpleEditorProps = {
   content?: JSONContent | null
   onChange?: (value: JSONContent) => void
+  sidebarOpen?: boolean
+  sidebarOpenHandle?: () => void
 }
 
 type ToolbarSegment = {
@@ -258,6 +261,8 @@ type MainToolbarContentProps = {
   overflowPanelId: string
   toggleOverflowPanel: () => void
   isMobile: boolean
+  sidebarOpen: boolean
+  sidebarOpenHandle: () => void
 }
 
 const MainToolbarContent = ({
@@ -267,6 +272,8 @@ const MainToolbarContent = ({
   overflowPanelId,
   toggleOverflowPanel,
   isMobile,
+  sidebarOpen,
+  sidebarOpenHandle,
 }: MainToolbarContentProps) => {
   return (
     <>
@@ -302,9 +309,19 @@ const MainToolbarContent = ({
 
       {isMobile && <ToolbarSeparator />}
 
-      {/* <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup> */}
+      <ToolbarGroup>
+        <Button
+          data-style="ghost"
+          data-active-state={sidebarOpen ? "on" : "off"}
+          data-open={sidebarOpen ? "true" : "false"}
+          onClick={sidebarOpenHandle}
+          aria-haspopup="menu"
+          aria-pressed={sidebarOpen}
+          aria-label="게시물 메타 정보 보기"
+        >
+          <ListIcon className="tiptap-toolbar-more-icon" />
+        </Button>
+      </ToolbarGroup>
     </>
   )
 }
@@ -341,6 +358,8 @@ const MobileToolbarContent = ({
 export function SimpleEditor({
   content,
   onChange,
+  sidebarOpen,
+  sidebarOpenHandle
 }: SimpleEditorProps = {}) {
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
@@ -510,12 +529,14 @@ export function SimpleEditor({
               />
             ) : (
               <MainToolbarContent
-                visibleSegments={visibleSegments}
-                hasHiddenSegments={hiddenSegments.length > 0}
-                isOverflowPanelOpen={isOverflowPanelOpen}
-                overflowPanelId={overflowPanelId}
-                toggleOverflowPanel={toggleOverflowPanel}
-                isMobile={isMobile}
+                  visibleSegments={visibleSegments}
+                  hasHiddenSegments={hiddenSegments.length > 0}
+                  isOverflowPanelOpen={isOverflowPanelOpen}
+                  overflowPanelId={overflowPanelId}
+                  toggleOverflowPanel={toggleOverflowPanel}
+                  isMobile={isMobile} 
+                  sidebarOpen={!!sidebarOpen}
+                  sidebarOpenHandle={sidebarOpenHandle ?? (() => null)}                
               />
             )}
           </Toolbar>
