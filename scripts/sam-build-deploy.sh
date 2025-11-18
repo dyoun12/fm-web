@@ -8,14 +8,7 @@ TEMPLATE="sam/template.be.yaml"
 REGION="ap-northeast-2"
 SAMCONFIG_REL="sam/samconfig.be.toml"
 SAMCONFIG="${ROOT}/${SAMCONFIG_REL}"
-# Environment selection: default (dev) or prod
-SAMENV="${ENV:-${1:-default}}"
-
-if [ "$SAMENV" = "prod" ]; then
-  STACK_NAME="fm-web-backend-prod"
-else
-  STACK_NAME="fm-web-backend-dev"
-fi
+STACK_NAME="fm-web-backend-prod"
 
 echo "[sam] building (container) env=$SAMENV..."
 sam build \
