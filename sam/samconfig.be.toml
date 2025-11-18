@@ -7,32 +7,9 @@ use_container = true
 template = "sam/template.be.yaml"
 
 [default.deploy.parameters]
-stack_name = "fm-web-backend-dev"
+stack_name = "fm-web-backend"
 resolve_s3 = true
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 region = "ap-northeast-2"
 template_file = ".aws-sam/build/template.yaml"
-parameter_overrides = "StageName=dev PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=http://localhost:3000"
-
-[default.global.parameters]
-region = "ap-northeast-2"
-profile = "fm-dev"
-
-[prod.build.parameters]
-cached = true
-parallel = true
-use_container = true
-template = "sam/template.be.yaml"
-
-[prod.deploy.parameters]
-stack_name = "fm-web-backend-prod"
-resolve_s3 = true
-capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
-region = "ap-northeast-2"
-template_file = ".aws-sam/build/template.yaml"
-parameter_overrides = "StageName=$default PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=https://your-prod-domain"
-
-[prod.global.parameters]
-region = "ap-northeast-2"
-# Set prod profile if different, or override via AWS_PROFILE env
-profile = "fm-dev"
+parameter_overrides = "StageName=prod PostsTableName=fm_posts CategoriesTableName=fm_categories CorpMetaTableName=fm_corp_meta UploadsBucketName=fm-web-uploads AllowedOrigins=https://fmcorp.kr"
