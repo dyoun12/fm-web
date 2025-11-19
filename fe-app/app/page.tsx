@@ -25,7 +25,7 @@ export default async function Home() {
       <section aria-labelledby="home-hero" className="mt-6 md:mt-10">
         <HeroBanner
           title="미래를 설계하는 FM Corp"
-          subtitle="혁신적인 기술과 디자인으로 더 나은 경험을 만듭니다."
+          subtitle="맞춤형 솔루션을 통해 서비스에 더 나은 경험을 만듭니다."
           primaryAction={{ label: "문의하기", href: "/contact" }}
           secondaryAction={{ label: "회사 소개", href: "/about" }}
           backgroundType="image"

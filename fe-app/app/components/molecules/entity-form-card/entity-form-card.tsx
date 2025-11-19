@@ -173,14 +173,17 @@ export function EntityFormCard({
   if (variant === "sidebar") {
     return (
       <Card className="overflow-y-scroll">
-        <div className="flex gap-4 justify-between">
+          <div className="flex gap-4 justify-between">
+        {onClose ? 
           <button
             className="text-sm text-zinc-500 hover:text-zinc-900"
             onClick={onClose}
             aria-label="닫기"
-          >
+            >
             닫기
           </button>
+          : <div></div>
+          }
           <h2 className="text-xl font-semibold">{title}</h2>
         </div>
         {description && <p className="mt-1 text-sm text-zinc-500 text-right">{description}</p>}

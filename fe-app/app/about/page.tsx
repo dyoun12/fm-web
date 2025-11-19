@@ -29,16 +29,17 @@ export default function AboutPage() {
             <h2 id="about-history" className="mb-6 text-2xl font-semibold">연혁</h2>
             <ol className="space-y-4">
               {[
-                { year: "2023", title: "법인 설립", description: "FM Corp 창립" },
-                { year: "2024", title: "플랫폼 런칭", description: "클라우드 기반 서비스 공개" },
-                { year: "2025", title: "해외 진출", description: "글로벌 파트너십 체결" },
+                { year: "2021", title: "법인 설립", description: "FM Corp 창립" },
+                { year: "2024", title: "플랫폼 서비스 런칭", description: "클라우드 기반 서비스 공개" },
+                { year: "2025", title: "공공 사업영역 확장", description: "공공 사업 추진" },
               ].map((item, idx) => (
                 <li key={`${item.year}-${item.title}`}>
                   <TimelineItem
                     year={item.year}
                     title={item.title}
                     description={item.description}
-                    align={idx % 2 === 0 ? "left" : "right"}
+                    align="left"
+                    // align={idx % 2 === 0 ? "left" : "right"}
                   />
                 </li>
               ))}
@@ -75,7 +76,7 @@ export default function AboutPage() {
               </p>
               <div className="relative mt-6">
                 <p className="text-sm text-zinc-600 text-right pr-24">
-                  대표이사 홍길동 드림
+                  대표이사 김경훈 드림
                 </p>
                 {/* 대표자 서명 이미지 (public/sign.png) */}
                 <Image
@@ -91,22 +92,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="about-team">
-        <h2 id="about-team" className="mb-6 text-2xl font-semibold">팀</h2>
-      </section>
-
       <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="about-location">
         <h2 id="about-location" className="mb-6 text-2xl font-semibold">오시는 길</h2>
         <div className="grid gap-4">
           <Location
-            address="서울특별시 강남구 테헤란로 123"
-            lat={37.49795}
-            lng={127.02764}
+            address="경기도 부천시 부천로198번길 27"
+            lat={37.5023394244895}
+            lng={126.788062998179}
             height={360}
-            queryText="서울특별시 강남구 테헤란로 123"
+            queryText="경기도 부천시 부천로198번길 27"
           />
           <p className="text-sm text-zinc-600">
-            대중교통: 2호선 강남역 11번 출구 도보 5분, 신분당선 신논현역 5번 출구 도보 8분
+            교통편: 7호선 춘의역 5분거리
           </p>
         </div>
       </section>
