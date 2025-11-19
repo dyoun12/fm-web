@@ -9,6 +9,11 @@ export type BrandColorPaletteProps = {
   title: string;
   description?: string;
   palette: Swatch[];
+  /**
+   * 설명 영역에 표시할 bullet 목록.
+   * 제공하지 않으면 기본 접근성/토큰 가이드가 노출됩니다.
+   */
+  bullets?: string[];
   theme?: "light" | "dark";
   className?: string;
 } & Omit<ComponentPropsWithoutRef<"section">, "className">;
@@ -17,15 +22,26 @@ export function BrandColorPalette({
   title,
   description,
   palette,
+  bullets,
   theme = "light",
   className,
   ...rest
 }: BrandColorPaletteProps) {
   const isDark = theme === "dark";
+
+  const guidelineBullets =
+    bullets && bullets.length > 0
+      ? bullets
+      : [
+          "WCAG AA 대비 준수(텍스트/배경 조합 검사)",
+          "UI 토큰 우선 사용, 커스텀 색은 CSS 변수로 노출",
+          "상호작용 상태(Hover/Active/Disabled) 색상 일관성 유지",
+        ];
+
   return (
     <section
       className={cn(
-        "grid items-start gap-6 md:grid-cols-2",
+        "grid items-center gap-6 md:grid-cols-2",
         isDark ? "text-zinc-100" : "text-zinc-900",
         className,
       )}
@@ -42,7 +58,7 @@ export function BrandColorPalette({
             />
             <div className="min-w-0">
               <div className="text-sm font-medium">{s.name}</div>
-              <div className="text-xs text-zinc-600 dark:text-zinc-400">{s.hex}{s.token ? ` · ${s.token}` : ""}</div>
+              <div className="text-xs text-zinc-400">{s.hex}{s.token ? ` · ${s.token}` : ""}</div>
             </div>
           </div>
         ))}
@@ -51,14 +67,13 @@ export function BrandColorPalette({
       {/* Right: description */}
       <div className="md:order-2">
         <h3 className="text-2xl font-semibold">{title}</h3>
-        {description && <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">{description}</p>}
-        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
-          <li>WCAG AA 대비 준수(텍스트/배경 조합 검사)</li>
-          <li>UI 토큰 우선 사용, 커스텀 색은 CSS 변수로 노출</li>
-          <li>상호작용 상태(Hover/Active/Disabled) 색상 일관성 유지</li>
+        {description && <p className="mt-2 text-sm text-zinc-600">{description}</p>}
+        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-600">
+          {guidelineBullets.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
         </ul>
       </div>
     </section>
   );
 }
-

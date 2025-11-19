@@ -36,9 +36,9 @@ export function LogoDescription({
     >
       <div className="flex flex-col gap-3 md:order-1">
         <h3 className="text-2xl font-semibold">{title}</h3>
-        {description && <p className="text-sm text-zinc-600 dark:text-zinc-300">{description}</p>}
+        {description && <p className="text-sm text-zinc-600">{description}</p>}
         {bullets && bullets.length > 0 && (
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-zinc-600 dark:text-zinc-300">
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-zinc-600">
             {bullets.map((b, i) => (
               <li key={i}>{b}</li>
             ))}
@@ -46,10 +46,8 @@ export function LogoDescription({
         )}
       </div>
       <div className="md:order-2 relative">
-        <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-200 shadow-sm">
-          <div className="relative aspect-[16/9]">
-            <Image src={imageUrl} alt={imageAlt} fill className="object-cover" />
-          </div>
+        <div className="relative aspect-[16/9]">
+          <Image src={imageUrl} alt={imageAlt} fill className="object-cover" />
         </div>
       </div>
     </section>

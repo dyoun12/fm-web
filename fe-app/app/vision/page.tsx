@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { VisionValues, VisionValuesContent } from "../components/organisms/vision-values/vision-values";
+import { BrandColorPalette } from "../components/molecules/brand-color-palette/brand-color-palette";
+import { LogoDescription } from "../components/molecules/logo-description/logo-description";
 
 export const metadata: Metadata = {
   title: "비전",
@@ -76,6 +78,41 @@ export default function VisionPage() {
             </p>
           </VisionValuesContent>
         </VisionValues>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="vision-brand-colors">
+        <BrandColorPalette
+          title="Brand Color"
+          description="각 색상은 FM이 지향하는 ‘신뢰할 수 있는 기술 파트너’라는 정체성을 서로 다른 결로 표현합니다."
+          theme="light"
+          palette={[
+            { name: "Primary", hex: "#2563EB", token: "--color-primary" },
+            { name: "Secondary", hex: "#10B981", token: "--color-secondary" },
+            { name: "Accent", hex: "#F59E0B", token: "--color-accent" },
+            { name: "Neutral", hex: "#111827", token: "--color-neutral" },
+          ]}
+          bullets={[
+            "Primary Blue(#2563EB)는 데이터와 기술에 대한 신뢰, 안정적인 파트너십을 상징합니다.",
+            "Secondary Green(#10B981)는 성장과 회복력, 지속 가능한 비즈니스 확장을 의미합니다.",
+            "Accent Yellow(#F59E0B)는 새로운 기회를 발견하고 실행하는 도전 정신과 에너지를 담고 있습니다.",
+            "Neutral Dark(#111827)는 복잡한 환경 속에서도 흔들리지 않는 기준점이 되는 FM의 태도를 표현합니다.",
+          ]}
+        />
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-12" aria-labelledby="vision-logo-guide">
+        <LogoDescription
+          title="로고에 담긴 이야기"
+          description="절제된 타이포그래피와 일관된 비율은 ‘묵직한 신뢰’를, 여백과 선의 흐름은 ‘유연한 연결과 확장’을 상징합니다."
+          imageUrl="/logo-detail.png"
+          imageAlt="FM 로고 예시 이미지"
+          theme="light"
+          bullets={[
+            "기울지 않은 수평 구조는 단기 유행보다 ‘오래 가는 구조와 관계’를 세우는 회사의 방향성을 담고 있습니다.",
+            "단순한 형태와 절제된 디테일은 복잡한 기술을 고객에게 이해하기 쉬운 언어로 풀어내겠다는 약속을 의미합니다.",
+            "로고와 함께 쓰이는 컬러와 여백은 FM이 지향하는 차분하지만 단단한 브랜드 톤을 완성합니다.",
+          ]}
+        />
       </section>
     </div>
   );
