@@ -5,11 +5,9 @@ const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
 const redirectUri = process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI;
 const cognitoScope = process.env.NEXT_PUBLIC_COGNITO_SCOPE || "email openid aws.cognito.signin.user.admin profile fm-auth/roles.read";
 
-type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>;
-};
-
-export default function CognitoLoginPage({ searchParams }: PageProps) {
+export default function CognitoLoginPage({ searchParams }: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}) {
   if (!cognitoDomain || !clientId || !redirectUri) {
     return (
       <main className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-start justify-center gap-4 px-4">
