@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
+import time
 
 from fastapi import APIRouter, HTTPException, Request, Response
 from pydantic import BaseModel
@@ -131,12 +132,25 @@ def login_with_code(payload: LoginCallbackRequest, request: Request, response: R
     claims = verify_cognito_token(id_token)
     roles = extract_roles_from_claims(claims)
 
+    # 쿠키 만료 시간은 Cognito ID Token의 exp 또는 설정된 최대 수명과 맞춘다.
+    max_age: Optional[int] = None
+    if config.AUTH_COOKIE_MAX_AGE_SECONDS > 0:
+        max_age = config.AUTH_COOKIE_MAX_AGE_SECONDS
+    else:
+        exp = claims.get("exp")
+        if isinstance(exp, (int, float)):
+            now_ts = int(time.time())
+            delta = int(exp) - now_ts
+            if delta > 0:
+                max_age = delta
+
     # HttpOnly 쿠키에 ID Token 저장 (이름은 프론트와 합의된 값 사용)
     cookie_name = config.AUTH_COOKIE_NAME
     secure = config.AUTH_COOKIE_SECURE
     response.set_cookie(
         key=cookie_name,
         value=id_token,
+        max_age=max_age,
         httponly=True,
         secure=secure,
         samesite="lax",
