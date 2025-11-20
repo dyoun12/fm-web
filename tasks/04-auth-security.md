@@ -5,8 +5,8 @@
 
 ## 체크리스트
 - [x] `docs/spec.md`에 Amplify 배포, Cognito 로그인/회원가입, Next.js 미들웨어의 역할 기반 라우팅 사실을 반영하고 관련 링크를 추가했다.
-- [x] `docs/backend.md`에 Cognito 사용자 등록/로그인 엔드포인트, 역할 메타·토큰 추출, OPA `subject.roles` 평가 흐름을 기술했다.
-- [ ] 프론트/백엔드 모두 `custom:role` 사전을 공유하도록 `docs/opa.md` 또는 별도 레퍼런스에 역할 리스트/매핑을 확보한다(후속).
+- [x] `docs/backend.md`에 Cognito 사용자 등록/로그인 엔드포인트, 역할 메타·토큰 추출, 백엔드 JWT 서명·역할 검증 흐름(API Gateway Authorizer 옵션 포함)을 기술했다.
+- [x] 프론트/백엔드 모두 `custom:role` 사전을 공유하도록 `docs/auth-access-rules.md`에 역할 리스트/경로 매핑을 정리했다.
 - [x] 변경 파일 경로와 연관 매니페스트(`agents/manifests/backend.yaml`, `AGENTS.md`)를 확인하였다.
 
 ## 산출물

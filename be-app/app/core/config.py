@@ -23,3 +23,21 @@ CORS_ALLOW_ORIGINS = (env("CORS_ALLOW_ORIGINS", "http://localhost:3000").split("
 
 # Backend mode
 USE_DYNAMO = env("USE_DYNAMO", "0") == "1"
+
+# Cognito / Auth
+COGNITO_REGION = env("COGNITO_REGION", os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or None)
+COGNITO_USER_POOL_ID = env("COGNITO_USER_POOL_ID", None)
+COGNITO_CLIENT_ID = env("COGNITO_CLIENT_ID", None)
+COGNITO_JWKS_URL = env("COGNITO_JWKS_URL", None)
+# API Gateway Cognito Authorizer에서 서명 검증을 수행하도록 신뢰할지 여부(기본: False)
+COGNITO_TRUST_API_GATEWAY = env("COGNITO_TRUST_API_GATEWAY", "0") == "1"
+
+# Cognito Hosted UI / OAuth2
+COGNITO_DOMAIN = env("COGNITO_DOMAIN", None)
+COGNITO_REDIRECT_URI = env("COGNITO_REDIRECT_URI", None)
+COGNITO_LOGOUT_REDIRECT_URI = env("COGNITO_LOGOUT_REDIRECT_URI", None)
+COGNITO_CLIENT_SECRET = env("COGNITO_CLIENT_SECRET", None)
+
+# Auth cookies
+AUTH_COOKIE_NAME = env("AUTH_COOKIE_NAME", "fm_auth_token")
+AUTH_COOKIE_SECURE = env("AUTH_COOKIE_SECURE", "0") == "1"

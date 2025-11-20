@@ -42,10 +42,10 @@
 - 자세한 구조/샘플 정책: `docs/opa.md` 참조
 
 ### 2.4 Cognito 사용자 등록/역할 검증
-- Cognito User Pool은 Amplify 호스팅과 연동되어 있으며, 백엔드는 `boto3.client("cognito-idp")` 등의 SDK를 통해 사용자 등록/로그인/역할 복제를 책임진다. `POST /v1/auth/signup`은 이메일·비밀번호·`role`을 받아 `AdminCreateUser`/`InitiateAuth`를 호출하고, `POST /v1/auth/login`은 `ADMIN_NO_SRP_AUTH` 또는 `InitiateAuth`로 토큰을 받아 HTTP-only 쿠키로 반환한다.
-- 관리자용 `POST /v1/auth/users`과 `PATCH /v1/auth/users/{userId}/role`에서는 Cognito `custom:role` 또는 그룹을 갱신하고, DynamoDB(또는 별도 `users` 테이블)에 `sub`, 이메일, 역할, 내부 메타를 기록하여 이후 OPA·Next.js 미들웨어가 같은 역할을 참조할 수 있도록 한다.
-- 로그인 사용자로부터 전달받은 Cognito JWT(`Authorization: Bearer` 또는 쿠키)를 디코드하여 `sub`, `email`, `roles`/`cognito:groups`, `custom:role`을 추출하고, FastAPI 요청 컨텍스트에 주입한 뒤 `docs/opa.md`에 `subject.roles`로 넘겨 `allow` 여부를 판단한다. 이때 Next.js 미들웨어(`docs/spec.md`)도 동일한 역할 사전을 참고하여 `/admin/:path*` 등의 라우트를 선행 차단해야 한다.
-- 실패 시에는 401/403을 명시하여 프론트가 `/auth/login` 또는 `/auth/forbidden`으로 리디렉트할 수 있도록 하며, 로그에는 요청 ID·토큰 `sub`·OPA 결과를 남겨 추적성을 확보한다.
+- Cognito User Pool은 프론트엔드 Amplify 호스팅과는 별도로 관리되며, 백엔드는 `boto3.client("cognito-idp")` 등의 SDK를 통해 사용자 등록/로그인/역할 복제를 책임진다. `POST /v1/auth/signup`은 이메일·비밀번호·`role`을 받아 `AdminCreateUser`/`InitiateAuth`를 호출하고, `POST /v1/auth/login`은 `ADMIN_NO_SRP_AUTH` 또는 `InitiateAuth`로 토큰을 받아 HTTP-only 쿠키로 반환한다.
+- 관리자용 `POST /v1/auth/users`과 `PATCH /v1/auth/users/{userId}/role`에서는 Cognito `custom:role` 또는 그룹을 갱신하고, DynamoDB(또는 별도 `users` 테이블)에 `sub`, 이메일, 역할, 내부 메타를 기록하여 이후 Next.js 미들웨어와 백엔드 역할 검증이 같은 역할 사전을 참조할 수 있도록 한다.
+- 로그인 사용자로부터 전달받은 Cognito JWT(`Authorization: Bearer` 또는 쿠키)를 검증하고(`python-jose` 기반 서명 검증, issuer/audience/만료 확인), `sub`, `email`, `roles`/`cognito:groups`, `custom:role`을 추출하여 FastAPI 요청 컨텍스트에 주입한 뒤, 엔드포인트 레벨에서 역할 기반 접근 제어를 수행한다. 역할 값은 `{서비스명}:{역할명}` 포맷을 사용하며, fm-web 프로젝트에서는 `fm-web:admin`, `fm-web:editor`, `fm-web:viewer`만 인식한다. API Gateway에서 Cognito Authorizer를 사용하는 경우, 서명 검증은 게이트웨이에서 선행되고 백엔드는 역할 검증에 집중하되, `COGNITO_TRUST_API_GATEWAY=1` 설정으로 백엔드 서명 검증을 비활성화할 수 있다.
+- 실패 시에는 401/403을 명시하여 프론트가 `/auth/login` 또는 `/auth/forbidden`으로 리디렉트할 수 있도록 하며, 로그에는 요청 ID·토큰 `sub`·역할 정보를 남겨 추적성을 확보한다. OPA(`docs/opa.md`) 기반 세밀한 정책 평가는 향후 고도화 단계에서 추가된다.
 
 ## 3. API 계약/버전/에러 모델
 - 계약 우선(Spec-first): 엔드포인트/스키마/에러 코드는 `docs/spec.md`에 정의하고 변경 시 동시 갱신한다.
