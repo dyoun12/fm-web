@@ -1395,10 +1395,10 @@ function renderOrganismPreview(name: string, theme: "light" | "dark") {
       return (
         <AdminSidebar
           items={[
-            { label: "대시보드", href: "#dashboard", icon: "📊", active: true },
-            { label: "게시물", href: "#posts", icon: "📰" },
-            { label: "카테고리", href: "#categories", icon: "🏷️" },
-            { label: "사용자", href: "#users", icon: "👤" },
+            { label: "대시보드", href: "#dashboard", icon: "ri-dashboard-line", active: true },
+            { label: "게시물", href: "#posts", icon: "ri-newspaper-line" },
+            { label: "카테고리", href: "#categories", icon: "ri-price-tag-3-line" },
+            { label: "사용자", href: "#users", icon: "ri-user-3-line" },
           ]}
           theme={theme}
         />

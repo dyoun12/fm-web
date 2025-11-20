@@ -65,5 +65,5 @@ function redirectToForbidden(
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/secure/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/secure/:path*", "/api/admin/:path*", "/dev"],
 };
