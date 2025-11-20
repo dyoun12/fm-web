@@ -35,11 +35,13 @@ OPA_BUNDLE_PATH=be-app/opa/build
 OPA_BUNDLE_PATH=/opt/opa/bundle
 ```
 
+> 현재 버전에서는 OPA를 실제 런타임에서 사용하지 않고, FastAPI 레이어에서 Cognito JWT 서명/역할 검증 후 엔드포인트 단에서 접근 제어를 수행한다. 본 문서는 향후 고도화 시 OPA를 도입하기 위한 설계 레퍼런스로 유지한다.
+
 ## 5. 평가 입력/출력 규약(예시)
 - 입력(JSON): 요청자, 리소스, 메서드 등
 ```
 {
-  "subject": { "id": "user-123", "roles": ["admin"] },
+  "subject": { "id": "user-123", "roles": ["fm-web:admin"] },
   "resource": { "type": "post", "id": "abcd" },
   "action": { "method": "GET", "path": "/v1/posts/abcd" },
   "context": { "ip": "1.2.3.4" }
@@ -47,7 +49,7 @@ OPA_BUNDLE_PATH=/opt/opa/bundle
 ```
 - 출력(JSON): 최소 `allow: boolean` 및 선택 `reason`
 ```
-{ "allow": true, "reason": "role=admin" }
+{ "allow": true, "reason": "role=fm-web:admin" }
 ```
 
 ## 6. Rego 정책 스켈레톤
@@ -59,7 +61,7 @@ default allow = false
 
 allow {
   some r
-  input.subject.roles[r] == "admin"
+  input.subject.roles[r] == "fm-web:admin"
 }
 
 allow {
@@ -87,4 +89,3 @@ allow {
 - 단위 테스트: 입력/출력 규약에 따른 허용/거부 케이스 생성
 - 로컬 스모크: `OPA_BUNDLE_PATH=be-app/opa/build`로 서버 실행 후 보호 엔드포인트 요청
 - 배포 스모크: SAM 배포 후 `/health` + 보호 엔드포인트 최소 케이스 호출
-

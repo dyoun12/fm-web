@@ -147,7 +147,10 @@ export function canColorHighlight(
     if (!isExtensionAvailable(editor, ["nodeBackground"])) return false
 
     try {
-      return editor.can().toggleNodeBackgroundColor("test")
+      // `toggleNodeBackgroundColor`는 커스텀 확장이므로 타입 시스템에는 존재하지 않을 수 있다.
+      const canApi = (editor as any).can?.()
+      if (!canApi || typeof canApi.toggleNodeBackgroundColor !== "function") return false
+      return canApi.toggleNodeBackgroundColor("test")
     } catch {
       return false
     }
@@ -202,7 +205,11 @@ export function removeHighlight(
   if (mode === "mark") {
     return editor.chain().focus().unsetMark("highlight").run()
   } else {
-    return editor.chain().focus().unsetNodeBackgroundColor().run()
+    const chain = (editor as any).chain?.()
+    if (!chain || typeof chain.focus !== "function") return false
+    const focused = chain.focus()
+    if (typeof focused.unsetNodeBackgroundColor !== "function") return false
+    return focused.unsetNodeBackgroundColor().run()
   }
 }
 
@@ -291,11 +298,11 @@ export function useColorHighlight(config: UseColorHighlightConfig) {
 
       return true
     } else {
-      const success = editor
-        .chain()
-        .focus()
-        .toggleNodeBackgroundColor(highlightColor)
-        .run()
+      const chain = (editor as any).chain?.()
+      if (!chain || typeof chain.focus !== "function") return false
+      const focused = chain.focus()
+      if (typeof focused.toggleNodeBackgroundColor !== "function") return false
+      const success = focused.toggleNodeBackgroundColor(highlightColor).run()
 
       if (success) {
         onApplied?.({ color: highlightColor, label, mode })

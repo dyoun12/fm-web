@@ -128,8 +128,16 @@ start_backend() {
   local pf lf
   pf="$(pid_file backend)"
   lf="$(log_file backend)"
+  printf '%s [backend] starting FastAPI on 8001\n' "$(date '+%Y-%m-%d %H:%M:%S')" >>"$lf"
   (
     cd "$ROOT/be-app"
+
+    # be-app/.env 파일이 있으면 로드하여 COGNITO_* 및 기타 설정을 환경 변수로 주입한다.
+    if [[ -f ".env" ]]; then
+      # KEY=VALUE 형태의 라인을 export (주석/빈 줄은 무시)
+      # shellcheck disable=SC2046
+      export $(grep -v '^[[:space:]]*#' .env | grep '=' | xargs) || true
+    fi
     USE_DYNAMO=1 \
     AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID:-dummy}" \
     AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY:-dummy}" \
@@ -153,6 +161,7 @@ start_storybook() {
   local pf lf
   pf="$(pid_file storybook)"
   lf="$(log_file storybook)"
+  printf '%s [storybook] starting Storybook on 6006\n' "$(date '+%Y-%m-%d %H:%M:%S')" >>"$lf"
   (
     cd "$ROOT/fe-app"
     nohup npx storybook dev -p 6006 >"$lf" 2>&1 &
@@ -279,9 +288,24 @@ stop_all() {
   log "All services stopped."
 }
 
+tail_logs() {
+  # 각 서비스 로그 파일을 이어서 출력한다. (Ctrl+C로 종료 가능, 프로세스는 계속 실행)
+  local back_log front_log story_log
+  back_log="$(log_file backend)"
+  front_log="$(log_file frontend)"
+  story_log="$(log_file storybook)"
+
+  # 로그 파일이 없으면 미리 생성 (기존 내용은 보존)
+  touch "$back_log" "$front_log" "$story_log"
+
+  log "Streaming logs (backend/frontend/storybook). Press Ctrl+C to stop."
+  tail -n 20 -F "$back_log" "$front_log" "$story_log"
+}
+
 case "$COMMAND" in
   up)
     start_all
+    tail_logs
     ;;
   down)
     stop_all
