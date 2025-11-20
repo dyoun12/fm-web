@@ -1,0 +1,21 @@
+name: Deploy Amplify on fe-app change
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "fe-app/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Trigger Amplify Webhook
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            "${{ secrets.AMPLIFY_WEBHOOK_FE }}"
