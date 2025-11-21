@@ -31,6 +31,9 @@ Parameters:
   AllowedUploadMime:
     Type: String
     Default: image/jpeg,image/png,application/pdf,application/zip
+  AuthCookieDomain:
+    Type: String
+    Default: ""
   CognitoRegion:
     Type: String
     Default: ap-northeast-2
@@ -76,6 +79,7 @@ Globals:
         STAGE_NAME: !Ref StageName
         API_BASE_PATH: !If [IsDefaultStage, "", !Sub "/${StageName}"]
         DYNAMODB_ENDPOINT: !Ref DynamoEndpointUrl
+        AUTH_COOKIE_DOMAIN: !Ref AuthCookieDomain
         COGNITO_REGION: !Ref CognitoRegion
         COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
         COGNITO_CLIENT_ID: !Ref CognitoClientId

@@ -66,5 +66,6 @@ jobs:
           COGNITO_REDIRECT_URI: ${{ secrets.COGNITO_REDIRECT_URI }}
           COGNITO_LOGOUT_REDIRECT_URI: ${{ secrets.COGNITO_LOGOUT_REDIRECT_URI }}
           COGNITO_JWKS_URL: ${{ secrets.COGNITO_JWKS_URL }}
+          AUTH_COOKIE_DOMAIN: ${{ secrets.AUTH_COOKIE_DOMAIN }}
         run: |
           bash scripts/sam-build-deploy.sh

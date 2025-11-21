@@ -147,6 +147,7 @@ def login_with_code(payload: LoginCallbackRequest, request: Request, response: R
     # HttpOnly 쿠키에 ID Token 저장 (이름은 프론트와 합의된 값 사용)
     cookie_name = config.AUTH_COOKIE_NAME
     secure = config.AUTH_COOKIE_SECURE
+    cookie_domain = config.AUTH_COOKIE_DOMAIN or None
     response.set_cookie(
         key=cookie_name,
         value=id_token,
@@ -155,6 +156,7 @@ def login_with_code(payload: LoginCallbackRequest, request: Request, response: R
         secure=secure,
         samesite="lax",
         path="/",
+        domain=cookie_domain,
     )
 
     # 최소한의 사용자 정보 반환 (프론트는 필요 시 상태 저장용으로 사용 가능)
