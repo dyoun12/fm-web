@@ -69,6 +69,7 @@ Resources:
           - PUT
           - DELETE
           - OPTIONS
+        AllowCredentials: true
 
   BackendFunction:
     Type: AWS::Serverless::Function
