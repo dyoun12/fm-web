@@ -62,7 +62,9 @@ Resources:
         AllowOrigins:
           - !Ref AllowedOrigins
         AllowHeaders:
-          - '*'
+          - content-type
+          - authorization
+          - x-requested-with
         AllowMethods:
           - GET
           - POST
