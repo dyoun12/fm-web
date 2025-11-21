@@ -31,6 +31,30 @@ Parameters:
   AllowedUploadMime:
     Type: String
     Default: image/jpeg,image/png,application/pdf,application/zip
+  CognitoRegion:
+    Type: String
+    Default: ap-northeast-2
+  CognitoUserPoolId:
+    Type: String
+    Default: ""
+  CognitoClientId:
+    Type: String
+    Default: ""
+  CognitoDomain:
+    Type: String
+    Default: ""
+  CognitoRedirectUri:
+    Type: String
+    Default: ""
+  CognitoLogoutRedirectUri:
+    Type: String
+    Default: ""
+  CognitoJwksUrl:
+    Type: String
+    Default: ""
+  CognitoClientSecret:
+    Type: String
+    Default: ""
 
 Globals:
   Function:
@@ -52,6 +76,14 @@ Globals:
         STAGE_NAME: !Ref StageName
         API_BASE_PATH: !If [IsDefaultStage, "", !Sub "/${StageName}"]
         DYNAMODB_ENDPOINT: !Ref DynamoEndpointUrl
+        COGNITO_REGION: !Ref CognitoRegion
+        COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+        COGNITO_CLIENT_ID: !Ref CognitoClientId
+        COGNITO_JWKS_URL: !Ref CognitoJwksUrl
+        COGNITO_DOMAIN: !Ref CognitoDomain
+        COGNITO_REDIRECT_URI: !Ref CognitoRedirectUri
+        COGNITO_LOGOUT_REDIRECT_URI: !Ref CognitoLogoutRedirectUri
+        COGNITO_CLIENT_SECRET: !Ref CognitoClientSecret
 
 Resources:
   ApiGateway:
