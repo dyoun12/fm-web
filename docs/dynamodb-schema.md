@@ -179,6 +179,40 @@ Codex Agent가 사용하는 모든 도메인 엔티티(User, Category, Post, Ban
 
 ---
 
+### 2.6 ContactInquiry
+
+| 속성                                           | 설명                           |
+|----------------------------------------------|------------------------------|
+| `PK`: `CONTACT#<inquiryId>`                  | 문의 단위 파티션                     |
+| `SK`: `METADATA`                             | 문의 메타데이터                       |
+| 추가 속성: `name`, `email`, `company`, `title`, `referral`, `subject`, `message`, `status`, `notifiedEmail`, `CreatedAt`, `UpdatedAt` | 문의 내용 및 처리 상태, 알림 메일 정보 |
+
+**예시 아이템**
+
+```json
+{
+  "PK": "CONTACT#inq001",
+  "SK": "METADATA",
+  "Type": "ContactInquiry",
+  "id": "inq001",
+  "name": "홍길동",
+  "email": "user@example.com",
+  "company": "패밀리매니지먼트",
+  "title": "팀장",
+  "referral": "search",
+  "subject": "협업 문의",
+  "message": "협업 관련해서 문의드립니다.",
+  "status": "new",
+  "notifiedEmail": "contact@family.com",
+  "CreatedAt": "2025-11-15T09:00:00Z",
+  "UpdatedAt": "2025-11-15T09:00:00Z"
+}
+```
+
+> `notifiedEmail` 필드는 당시 알림 메일이 발송된 대상 주소를 기록하여, 이후 회사 대표 이메일이 변경되더라도 기존 문의에 대한 추적 가능성을 유지한다.
+
+---
+
 ## 3. 인덱스 설계
 
 ### 3.1 Primary Key
