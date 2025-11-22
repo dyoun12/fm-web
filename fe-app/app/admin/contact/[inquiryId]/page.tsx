@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { Card } from "../../../components/atoms/card/card";
 import { TextArea } from "../../../components/atoms/text-area/text-area";
 import { Button } from "../../../components/atoms/button/button";
+import { Select } from "../../../components/atoms/select/select";
 import type { ContactInquiry } from "@/api/contact";
 
 export default function AdminContactDetailPage() {
@@ -18,6 +19,9 @@ export default function AdminContactDetailPage() {
   const [sending, setSending] = useState(false);
   const [sendError, setSendError] = useState<string | null>(null);
   const [sendSuccess, setSendSuccess] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>("new");
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!inquiryId) return;
@@ -34,6 +38,7 @@ export default function AdminContactDetailPage() {
         const data = json.data as ContactInquiry;
         if (!mounted) return;
         setInquiry(data);
+        setStatus(data.status ?? "new");
       } catch (err) {
         if (!mounted) return;
         setError(err instanceof Error ? err.message : "문의 정보를 불러오지 못했습니다.");
@@ -45,6 +50,12 @@ export default function AdminContactDetailPage() {
       mounted = false;
     };
   }, [inquiryId]);
+
+  useEffect(() => {
+    if (!inquiry) return;
+    setStatus(inquiry.status ?? "new");
+    setStatusError(null);
+  }, [inquiry]);
 
   const handleSendReply = async () => {
     if (!inquiry || !reply.trim()) return;
@@ -71,6 +82,34 @@ export default function AdminContactDetailPage() {
       setSendError(err instanceof Error ? err.message : "답변 발송 처리에 실패했습니다.");
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleUpdateStatus = async (nextStatus: string) => {
+    if (!inquiry || nextStatus === inquiry.status) {
+      return;
+    }
+    setStatusUpdating(true);
+    setStatusError(null);
+    try {
+      const r = await fetch(`/api/contact/${inquiry.inquiryId}/status`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      const json = await r.json();
+      if (!json || json.success !== true) {
+        throw new Error(json?.error?.message ?? "문의 상태를 업데이트하지 못했습니다.");
+      }
+      const updated = json.data as ContactInquiry;
+      setInquiry(updated);
+      setStatus(updated.status ?? nextStatus);
+    } catch (err) {
+      setStatusError(err instanceof Error ? err.message : "문의 상태를 업데이트하지 못했습니다.");
+    } finally {
+      setStatusUpdating(false);
     }
   };
 
@@ -103,7 +142,28 @@ export default function AdminContactDetailPage() {
             </div>
             <div>
               <dt className="text-xs text-zinc-500">상태</dt>
-              <dd>{inquiry.status ?? "new"}</dd>
+              <dd className="mt-1">
+                <Select
+                  id="contact-status-select"
+                  aria-label="문의 상태"
+                  size="sm"
+                  variant="badge"
+                  options={[
+                    { label: "신규", value: "new", badgeColor: "warning" },
+                    { label: "처리 중", value: "in_progress", badgeColor: "info" },
+                    { label: "완료", value: "done", badgeColor: "success" },
+                  ]}
+                  value={status}
+                  onChange={(e) => {
+                    const next = (e.target as HTMLSelectElement).value;
+                    setStatus(next);
+                    void handleUpdateStatus(next);
+                  }}
+                  disabled={statusUpdating}
+                  state={statusError ? "error" : "default"}
+                  errorMessage={statusError ?? undefined}
+                />
+              </dd>
             </div>
             <div>
               <dt className="text-xs text-zinc-500">이름</dt>

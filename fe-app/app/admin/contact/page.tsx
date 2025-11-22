@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { DataTable, type DataTableColumn } from "../../components/molecules/data-table/data-table";
 import { EmptyState } from "../../components/molecules/empty-state/empty-state";
 import { FilterBar } from "../../components/molecules/filter-bar/filter-bar";
+import { Badge } from "../../components/atoms/badge/badge";
 import type { ContactInquiry } from "@/api/contact";
 
 export default function AdminContactPage() {
@@ -34,6 +35,36 @@ export default function AdminContactPage() {
     };
   }, []);
 
+  const renderStatusBadge = (value: string | undefined) => {
+    const statusValue = value ?? "new";
+    let color: "default" | "info" | "success" | "warning" = "default";
+    let label = statusValue;
+
+    switch (statusValue) {
+      case "new":
+        color = "warning";
+        label = "신규";
+        break;
+      case "in_progress":
+        color = "info";
+        label = "처리 중";
+        break;
+      case "done":
+        color = "success";
+        label = "완료";
+        break;
+      default:
+        color = "default";
+        label = statusValue;
+    }
+
+    return (
+      <Badge color={color}>
+        {label}
+      </Badge>
+    );
+  };
+
   const columns: DataTableColumn[] = [
     { key: "createdAt", header: "접수일시", width: "180px" },
     { key: "name", header: "이름" },
@@ -56,7 +87,7 @@ export default function AdminContactPage() {
           {item.subject || "(제목 없음)"}
         </button>
       ),
-      status: item.status || "new",
+      status: renderStatusBadge(item.status),
     })) ?? [];
 
   return (

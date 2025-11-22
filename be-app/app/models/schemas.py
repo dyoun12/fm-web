@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -96,9 +96,17 @@ class ContactInquiryCreate(ContactInquiryBase):
 
 class ContactInquiry(ContactInquiryBase):
     inquiryId: str
+    status: Optional[str] = Field(default=None, description="문의 처리 상태(new, in_progress, done 등)")
+    notifiedEmail: Optional[str] = Field(
+        default=None, description="알림 메일이 발송된 대상 주소(추적용, corpmeta.email 스냅샷)"
+    )
     createdAt: datetime
     updatedAt: datetime
 
 
 class ContactReplyCreate(BaseModel):
     message: str = Field(..., description="사용자에게 전송할 1차 답변 내용")
+
+
+class ContactInquiryStatusUpdate(BaseModel):
+    status: Literal["new", "in_progress", "done"] = Field(..., description="문의 처리 상태")

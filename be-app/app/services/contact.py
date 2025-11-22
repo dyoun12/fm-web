@@ -73,7 +73,8 @@ def reply_to_contact_inquiry(inquiry_id: str, message: str) -> Dict[str, Any] | 
     if not item:
         return None
 
-    item["status"] = "answered"
+    # 1차 답변 발송 시 상태를 완료로 표시
+    item["status"] = "done"
     item["firstReplyMessage"] = message
     item["updatedAt"] = _now_iso()
 
@@ -84,4 +85,21 @@ def reply_to_contact_inquiry(inquiry_id: str, message: str) -> Dict[str, Any] | 
         _CONTACT_INQUIRIES[inquiry_id] = item
 
     # TODO: 실제 이메일 발송(SES 등) 및 실패 시 로깅/재시도 전략 추가
+    return item
+
+
+def update_contact_inquiry_status(inquiry_id: str, status: str) -> Dict[str, Any] | None:
+    item = get_contact_inquiry(inquiry_id)
+    if not item:
+        return None
+
+    item["status"] = status
+    item["updatedAt"] = _now_iso()
+
+    if config.USE_DYNAMO and config.CONTACT_INQUIRY_TABLE:
+        table = dy.get_table(config.CONTACT_INQUIRY_TABLE)
+        table.put_item(Item=item)
+    else:
+        _CONTACT_INQUIRIES[inquiry_id] = item
+
     return item

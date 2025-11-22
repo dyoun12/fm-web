@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/classnames";
 import { useAppTheme } from "@/lib/theme-context";
+import { Badge, type BadgeProps } from "../badge/badge";
 import {
   ComponentPropsWithoutRef,
   forwardRef,
@@ -15,10 +16,12 @@ import {
 } from "react";
 
 type SelectState = "default" | "error" | "success";
+type SelectVariant = "default" | "badge";
 
 export type SelectOption = {
   label: string;
   value: string;
+  badgeColor?: BadgeProps["color"];
 };
 
 type NativeSelectProps = Omit<ComponentPropsWithoutRef<"select">, "size">;
@@ -33,6 +36,7 @@ export type SelectProps = {
   description?: string;
   size?: "sm" | "md" | "lg";
   theme?: "light" | "dark";
+  variant?: SelectVariant;
 } & NativeSelectProps;
 
 const STATE_CLASSES: Record<SelectState, string> = {
@@ -60,6 +64,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       disabled,
       size = "md",
       theme: themeProp,
+      variant = "default",
       ...rest
     },
     ref,
@@ -86,10 +91,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const listRef = useRef<HTMLUListElement | null>(null);
     const hiddenSelectRef = useRef<HTMLSelectElement | null>(null);
 
-    const currentLabel = useMemo(() => {
-      const found = options.find((o) => o.value === value);
-      return found?.label;
-    }, [options, value]);
+    const currentOption = useMemo(
+      () => options.find((o) => o.value === value),
+      [options, value],
+    );
+    const currentLabel = currentOption?.label;
 
     // Note: When controlled, render uses `rest.value` directly via `value`
     // Uncontrolled mode manages `internalValue` and does not mirror props here
@@ -142,6 +148,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     const ariaLabel: string | undefined = (rest as AriaAttributes)["aria-label"] as
       | string
       | undefined;
+    const triggerLabel = currentLabel ?? placeholder ?? "선택";
+
     return (
       <div className="flex flex-col gap-2">
         {label && (
@@ -211,26 +219,45 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             disabled={disabled}
             onClick={() => !disabled && setOpen((v) => !v)}
             className={cn(
-              "w-full rounded-lg border text-left outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed",
-              isDark
-                ? "bg-zinc-900 text-zinc-100 disabled:bg-zinc-800 disabled:text-zinc-500 border-zinc-700"
-                : "bg-white text-zinc-900 disabled:bg-zinc-100",
-              sizeTriggerClass,
-              STATE_CLASSES[state],
+              variant === "badge"
+                ? "inline-flex items-center bg-transparent p-0 text-left outline-none disabled:cursor-not-allowed"
+                : cn(
+                    "w-full rounded-lg border text-left outline-none transition placeholder:text-zinc-400 disabled:cursor-not-allowed",
+                    isDark
+                      ? "bg-zinc-900 text-zinc-100 disabled:bg-zinc-800 disabled:text-zinc-500 border-zinc-700"
+                      : "bg-white text-zinc-900 disabled:bg-zinc-100",
+                    sizeTriggerClass,
+                    STATE_CLASSES[state],
+                  ),
               className,
             )}
           >
-            <span className={cn(!currentLabel && "text-zinc-400")}>
-              {currentLabel ?? placeholder ?? "선택"}
-            </span>
-            <i
-              aria-hidden="true"
-              className={cn(
-                "ri-arrow-down-s-line pointer-events-none absolute top-1/2 -translate-y-1/2",
-                iconSizeClass,
-                disabled ? "text-zinc-400" : isDark ? "text-zinc-400" : "text-zinc-500",
-              )}
-            />
+            {variant === "badge" ? (
+              <Badge
+                theme={theme}
+                color={currentOption?.badgeColor}
+                className={cn(
+                  "inline-flex max-w-full truncate",
+                  !currentLabel && "opacity-60",
+                )}
+              >
+                {triggerLabel}
+              </Badge>
+            ) : (
+              <span className={cn(!currentLabel && "text-zinc-400")}>
+                {triggerLabel}
+              </span>
+            )}
+            {variant !== "badge" && (
+              <i
+                aria-hidden="true"
+                className={cn(
+                  "ri-arrow-down-s-line pointer-events-none absolute top-1/2 -translate-y-1/2",
+                  iconSizeClass,
+                  disabled ? "text-zinc-400" : isDark ? "text-zinc-400" : "text-zinc-500",
+                )}
+              />
+            )}
           </button>
 
           {/* 드롭다운 */}

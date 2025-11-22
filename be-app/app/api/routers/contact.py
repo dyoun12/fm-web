@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from ...api.deps import get_request_id, require_roles
 from ...core.errors import ok
-from ...models.schemas import ContactInquiryCreate, ContactReplyCreate
+from ...models.schemas import ContactInquiryCreate, ContactInquiryStatusUpdate, ContactReplyCreate
 from ...services import contact as svc
 
 
@@ -41,6 +41,19 @@ def reply_contact_inquiry(
     __: str = Depends(get_request_id),
 ) -> Any:
     item = svc.reply_to_contact_inquiry(inquiry_id, payload.message)
+    if not item:
+        raise HTTPException(status_code=404, detail="contact_inquiry_not_found")
+    return ok(item)
+
+
+@router.post("/{inquiry_id}/status")
+def update_contact_inquiry_status(
+    inquiry_id: str,
+    payload: ContactInquiryStatusUpdate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+) -> Any:
+    item = svc.update_contact_inquiry_status(inquiry_id, payload.status)
     if not item:
         raise HTTPException(status_code=404, detail="contact_inquiry_not_found")
     return ok(item)
