@@ -18,6 +18,9 @@ Parameters:
   CorpMetaTableName:
     Type: String
     Default: fm_corp_meta
+  ContactInquiryTableName:
+    Type: String
+    Default: fm_contact_inquiry
   DynamoEndpointUrl:
     Type: String
     Default: ""
@@ -71,6 +74,7 @@ Globals:
         POSTS_TABLE: !Ref PostsTableName
         CATEGORIES_TABLE: !Ref CategoriesTableName
         CORP_META_TABLE: !Ref CorpMetaTableName
+        CONTACT_INQUIRY_TABLE: !Ref ContactInquiryTableName
         UPLOADS_BUCKET: !Ref UploadsBucketName
         UPLOADS_PREFIX: uploads/
         CORS_ALLOW_ORIGINS: !Ref AllowedOrigins
@@ -136,6 +140,8 @@ Resources:
             TableName: !Ref CategoriesTable
         - DynamoDBCrudPolicy:
             TableName: !Ref CorpMetaTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ContactInquiryTable
         - Statement:
             - Effect: Allow
               Action:
@@ -201,6 +207,18 @@ Resources:
         - AttributeName: corpMetaId
           KeyType: HASH
 
+  ContactInquiryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref ContactInquiryTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: inquiryId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: inquiryId
+          KeyType: HASH
+
   UploadsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -225,5 +243,7 @@ Outputs:
     Value: !Ref CategoriesTableName
   CorpMetaTableOut:
     Value: !Ref CorpMetaTableName
+  ContactInquiryTableOut:
+    Value: !Ref ContactInquiryTableName
   UploadsBucketOut:
     Value: !Ref UploadsBucketName

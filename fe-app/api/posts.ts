@@ -14,9 +14,9 @@ export type Post = {
 
 export type ListPostsResponse = { items: Post[]; count: number };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001"; // falls back to backend dev server
-const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN || "local-dev-token";
-const mutateHeaders = { "Content-Type": "application/json", Authorization: `Bearer ${ADMIN_TOKEN}` } as const;
+// 읽기(GET)는 백엔드 `/v1/posts`를 직접 호출하고,
+// 쓰기(POST/PUT/DELETE)는 Next API 라우트(`/api/posts`)를 통해 쿠키 기반 인증을 적용한다.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001";
 
 type ApiEnvelope<T> = {
   success: boolean;
@@ -49,7 +49,9 @@ export async function listPosts(
   if (params.category) qs.set("category", params.category);
   if (params.q) qs.set("q", params.q);
 
-  const r = await fetch(`${API_BASE}/v1/posts?${qs.toString()}`);
+  const query = qs.toString();
+  const url = query ? `${API_BASE}/v1/posts?${query}` : `${API_BASE}/v1/posts`;
+  const r = await fetch(url);
   const raw = unwrap<ListPostsResponse>(await r.json());
 
   const items = raw.items.map((post) => {
@@ -103,18 +105,22 @@ export async function createPost(payload: {
   thumbnailUrl?: string;
   author?: string;
 }): Promise<Post> {
-  const r = await fetch(`${API_BASE}/v1/posts`, {
+  const r = await fetch(`/api/posts`, {
     method: "POST",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
   return unwrap<Post>(await r.json());
 }
 
 export async function updatePost(id: string, payload: Partial<Omit<Post, "postId" | "createdAt" | "updatedAt">>): Promise<Post> {
-  const r = await fetch(`${API_BASE}/v1/posts/${id}`, {
+  const r = await fetch(`/api/posts/${id}`, {
     method: "PUT",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({
       ...payload,
       content: JSON.stringify(payload.content)
@@ -124,6 +130,6 @@ export async function updatePost(id: string, payload: Partial<Omit<Post, "postId
 }
 
 export async function deletePost(id: string): Promise<{ deleted: boolean; postId: string }> {
-  const r = await fetch(`${API_BASE}/v1/posts/${id}`, { method: "DELETE", headers: mutateHeaders });
+  const r = await fetch(`/api/posts/${id}`, { method: "DELETE" });
   return unwrap<{ deleted: boolean; postId: string }>(await r.json());
 }

@@ -10,12 +10,7 @@ export type Category = {
 
 export type ListCategoriesResponse = { items: Category[] };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001";
-const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN || "local-dev-token";
-const mutateHeaders = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${ADMIN_TOKEN}`,
-} as const;
+const API_BASE = ""; // use Next.js API routes (`/api/categories`)
 
 type ApiEnvelope<T> = {
   success: boolean;
@@ -42,7 +37,7 @@ function unwrap<T>(res: unknown): T {
 }
 
 export async function listCategories(): Promise<ListCategoriesResponse> {
-  const r = await fetch(`${API_BASE}/v1/categories`);
+  const r = await fetch(`/api/categories`);
   return unwrap<ListCategoriesResponse>(await r.json());
 }
 
@@ -54,9 +49,11 @@ export type CreateCategoryInput = {
 };
 
 export async function createCategory(payload: CreateCategoryInput): Promise<Category> {
-  const r = await fetch(`${API_BASE}/v1/categories`, {
+  const r = await fetch(`/api/categories`, {
     method: "POST",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
   return unwrap<Category>(await r.json());
@@ -70,18 +67,22 @@ export type UpdateCategoryInput = {
 };
 
 export async function updateCategory(categoryId: string, payload: UpdateCategoryInput): Promise<Category> {
-  const r = await fetch(`${API_BASE}/v1/categories/${categoryId}`, {
+  const r = await fetch(`/api/categories/${categoryId}`, {
     method: "PUT",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
   return unwrap<Category>(await r.json());
 }
 
 export async function deleteCategory(categoryId: string): Promise<{ deleted: boolean; categoryId: string }> {
-  const r = await fetch(`${API_BASE}/v1/categories/${categoryId}`, {
+  const r = await fetch(`/api/categories/${categoryId}`, {
     method: "DELETE",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return unwrap<{ deleted: boolean; categoryId: string }>(await r.json());
 }

@@ -78,3 +78,27 @@ class CorpMeta(CorpMetaBase):
     corpMetaId: str
     createdAt: datetime
     updatedAt: datetime
+
+
+class ContactInquiryBase(BaseModel):
+    company: Optional[str] = None
+    title: Optional[str] = None
+    name: str
+    email: str
+    referral: Optional[str] = None
+    subject: Optional[str] = None
+    message: str
+
+
+class ContactInquiryCreate(ContactInquiryBase):
+    pass
+
+
+class ContactInquiry(ContactInquiryBase):
+    inquiryId: str
+    createdAt: datetime
+    updatedAt: datetime
+
+
+class ContactReplyCreate(BaseModel):
+    message: str = Field(..., description="사용자에게 전송할 1차 답변 내용")

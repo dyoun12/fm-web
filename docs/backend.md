@@ -28,7 +28,7 @@
    uvicorn app.main:app --reload
    ```
 `sam/local/env.local.json`은 Lambda 컨테이너에 `USE_DYNAMO=1`, `DYNAMODB_ENDPOINT=http://host.docker.internal:8000` 등을 주입하며, template 파라미터 `DynamoEndpointUrl`로 동일 값을 넘기면 API가 DynamoDB Local에 실제 Insert를 수행할 수 있다.
-전체 플로우를 한 번에 실행하려면 `./scripts/run_backend_local.sh up`을 사용한다. 스크립트는 도커 Compose → Dynamo 테이블 부트스트랩 → FastAPI(`uvicorn`) → Storybook(6006) → Next.js(3000, `--webpack`) 순으로 백그라운드 실행하고 `NEXT_PUBLIC_API_BASE_URL=http://localhost:8001`, `NEXT_PUBLIC_ADMIN_API_TOKEN=local-dev-token`을 자동 주입한다.  
+전체 플로우를 한 번에 실행하려면 `./scripts/run_backend_local.sh up`을 사용한다. 스크립트는 도커 Compose → Dynamo 테이블 부트스트랩 → FastAPI(`uvicorn`) → Storybook(6006) → Next.js(3000, `--webpack`) 순으로 백그라운드 실행하고 `NEXT_PUBLIC_API_BASE_URL=http://localhost:8001`을 자동 주입한다.  
 중지 시에는 `./scripts/run_backend_local.sh down`을 실행해 컨테이너·프로세스를 정리하고 포트 점유를 방지한다. 실행 상태는 `./scripts/run_backend_local.sh status`로 확인 가능하며 로그는 `./.devserver/logs/*.log`에서 확인할 수 있다.  
 `NEXT_PUBLIC_API_BASE_URL`을 비워 두더라도 프론트는 기본값으로 `http://localhost:8001`을 바라보므로 잘못된 3000번 루프백 호출을 피할 수 있다.
 

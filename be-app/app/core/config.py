@@ -11,6 +11,7 @@ def env(key: str, default: str | None = None) -> str | None:
 POSTS_TABLE = env("POSTS_TABLE", "posts")
 CATEGORIES_TABLE = env("CATEGORIES_TABLE", "categories")
 CORP_META_TABLE = env("CORP_META_TABLE", "corp_meta")
+CONTACT_INQUIRY_TABLE = env("CONTACT_INQUIRY_TABLE", "contact_inquiry")
 
 # S3 Uploads
 UPLOADS_BUCKET = env("UPLOADS_BUCKET", "example-uploads-bucket")

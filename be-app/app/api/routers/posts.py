@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ...core.errors import err, ok
 from ...models.schemas import PostCreate, PostUpdate
-from ...api.deps import get_request_id, opa_authorize
+from ...api.deps import get_request_id, require_roles
 from ...services import posts as svc
 
 
@@ -32,13 +32,22 @@ def get_post(post_id: str, _: str = Depends(get_request_id)):
 
 
 @router.post("")
-def create_post(payload: PostCreate, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def create_post(
+    payload: PostCreate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     item = svc.create_post(payload.model_dump())
     return ok(item)
 
 
 @router.put("/{post_id}")
-def update_post(post_id: str, payload: PostUpdate, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def update_post(
+    post_id: str,
+    payload: PostUpdate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     item = svc.update_post(post_id, payload.model_dump())
     if not item:
         raise HTTPException(status_code=404, detail="post_not_found")
@@ -46,7 +55,11 @@ def update_post(post_id: str, payload: PostUpdate, _: Any = Depends(opa_authoriz
 
 
 @router.delete("/{post_id}")
-def delete_post(post_id: str, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def delete_post(
+    post_id: str,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     ok_ = svc.delete_post(post_id)
     if not ok_:
         raise HTTPException(status_code=404, detail="post_not_found")

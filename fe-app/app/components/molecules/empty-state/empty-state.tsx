@@ -7,16 +7,7 @@ import { Button } from "../../atoms/button/button";
 import { useAppTheme } from "@/lib/theme-context";
 
 export type EmptyStateProps = {
-  icon?:
-    | "inbox"
-    | "search"
-    | "file"
-    | "user"
-    | "image"
-    | "bookmark"
-    | "database"
-    | "alarm-warning"
-    | "calendar-event"; // Remix Icon 이름(ri-*-line)
+  icon?: string
   title: string;
   description?: string;
   actionLabel?: string;

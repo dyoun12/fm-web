@@ -9,12 +9,7 @@ export type CorpMeta = {
   updatedAt?: string;
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001";
-const ADMIN_TOKEN = process.env.NEXT_PUBLIC_ADMIN_API_TOKEN || "local-dev-token";
-const mutateHeaders = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${ADMIN_TOKEN}`,
-} as const;
+const API_BASE = ""; // use Next.js API routes (`/api/corpmeta`)
 
 type ApiEnvelope<T> = {
   success: boolean;
@@ -46,12 +41,12 @@ export type ListCorpMetaResponse = {
 };
 
 export async function listCorpMeta(): Promise<ListCorpMetaResponse> {
-  const r = await fetch(`${API_BASE}/v1/corpmeta`);
+  const r = await fetch(`/api/corpmeta`);
   return unwrap<ListCorpMetaResponse>(await r.json());
 }
 
 export async function getCorpMeta(corpMetaId: string): Promise<CorpMeta> {
-  const r = await fetch(`${API_BASE}/v1/corpmeta/${corpMetaId}`);
+  const r = await fetch(`/api/corpmeta/${corpMetaId}`);
   return unwrap<CorpMeta>(await r.json());
 }
 
@@ -64,9 +59,11 @@ export type CreateCorpMetaInput = {
 };
 
 export async function createCorpMeta(payload: CreateCorpMetaInput): Promise<CorpMeta> {
-  const r = await fetch(`${API_BASE}/v1/corpmeta`, {
+  const r = await fetch(`/api/corpmeta`, {
     method: "POST",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
   return unwrap<CorpMeta>(await r.json());
@@ -81,18 +78,22 @@ export type UpdateCorpMetaInput = {
 };
 
 export async function updateCorpMeta(corpMetaId: string, payload: UpdateCorpMetaInput): Promise<CorpMeta> {
-  const r = await fetch(`${API_BASE}/v1/corpmeta/${corpMetaId}`, {
+  const r = await fetch(`/api/corpmeta/${corpMetaId}`, {
     method: "PUT",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(payload),
   });
   return unwrap<CorpMeta>(await r.json());
 }
 
 export async function deleteCorpMeta(corpMetaId: string): Promise<{ deleted: boolean; corpMetaId: string }> {
-  const r = await fetch(`${API_BASE}/v1/corpmeta/${corpMetaId}`, {
+  const r = await fetch(`/api/corpmeta/${corpMetaId}`, {
     method: "DELETE",
-    headers: mutateHeaders,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return unwrap<{ deleted: boolean; corpMetaId: string }>(await r.json());
 }
