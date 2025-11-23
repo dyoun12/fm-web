@@ -67,10 +67,10 @@ export default function AdminContactPage() {
 
   const columns: DataTableColumn[] = [
     { key: "createdAt", header: "접수일시", width: "180px" },
+    { key: "subject", header: "제목" },
     { key: "name", header: "이름" },
     { key: "email", header: "이메일" },
-    { key: "subject", header: "제목" },
-    { key: "status", header: "상태", width: "100px" },
+    { key: "status", header: "상태", width: "140px" },
   ];
 
   const rows: Array<Record<string, ReactNode>> =
