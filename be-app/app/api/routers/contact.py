@@ -29,7 +29,15 @@ def get_contact_inquiry(inquiry_id: str, _: str = Depends(get_request_id)) -> An
 
 @router.post("")
 def create_contact_inquiry(payload: ContactInquiryCreate, _: str = Depends(get_request_id)) -> Any:
-    item = svc.create_contact_inquiry(payload.model_dump())
+    data = payload.model_dump()
+
+    # 모든 입력 필드(company, title, name, email, referral, subject, message)를 필수로 검증
+    required_fields = ["company", "title", "name", "email", "referral", "subject", "message"]
+    missing_or_empty = [field for field in required_fields if not str(data.get(field) or "").strip()]
+    if missing_or_empty:
+        raise HTTPException(status_code=400, detail="contact_input_required")
+
+    item = svc.create_contact_inquiry(data)
     return ok(item)
 
 

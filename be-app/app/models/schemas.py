@@ -81,12 +81,12 @@ class CorpMeta(CorpMetaBase):
 
 
 class ContactInquiryBase(BaseModel):
-    company: Optional[str] = None
-    title: Optional[str] = None
+    company: str
+    title: str
     name: str
     email: str
-    referral: Optional[str] = None
-    subject: Optional[str] = None
+    referral: str
+    subject: str
     message: str
 
 

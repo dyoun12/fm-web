@@ -35,6 +35,15 @@ export type ContactFormProps = {
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
+const EMAIL_FIELD_ID = "email";
+
+function isValidEmail(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  // 단순 이메일 형식 검증
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
 export function ContactForm({
   fields,
   submitLabel = "문의하기",
@@ -45,23 +54,56 @@ export function ContactForm({
   showHeader = true,
 }: ContactFormProps) {
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [values, setValues] = useState<Record<string, string>>(() =>
-    fields.reduce(
-      (acc, field) => ({
-        ...acc,
-        [field.id]: "",
-      }),
-      {},
-    ),
+  const [errorText, setErrorText] = useState<string>(errorMessage);
+
+  const initialValues = useMemo(
+    () =>
+      fields.reduce(
+        (acc, field) => ({
+          ...acc,
+          [field.id]: "",
+        }),
+        {} as Record<string, string>,
+      ),
+    [fields],
   );
+
+  const [values, setValues] = useState<Record<string, string>>(() => initialValues);
 
   const requiredFields = useMemo(
     () => fields.filter((field) => field.required),
     [fields],
   );
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const missingRequired = requiredFields.filter((field) => !values[field.id]?.trim());
+    if (missingRequired.length > 0) {
+      const nextErrors: Record<string, string> = {};
+      for (const field of missingRequired) {
+        nextErrors[field.id] = `${field.label}은 필수 입력값입니다.`;
+      }
+      setFieldErrors(nextErrors);
+      setErrorText("모든 필수 입력 항목을 입력해주세요.");
+      setStatus("error");
+      return;
+    }
+
+    // 이메일 형식 검증
+    const emailValue = values[EMAIL_FIELD_ID];
+    if (emailValue && !isValidEmail(emailValue)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        [EMAIL_FIELD_ID]: "이메일 형식이 올바르지 않습니다.",
+      }));
+      setErrorText("이메일 형식을 확인해주세요.");
+      setStatus("error");
+      return;
+    }
+
     setStatus("submitting");
     try {
       if (onSubmit) {
@@ -69,9 +111,21 @@ export function ContactForm({
       } else {
         await new Promise((resolve) => setTimeout(resolve, 600));
       }
+      // 성공 시 입력 값을 초기화한다.
+      setValues(initialValues);
+      setFieldErrors({});
       setStatus("success");
     } catch (error) {
       console.error("문의 제출 실패:", error);
+       let messageToShow = errorMessage;
+       if (error instanceof Error) {
+         if (error.message === "contact_input_required") {
+           messageToShow = "모든 필수 입력 항목을 입력해주세요.";
+         } else if (error.message) {
+           messageToShow = error.message;
+         }
+       }
+       setErrorText(messageToShow);
       setStatus("error");
     }
   };
@@ -81,6 +135,26 @@ export function ContactForm({
       ...prev,
       [fieldId]: nextValue,
     }));
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+
+      if (fieldId === EMAIL_FIELD_ID) {
+        if (!nextValue.trim()) {
+          // 필수 체크는 submit 시에 수행하므로 여기서는 형식만 관리
+          delete next[fieldId];
+        } else if (!isValidEmail(nextValue)) {
+          next[fieldId] = "이메일 형식이 올바르지 않습니다.";
+          return next;
+        } else {
+          delete next[fieldId];
+        }
+        return next;
+      }
+
+      if (!prev[fieldId]) return prev;
+      const { [fieldId]: _, ...rest } = prev;
+      return rest;
+    });
   };
 
   const isDark = theme === "dark";
@@ -104,7 +178,7 @@ export function ContactForm({
 
       {status === "error" && (
         <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {errorMessage}
+          {errorText}
         </div>
       )}
 
@@ -124,6 +198,8 @@ export function ContactForm({
                     handleChange(field.id, event.currentTarget.value)
                   }
                   helperText={field.helperText}
+                  state={fieldErrors[field.id] ? "error" : "default"}
+                  errorMessage={fieldErrors[field.id]}
                   theme={theme}
                 />
               </div>
@@ -143,6 +219,8 @@ export function ContactForm({
                   value={values[field.id]}
                   onChange={(event) => handleChange(field.id, event.target.value)}
                   helperText={field.helperText}
+                  state={fieldErrors[field.id] ? "error" : "default"}
+                  errorMessage={fieldErrors[field.id]}
                 />
               </div>
             );
@@ -158,6 +236,8 @@ export function ContactForm({
                 required={field.required}
                 description={field.description}
                 helperText={field.helperText}
+                state={fieldErrors[field.id] ? "error" : "default"}
+                errorMessage={fieldErrors[field.id]}
                 value={values[field.id]}
                 onChange={(event) => handleChange(field.id, event.target.value)}
                 disabled={status === "submitting"}
