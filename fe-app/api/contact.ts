@@ -45,6 +45,7 @@ export type ContactInquiry = {
   message: string;
   status?: string;
   notifiedEmail?: string;
+   firstReplyMessage?: string;
   createdAt: string;
   updatedAt: string;
 };
