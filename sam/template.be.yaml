@@ -61,6 +61,18 @@ Parameters:
   CognitoClientSecret:
     Type: String
     Default: ""
+  SesRegion:
+    Type: String
+    Default: ap-northeast-2
+  SesSourceEmail:
+    Type: String
+    Default: ""
+  SesReplyToEmail:
+    Type: String
+    Default: ""
+  ContactNotificationEnabled:
+    Type: String
+    Default: "1"
 
 Globals:
   Function:
@@ -92,6 +104,10 @@ Globals:
         COGNITO_REDIRECT_URI: !Ref CognitoRedirectUri
         COGNITO_LOGOUT_REDIRECT_URI: !Ref CognitoLogoutRedirectUri
         COGNITO_CLIENT_SECRET: !Ref CognitoClientSecret
+        SES_REGION: !Ref SesRegion
+        SES_SOURCE_EMAIL: !Ref SesSourceEmail
+        SES_REPLY_TO_EMAIL: !Ref SesReplyToEmail
+        CONTACT_NOTIFICATION_ENABLED: !Ref ContactNotificationEnabled
 
 Resources:
   ApiGateway:
@@ -148,6 +164,12 @@ Resources:
                 - s3:PutObject
                 - s3:GetObject
               Resource: !Sub arn:aws:s3:::${UploadsBucket}/*
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ses:SendEmail
+                - ses:SendRawEmail
+              Resource: !Sub arn:aws:ses:${AWS::Region}:${AWS::AccountId}:identity/*
 
   PostsTable:
     Type: AWS::DynamoDB::Table
