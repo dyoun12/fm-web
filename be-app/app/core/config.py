@@ -11,6 +11,7 @@ def env(key: str, default: str | None = None) -> str | None:
 POSTS_TABLE = env("POSTS_TABLE", "posts")
 CATEGORIES_TABLE = env("CATEGORIES_TABLE", "categories")
 CORP_META_TABLE = env("CORP_META_TABLE", "corp_meta")
+CONTACT_INQUIRY_TABLE = env("CONTACT_INQUIRY_TABLE", "contact_inquiry")
 
 # S3 Uploads
 UPLOADS_BUCKET = env("UPLOADS_BUCKET", "example-uploads-bucket")
@@ -43,3 +44,10 @@ AUTH_COOKIE_NAME = env("AUTH_COOKIE_NAME", "fm_auth_token")
 AUTH_COOKIE_SECURE = env("AUTH_COOKIE_SECURE", "0") == "1"
 AUTH_COOKIE_MAX_AGE_SECONDS = int(env("AUTH_COOKIE_MAX_AGE_SECONDS", "0") or 0)
 AUTH_COOKIE_DOMAIN = env("AUTH_COOKIE_DOMAIN", None)
+
+# SES / Email
+SES_REGION = env("SES_REGION", os.getenv("AWS_REGION") or os.getenv("AWS_DEFAULT_REGION") or None)
+SES_SOURCE_EMAIL = env("SES_SOURCE_EMAIL", None)
+SES_REPLY_TO_EMAIL = env("SES_REPLY_TO_EMAIL", None)
+# 연락처/알림 메일 발송 기능 on/off 플래그 (기본값: 1=활성)
+CONTACT_NOTIFICATION_ENABLED = env("CONTACT_NOTIFICATION_ENABLED", "1") == "1"

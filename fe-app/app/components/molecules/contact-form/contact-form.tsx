@@ -85,7 +85,7 @@ export function ContactForm({
 
   const isDark = theme === "dark";
   return (
-    <Card theme={theme} padding="lg" className="w-full max-w-[800px] mx-auto">
+    <Card theme={theme} padding="lg" className="w-full mx-auto">
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       {showHeader && (
         <div className="flex flex-col gap-2">

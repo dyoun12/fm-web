@@ -4,7 +4,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ...api.deps import get_request_id, opa_authorize
+from ...api.deps import get_request_id, require_roles
 from ...core.errors import ok
 from ...models.schemas import CorpMetaCreate, CorpMetaUpdate
 from ...services import corp_meta as svc
@@ -27,7 +27,11 @@ def get_corp_meta(corp_meta_id: str, _: str = Depends(get_request_id)):
 
 
 @router.post("")
-def create_corp_meta(payload: CorpMetaCreate, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def create_corp_meta(
+    payload: CorpMetaCreate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     try:
         item = svc.create_corp_meta(payload.model_dump(exclude_unset=True))
     except svc.CorpMetaLimitReachedError as exc:
@@ -39,7 +43,7 @@ def create_corp_meta(payload: CorpMetaCreate, _: Any = Depends(opa_authorize), _
 def update_corp_meta(
     corp_meta_id: str,
     payload: CorpMetaUpdate,
-    _: Any = Depends(opa_authorize),
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
     __: str = Depends(get_request_id),
 ):
     item = svc.update_corp_meta(corp_meta_id, payload.model_dump(exclude_unset=True))
@@ -49,7 +53,11 @@ def update_corp_meta(
 
 
 @router.delete("/{corp_meta_id}")
-def delete_corp_meta(corp_meta_id: str, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def delete_corp_meta(
+    corp_meta_id: str,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     ok_ = svc.delete_corp_meta(corp_meta_id)
     if not ok_:
         raise HTTPException(status_code=404, detail="corp_meta_not_found")

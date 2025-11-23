@@ -27,6 +27,7 @@ export default function AdminLayout({ children }: Props) {
     { label: "게시물", href: "/admin/posts", icon: "ri-newspaper-line", active: pathname?.startsWith("/admin/posts") },
     { label: "카테고리", href: "/admin/categories", icon: "ri-price-tag-3-line", active: pathname?.startsWith("/admin/categories") },
     { label: "회사 정보", href: "/admin/corp", icon: "ri-building-4-line", active: pathname?.startsWith("/admin/corp") },
+    { label: "문의", href: "/admin/contact", icon: "ri-mail-line", active: pathname?.startsWith("/admin/contact") },
     { label: "사용자", href: "/admin/users", icon: "ri-user-3-line", active: pathname?.startsWith("/admin/users") },
   ];
 
@@ -39,9 +40,11 @@ export default function AdminLayout({ children }: Props) {
           ? "카테고리"
           : pathname?.startsWith("/admin/corp")
             ? "회사 정보"
+            : pathname?.startsWith("/admin/contact")
+              ? "문의"
               : pathname?.startsWith("/admin/users")
-              ? "사용자"
-              : "관리자";
+                ? "사용자"
+                : "관리자";
 
   const handleLogout = () => {
     router.replace("/auth/login");

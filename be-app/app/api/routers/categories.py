@@ -4,7 +4,7 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from ...api.deps import get_request_id, opa_authorize
+from ...api.deps import get_request_id, require_roles
 from ...core.errors import ok
 from ...models.schemas import CategoryCreate, CategoryUpdate
 from ...services import categories as svc
@@ -28,12 +28,21 @@ def get_category(category_id: str, _: str = Depends(get_request_id)):
 
 
 @router.post("")
-def create_category(payload: CategoryCreate, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def create_category(
+    payload: CategoryCreate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     return ok(svc.create_category(payload.model_dump()))
 
 
 @router.put("/{category_id}")
-def update_category(category_id: str, payload: CategoryUpdate, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def update_category(
+    category_id: str,
+    payload: CategoryUpdate,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     existing = svc.get_category(category_id)
     if not existing:
         raise HTTPException(status_code=404, detail="category_not_found")
@@ -46,7 +55,11 @@ def update_category(category_id: str, payload: CategoryUpdate, _: Any = Depends(
 
 
 @router.delete("/{category_id}")
-def delete_category(category_id: str, _: Any = Depends(opa_authorize), __: str = Depends(get_request_id)):
+def delete_category(
+    category_id: str,
+    _: Any = Depends(require_roles("fm-web:admin", "fm-web:editor")),
+    __: str = Depends(get_request_id),
+):
     category = svc.get_category(category_id)
     if not category:
         raise HTTPException(status_code=404, detail="category_not_found")

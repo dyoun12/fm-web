@@ -7,7 +7,8 @@ Usage:
     --endpoint http://localhost:8000 \
     --posts-table fm_posts_local \
     --categories-table fm_categories_local \
-    --corp-table fm_corp_meta_local
+    --corp-table fm_corp_meta_local \
+    --contact-table fm_contact_inquiry_local
 """
 
 from __future__ import annotations
@@ -109,6 +110,28 @@ def ensure_corp_table(dynamodb, table_name: str) -> None:
     wait_table(table)
 
 
+def ensure_contact_table(dynamodb, table_name: str) -> None:
+    try:
+        table = dynamodb.Table(table_name)
+        table.load()
+        print(f"[skip] {table_name} already exists")
+        return
+    except ClientError as exc:
+        error = exc.response.get("Error", {})
+        if error.get("Code") != "ResourceNotFoundException":
+            raise
+    print(f"[create] {table_name} (contact inquiries)")
+    table = dynamodb.create_table(
+        TableName=table_name,
+        KeySchema=[{"AttributeName": "inquiryId", "KeyType": "HASH"}],
+        AttributeDefinitions=[
+            {"AttributeName": "inquiryId", "AttributeType": "S"},
+        ],
+        BillingMode="PAY_PER_REQUEST",
+    )
+    wait_table(table)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Provision DynamoDB Local tables for development.")
     parser.add_argument("--endpoint", default="http://localhost:8000", help="DynamoDB endpoint (default: http://localhost:8000)")
@@ -116,6 +139,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--posts-table", default="fm_posts_local", help="Posts table name")
     parser.add_argument("--categories-table", default="fm_categories_local", help="Categories table name")
     parser.add_argument("--corp-table", default="fm_corp_meta_local", help="Corp meta table name")
+    parser.add_argument("--contact-table", default="fm_contact_inquiry_local", help="Contact inquiry table name")
     return parser.parse_args()
 
 
@@ -125,6 +149,7 @@ def main() -> None:
     ensure_posts_table(session, args.posts_table)
     ensure_categories_table(session, args.categories_table)
     ensure_corp_table(session, args.corp_table)
+    ensure_contact_table(session, args.contact_table)
     print("[done] DynamoDB Local tables ready")
 
 
