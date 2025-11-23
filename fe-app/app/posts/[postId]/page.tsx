@@ -12,7 +12,7 @@ export default async function Post({params}: { params: Promise<{ postId: string 
   const post = await getPost(postId);
 
   return (
-    <section aria-labelledby="post-detail" className="mx-auto w-full max-w-6xl px-6 py-12">
+    <section aria-labelledby="post-detail" className="mx-auto w-full max-w-[800px] px-6 py-12">
       <PostDetail 
         title={post.title}
         category={post.category}
