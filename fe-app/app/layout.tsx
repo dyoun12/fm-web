@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/fm-logo_favicon.ico",
+  },
   openGraph: {
     title: "FM Corp — 공식 홈페이지",
     description: "FM Corp의 공식 홈페이지입니다. 회사 소개, 비전, 소식, 문의 정보를 확인하세요.",
@@ -52,6 +55,9 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
         />
+        {/* Favicon: 로고 파비콘 파일로 명시적 설정 */}
+        <link rel="icon" href="/fm-logo_favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/fm-logo_favicon.ico" type="image/x-icon" />
         {/* JSON-LD: Organization & WebSite */}
         <script
           type="application/ld+json"
@@ -61,7 +67,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "FM Corp",
               url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-              logo: "/favicon.ico",
+              logo: "/fm-logo_black.png",
             }),
           }}
         />

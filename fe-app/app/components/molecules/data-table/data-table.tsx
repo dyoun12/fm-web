@@ -21,6 +21,7 @@ export type DataTableProps = {
   rows: Record<string, ReactNode>[];
   loading?: boolean;
   caption?: string;
+  sortable?: boolean;
   theme?: "light" | "dark";
   onSort?: (key: string) => void; // deprecated: use onSortChange
   onSortChange?: (key: string | null, order: "asc" | "desc" | null) => void;
@@ -33,7 +34,7 @@ export type DataTableProps = {
   onPageSizeChange?: (size: number) => void;
 } & ComponentPropsWithoutRef<"div">;
 
-export function DataTable({ columns, rows, loading = false, caption, theme: themeProp, onSort, onSortChange, defaultSortKey, defaultSortOrder, page, pageSize, total, onPageChange, onPageSizeChange, className, ...rest }: DataTableProps) {
+export function DataTable({ columns, rows, loading = false, caption, sortable = false, theme: themeProp, onSort, onSortChange, defaultSortKey, defaultSortOrder, page, pageSize, total, onPageChange, onPageSizeChange, className, ...rest }: DataTableProps) {
   const appTheme = useAppTheme();
   const theme = themeProp ?? appTheme;
   const isDark = theme === "dark";
@@ -42,7 +43,10 @@ export function DataTable({ columns, rows, loading = false, caption, theme: them
   const [internalPage, setInternalPage] = useState<number>(page ?? 1);
   const [internalPageSize, setInternalPageSize] = useState<number>(pageSize ?? 10);
 
-  const hasSortHandler = useMemo(() => Boolean(onSort || onSortChange), [onSort, onSortChange]);
+  const hasSortHandler = useMemo(
+    () => Boolean(sortable && (onSort || onSortChange)),
+    [sortable, onSort, onSortChange],
+  );
   const effectivePage = page ?? internalPage;
   const effectivePageSize = pageSize ?? internalPageSize;
   const totalCount = total ?? rows.length;
@@ -64,95 +68,95 @@ export function DataTable({ columns, rows, loading = false, caption, theme: them
     onSortChange?.(nextKey, nextOrder);
   };
   return (
-    <Card padding="none" theme={theme} className={cn("relative overflow-x-auto", className)} {...rest}>
-      <table className={cn("w-full text-sm", isDark ? "text-zinc-200" : "text-zinc-800") }>
-        {caption && <caption className="sr-only">{caption}</caption>}
-        <thead className={cn(isDark ? "bg-zinc-800" : "bg-zinc-200") }>
-          <tr>
-            {columns.map((col) => (
-              <th
-                key={col.key}
-                scope="col"
-                style={{ width: col.width }}
-                className={cn(
-                  "px-4 sm:px-5 py-2 text-left font-semibold border-b",
-                  isDark ? "border-zinc-700" : "border-zinc-200",
-                  col.align === "center" && "text-center",
-                  col.align === "right" && "text-right",
-                )}
-              >
-                <div className={cn("flex items-center gap-1", col.align === "right" && "justify-end", col.align === "center" && "justify-center")}>
-                  <span className="select-none hover:no-underline">{col.header}</span>
-                  {hasSortHandler ? (
-                    <IconButton
-                      variant="ghost"
-                      size="sm"
-                      color={sortKey === col.key && sortOrder ? "primary" : "neutral"}
-                      aria-label={`정렬: ${typeof col.header === "string" ? col.header : col.key}`}
-                      onClick={() => handleSortClick(col.key)}
-                      theme={theme}
-                      className="h-7 w-7"
-                    >
-                      {sortKey === col.key && sortOrder === "desc" && (
-                        <i className="ri-sort-desc" aria-hidden="true" />
-                      )}
-                      {sortKey === col.key && sortOrder === "asc" && (
-                        <i className="ri-sort-asc" aria-hidden="true" />
-                      )}
-                      {(sortKey !== col.key || sortOrder === null) && (
-                        <i className="ri-arrow-up-down-line" aria-hidden="true" />
-                      )}
-                    </IconButton>
-                  ) : (
-                    <i className={cn("ri-arrow-up-down-line text-zinc-400", isDark && "text-zinc-500") } aria-hidden="true" />
-                  )}
-                </div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            Array.from({ length: Math.min(3, Math.max(1, Math.ceil((total ?? columns.length) / (columns.length || 1)))) }).map((_, rIdx) => (
-              <tr key={`sk-${rIdx}`} className={cn("border-b last:border-b-0", isDark ? "border-zinc-800" : "border-zinc-200") }>
-                {columns.map((col) => (
-                  <td key={`sk-${rIdx}-${col.key}`} className="px-4 sm:px-5 py-3">
-                    <Skeleton variant="text" />
-                  </td>
-                ))}
-              </tr>
-            ))
-          ) : rows.length === 0 ? (
+    <Card padding="none" theme={theme} className={cn("relative", className)} {...rest}>
+      <div className="overflow-x-auto">
+        <table className={cn("w-full text-sm", isDark ? "text-zinc-200" : "text-zinc-800") }>
+          {caption && <caption className="sr-only">{caption}</caption>}
+          <thead className={cn(isDark ? "bg-zinc-800" : "bg-zinc-200") }>
             <tr>
-              <td className="px-4 py-6 text-center text-zinc-500" colSpan={columns.length}>데이터가 없습니다</td>
-            </tr>
-          ) : (
-            rows.map((row, idx) => (
-              <tr
-                key={idx}
-                className={cn(
-                  // 라이트/다크 공통: 행 배경 통일(지브라 제거), 구분선으로만 구획
-                  "border-b last:border-b-0",
-                  isDark ? "border-zinc-800" : "border-zinc-200",
-                )}
-              >
-                {columns.map((col) => (
-                  <td
-                    key={col.key}
-                    className={cn(
-                      "px-4 sm:px-5 py-3",
-                      col.align === "center" && "text-center",
-                      col.align === "right" && "text-right",
+              {columns.map((col) => (
+                <th
+                  key={col.key}
+                  scope="col"
+                  style={{ width: col.width }}
+                  className={cn(
+                    "px-4 sm:px-5 py-2 text-left font-semibold border-b",
+                    isDark ? "border-zinc-700" : "border-zinc-200",
+                    col.align === "center" && "text-center",
+                    col.align === "right" && "text-right",
+                  )}
+                >
+                  <div className={cn("flex items-center gap-1", col.align === "right" && "justify-end", col.align === "center" && "justify-center")}>
+                    <span className="select-none hover:no-underline">{col.header}</span>
+                    {hasSortHandler && (
+                      <IconButton
+                        variant="ghost"
+                        size="sm"
+                        color={sortKey === col.key && sortOrder ? "primary" : "neutral"}
+                        aria-label={`정렬: ${typeof col.header === "string" ? col.header : col.key}`}
+                        onClick={() => handleSortClick(col.key)}
+                        theme={theme}
+                        className="h-7 w-7"
+                      >
+                        {sortKey === col.key && sortOrder === "desc" && (
+                          <i className="ri-sort-desc" aria-hidden="true" />
+                        )}
+                        {sortKey === col.key && sortOrder === "asc" && (
+                          <i className="ri-sort-asc" aria-hidden="true" />
+                        )}
+                        {(sortKey !== col.key || sortOrder === null) && (
+                          <i className="ri-arrow-up-down-line" aria-hidden="true" />
+                        )}
+                      </IconButton>
                     )}
-                  >
-                    {row[col.key]}
-                  </td>
-                ))}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              Array.from({ length: Math.min(3, Math.max(1, Math.ceil((total ?? columns.length) / (columns.length || 1)))) }).map((_, rIdx) => (
+                <tr key={`sk-${rIdx}`} className={cn("border-b last:border-b-0", isDark ? "border-zinc-800" : "border-zinc-200") }>
+                  {columns.map((col) => (
+                    <td key={`sk-${rIdx}-${col.key}`} className="px-4 sm:px-5 py-3">
+                      <Skeleton variant="text" />
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : rows.length === 0 ? (
+              <tr>
+                <td className="px-4 py-6 text-center text-zinc-500" colSpan={columns.length}>데이터가 없습니다</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              rows.map((row, idx) => (
+                <tr
+                  key={idx}
+                  className={cn(
+                    // 라이트/다크 공통: 행 배경 통일(지브라 제거), 구분선으로만 구획
+                    "border-b last:border-b-0",
+                    isDark ? "border-zinc-800" : "border-zinc-200",
+                  )}
+                >
+                  {columns.map((col) => (
+                    <td
+                      key={col.key}
+                      className={cn(
+                        "px-4 sm:px-5 py-3",
+                        col.align === "center" && "text-center",
+                        col.align === "right" && "text-right",
+                      )}
+                    >
+                      {row[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
       {(onPageChange || onPageSizeChange || total) && (
         <div className={cn("flex items-center justify-between border-t py-2 px-4 sm:px-5", isDark ? "border-zinc-700" : "border-zinc-200") }>
           <div className="flex items-center gap-2">

@@ -1,8 +1,10 @@
-"use client";
+﻿"use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GlobalFooter } from "./components/organisms/global-footer/global-footer";
 import { useCorpMeta } from "@/app/hooks/use-corp-meta";
+import { listCategories, type Category } from "@/api/categories";
 
 const FALLBACK_COMPANY_INFO = {
   address: "서울특별시 중구 세종대로 110",
@@ -17,6 +19,24 @@ export default function SiteFooter() {
   const isAdmin = pathname?.startsWith("/admin");
   const isContact = pathname === "/contact";
   const corpMeta = useCorpMeta();
+  const [categories, setCategories] = useState<Category[] | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await listCategories();
+        if (!alive) return;
+        setCategories(res.items);
+      } catch {
+        if (!alive) return;
+        setCategories([]);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   if (isAdmin) return null;
 
@@ -28,6 +48,17 @@ export default function SiteFooter() {
     email: corpMeta ? corpMeta.email : FALLBACK_COMPANY_INFO.email,
     phone: corpMeta ? corpMeta.hp : FALLBACK_COMPANY_INFO.phone,
   };
+
+  const materialLinks =
+    categories && categories.length > 0
+      ? categories.map((category) => ({
+          label: category.name,
+          href: `/posts?category=${encodeURIComponent(category.slug)}`,
+        }))
+      : [
+          { label: "공지사항", href: "/posts?category=notice" },
+          { label: "IR", href: "/posts?category=ir" },
+        ];
 
   return (
     <GlobalFooter
@@ -43,10 +74,7 @@ export default function SiteFooter() {
         },
         {
           title: "자료",
-          links: [
-            { label: "공지사항", href: "/notice" },
-            { label: "IR", href: "/ir" },
-          ],
+          links: materialLinks,
         },
         {
           title: "정책",

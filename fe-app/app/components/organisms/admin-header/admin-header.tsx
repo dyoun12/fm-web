@@ -19,8 +19,12 @@ export type AdminHeaderProps = {
   onLogout?: () => void;
 } & ComponentPropsWithoutRef<"header">;
 
-export function AdminHeader({ title = "관리자", theme = "light", onSearch, children, logo = { src: "/logo.svg", alt: "FM Admin" }, onThemeChange, onLogout, className, ...rest }: AdminHeaderProps) {
+export function AdminHeader({ title = "관리자", theme = "light", onSearch, children, logo, onThemeChange, onLogout, className, ...rest }: AdminHeaderProps) {
   const isDark = theme === "dark";
+  const effectiveLogo = logo ?? {
+    src: isDark ? "/fm-logo_white.png" : "/fm-logo_black.png",
+    alt: "FM Admin",
+  };
   const [open, setOpen] = useState(false);
   const toolsRef = useRef<HTMLDivElement | null>(null);
   const userRef = useRef<HTMLDivElement | null>(null);
@@ -41,9 +45,9 @@ export function AdminHeader({ title = "관리자", theme = "light", onSearch, ch
       <div className="flex items-center gap-2">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={logo.src}
-          alt={logo.alt}
-          className={cn("h-12 w-auto", isDark && "brightness-0 invert")}
+          src={effectiveLogo.src}
+          alt={effectiveLogo.alt}
+          className="h-5 w-auto"
         />
         <h2 className="text-base font-semibold">{title}</h2>
       </div>
