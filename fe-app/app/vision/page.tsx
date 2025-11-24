@@ -21,10 +21,10 @@ export default function VisionPage() {
         <h1 id="vision-heading" className="mb-6 text-3xl font-semibold">비전</h1>
         <VisionValues
           items={[
-            { key: "mission", title: "미션", imageUrl: "https://picsum.photos/seed/vision-page-mission/960/540", imageAlt: "FM 미션 관련 이미지" },
-            { key: "vision", title: "비전", imageUrl: "https://picsum.photos/seed/vision-page-vision/960/540", imageAlt: "FM 비전 관련 이미지" },
-            { key: "values", title: "핵심 가치", imageUrl: "https://picsum.photos/seed/vision-page-values/960/540", imageAlt: "FM 핵심 가치 관련 이미지" },
-            { key: "slogan", title: "슬로건", imageUrl: "https://picsum.photos/seed/vision-page-values/960/540", imageAlt: "FM 슬로건 관련 이미지" },
+            { key: "mission", title: "미션", imageUrl: "/mission.png", imageAlt: "FM 미션 관련 이미지" },
+            { key: "vision", title: "비전", imageUrl: "/vision.png", imageAlt: "FM 비전 관련 이미지" },
+            { key: "values", title: "핵심 가치", imageUrl: "/values.png", imageAlt: "FM 핵심 가치 관련 이미지" },
+            { key: "slogan", title: "슬로건", imageUrl: "/slogan.png", imageAlt: "FM 슬로건 관련 이미지" },
           ]}
         >
           <VisionValuesContent tabKey="vision">
