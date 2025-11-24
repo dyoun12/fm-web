@@ -1,67 +1,46 @@
-﻿"use client";
-
-import Link from "next/link";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useSearchParams } from "next/navigation";
+﻿import Link from "next/link";
 import { listPosts, type Post } from "@/api/posts";
 import { listCategories, type Category } from "@/api/categories";
 import { DataTable, type DataTableColumn } from "@/app/components/molecules/data-table/data-table";
 import { EmptyState } from "@/app/components/molecules/empty-state/empty-state";
+import type { ReactNode } from "react";
 
-export default function PostsPage() {
-  const searchParams = useSearchParams();
-  const categorySlug = searchParams?.get("category") ?? undefined;
+type PostsPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
 
-  const [items, setItems] = useState<Post[] | null>(null);
-  const [categories, setCategories] = useState<Category[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+export default async function PostsPage({ searchParams }: PostsPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const rawCategory = resolvedSearchParams.category;
+  const categorySlug = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory;
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const res = await listPosts({
-          category: categorySlug || undefined,
-        });
-        if (!alive) return;
-        setItems(res.items);
-        setError(null);
-      } catch (e: unknown) {
-        if (!alive) return;
-        const message = e instanceof Error ? e.message : "게시물 목록을 불러오지 못했습니다.";
-        setError(message);
-        setItems([]);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [categorySlug]);
+  let items: Post[] = [];
+  let categories: Category[] | null = null;
+  let error: string | null = null;
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const res = await listCategories();
-        if (!alive) return;
-        setCategories(res.items);
-      } catch {
-        if (!alive) return;
-        setCategories(null);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+  try {
+    const res = await listPosts({
+      category: categorySlug || undefined,
+    });
+    items = res.items;
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "게시물 목록을 불러오지 못했습니다.";
+    error = message;
+    items = [];
+  }
 
-  const categoryLabelMap = useMemo(() => {
-    if (!categories) return null;
-    return categories.reduce<Record<string, string>>((acc, cat) => {
+  try {
+    const res = await listCategories();
+    categories = res.items;
+  } catch {
+    categories = null;
+  }
+
+  const categoryLabelMap =
+    categories?.reduce<Record<string, string>>((acc, cat) => {
       acc[cat.slug] = cat.name;
       return acc;
-    }, {});
-  }, [categories]);
+    }, {}) ?? null;
 
   const columns: DataTableColumn[] = [
     { key: "createdAt", header: "등록일", width: "20%" },
@@ -69,18 +48,15 @@ export default function PostsPage() {
     { key: "category", header: "카테고리", width: "20%" },
   ];
 
-  const rows: Array<Record<string, ReactNode>> = useMemo(() => {
-    if (!items) return [];
-    return items.map((post) => ({
-      createdAt: new Date(post.createdAt).toLocaleDateString("ko-KR"),
-      title: (
-        <Link href={`/posts/${post.postId}`} className="text-blue-600 underline underline-offset-2">
-          {post.title}
-        </Link>
-      ),
-      category: categoryLabelMap?.[post.category] ?? post.category,
-    }));
-  }, [categoryLabelMap, items]);
+  const rows: Array<Record<string, ReactNode>> = items.map((post) => ({
+    createdAt: new Date(post.createdAt).toLocaleDateString("ko-KR"),
+    title: (
+      <Link href={`/posts/${post.postId}`} className="text-blue-600 underline underline-offset-2">
+        {post.title}
+      </Link>
+    ),
+    category: categoryLabelMap?.[post.category] ?? post.category,
+  }));
 
   const heading = categorySlug ? "게시물 목록" : "전체 게시물";
 
@@ -101,18 +77,13 @@ export default function PostsPage() {
         </div>
       )}
 
-      {!items || rows.length === 0 ? (
+      {rows.length === 0 ? (
         <EmptyState
           title="게시물이 없습니다"
           description={categorySlug ? "해당 카테고리에 등록된 게시물이 없습니다." : "등록된 게시물이 없습니다."}
         />
       ) : (
-        <DataTable
-          columns={columns}
-          rows={rows}
-          caption="게시물 목록"
-          total={items.length}
-        />
+        <DataTable columns={columns} rows={rows} caption="게시물 목록" total={items.length} />
       )}
     </section>
   );
