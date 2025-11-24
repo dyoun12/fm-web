@@ -104,7 +104,7 @@ export default function VisionPage() {
         <LogoDescription
           title="로고에 담긴 이야기"
           description="절제된 타이포그래피와 일관된 비율은 ‘묵직한 신뢰’를, 여백과 선의 흐름은 ‘유연한 연결과 확장’을 상징합니다."
-          imageUrl="/logo-detail.png"
+          imageUrl="/fm-logo_border.png"
           imageAlt="FM 로고 예시 이미지"
           theme="light"
           bullets={[

@@ -98,6 +98,13 @@ export function GlobalHeader({
     return () => window.removeEventListener("resize", measureMenu);
   }, [navigation, isOverlayActive]);
 
+  const effectiveLogo =
+    logo ??
+    {
+      src: isDark ? "/fm-logo_white.png" : "/fm-logo_black.png",
+      alt: "FM Corp 로고",
+    };
+
   return (
     <>
     <header
@@ -115,26 +122,13 @@ export function GlobalHeader({
         className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-2 lg:px-6 lg:py-4"
       >
         <Link href="/" className="flex items-center gap-2">
-          {logo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={logo.src}
-              alt={logo.alt}
-              className={cn("h-12 w-auto lg:h-20", isContact && "brightness-0 invert")}
-              loading="lazy"
-            />
-          ) : (
-            <span
-              className={cn(
-                "flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold lg:h-20 lg:w-20 lg:text-xl",
-                isContact
-                  ? "border-2 border-white text-white"
-                  : "bg-blue-600 text-white",
-              )}
-            >
-              FM
-            </span>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={effectiveLogo.src}
+            alt={effectiveLogo.alt}
+            className="h-5 w-auto lg:h-8"
+            loading="lazy"
+          />
         </Link>
 
         <nav className={cn("hidden items-center gap-6 text-sm font-medium lg:flex", isDark ? "text-zinc-300" : "text-zinc-600") }>

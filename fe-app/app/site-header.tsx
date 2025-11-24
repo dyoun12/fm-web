@@ -15,9 +15,11 @@ export default function SiteHeader() {
 
   if (isAdmin) return null;
 
+  const logoSrc = isContact ? "/fm-logo_white.png" : "/fm-logo_black.png";
+
   return (
     <GlobalHeader
-      logo={{ src: "/logo.svg", alt: "FM Corp 로고" }}
+      logo={{ src: logoSrc, alt: "FM Corp 로고" }}
       brandName="FM Corp"
       navigation={nav}
       cta={{ label: "문의하기", href: "/contact" }}
