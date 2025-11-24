@@ -105,12 +105,17 @@ export async function createPost(payload: {
   thumbnailUrl?: string;
   author?: string;
 }): Promise<Post> {
+  const body = {
+    ...payload,
+    content: payload.content ? JSON.stringify(payload.content) : undefined,
+  };
+
   const r = await fetch(`/api/posts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
   return unwrap<Post>(await r.json());
 }
